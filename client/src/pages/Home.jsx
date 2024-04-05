@@ -29,49 +29,49 @@ const Home = () => {
             
             <tbody>
               <tr> 
-                <td><label>Indirects % </label> </td>
+                <td><label>Indirects % : </label> </td>
                 <td> <input type='text'/></td>
               </tr>
               <tr>
-                <td> <label>Crews</label> </td>
+                <td> <label>Crews :</label> </td>
                 <td> <input type='text'/></td>
               </tr>
               <tr>
-                <td> <label>HC Crew  </label> </td>
+                <td> <label>HC Crew : </label> </td>
                 <td><input type='text'/></td>
               </tr>
 
               <tr>
-                <td> <label>ME Definition  </label> </td>
+                <td> <label>ME Definition : </label> </td>
                 <td><input type='text'/></td>
               </tr>
               <tr>
-                <td><label>ME Definition  </label> </td>
+                <td><label>ME Definition : </label> </td>
                 <td><input type='text'/></td>
               </tr>
               <tr>
-                <td><label> ME Support </label></td>
+                <td><label> ME Support: </label></td>
                 <td><input type='text'/> </td>
               </tr>
               <tr>
-                <td><label>Rework  </label></td>
+                <td><label>Rework  :</label></td>
                 <td><input type='text'/></td>
               </tr>
 
               <tr>
-                <td> <label>Poly </label></td>
+                <td> <label>Poly: </label></td>
                 <td><input type='text'/> </td>
               </tr>
               <tr>
-                <td> <label>Back-up </label></td>
+                <td> <label>Back-up :</label></td>
                 <td> <input type='text'/></td>
               </tr>
               <tr>
-                <td> <label>Containment </label></td>
+                <td> <label>Containment :</label></td>
                 <td><input type='text'/> </td>
               </tr>
               <tr>
-                <td> <label>SOS  </label></td>
+                <td> <label>SOS  :</label></td>
                 <td><input type='text'/></td>
               </tr>
             </tbody>
