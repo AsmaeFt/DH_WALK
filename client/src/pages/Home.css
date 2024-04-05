@@ -1,0 +1,31 @@
+.data_container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.data{
+    margin: 11px 0 12px 0;
+}
+.data:nth-child(1){
+    font-size: 2rem;
+}
+.data:nth-child(2){
+    font-size: 1.5rem;
+}
+.form_container {
+    width: 80%;
+    background-color: #1e1e1e;
+    border: 1px solid #ff45004d;
+    border-radius: 10px;
+    height: 37rem;
+    display: flex;
+    align-items: center;
+}
+.form_container form {
+    text-align: center;
+    width: 100%;
+}
+.form_content {
+    display: inline-grid;
+}
