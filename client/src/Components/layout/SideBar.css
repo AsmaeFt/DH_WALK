@@ -1,0 +1,38 @@
+
+.side_bar img {
+    width: 2rem;
+   
+}
+.side_bar {
+   
+    z-index: 2;
+    height: 100vh;
+    width: 4rem;
+    list-style-type: none;
+    background-color: orangered;
+    overflow: hidden;
+    backdrop-filter: blur(6px);
+    transition: width 0.5s;
+    border-right: 2px solid black;
+    
+}
+.side_bar ul {
+    height: 100vh;
+}
+.side_bar li{
+    width: 10rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    justify-content: space-around;
+    transition: all .2s ease-in-out;
+}
+.side_bar li:hover{
+    background-color: black;
+  
+}
+    
+.side_bar:hover{
+    width: 10rem;
+}

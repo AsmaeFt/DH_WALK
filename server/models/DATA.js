@@ -23,6 +23,7 @@ const project_OS_schema = new mongoose.Schema({
 
 const familySchema = new mongoose.Schema({
   name: { type: String, required: true, default: null },
+  Hcount_Number:{type:Number,required:true,default:0},
   indirects: { type: String, required: true, default: null },
   crews: { type: Number, required: true, default: 0 },
   HC_CREW: { type: Number, required: true, default: 0 },
@@ -37,6 +38,8 @@ const familySchema = new mongoose.Schema({
 
 const ProjectSchema = new mongoose.Schema({
   name: { type: String, required: true},
+  Hcount_Number:{type:Number,required:true,default:0},
+
 
   project_DH_Required: { type: Number, required: true, default: 0 },
 
