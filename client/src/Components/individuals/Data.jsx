@@ -3,6 +3,7 @@ import axios from 'axios'
 import date from '../assets/dates.png'
 import car from '../assets/car.png'
 import next from '../assets/next.png'
+
 import './Data.css'
 
 
@@ -11,29 +12,29 @@ import Inputs from './inputs'
 
 const Data = () => {
 
-  const [project_Data, setProject_Data] = useState({})
 
-const callback = useCallback(async ()=> {
+
+  const [project_Data, setProject_Data] = useState({})
+  const [family, setFamily] = useState([])
+  const callback = useCallback(async ()=> {
 
   try {
     const res = await axios.get('http://localhost:1200/api/Get_project');
     const projects = await res.data
     setProject_Data(projects)
 
-    const getProject= projects.filter((e)=> e.name==='Project A');
-    const families = getProject.map((e) => e.family.map((f) => f.name));
+    const getProject= projects.filter((e)=> e.name==='K9 KSK');
+    if(getProject){const families = getProject.flatMap((e) => e.family.map((f) => f.name));
+      setFamily(families)}
     
-    console.log(getProject,families);
-
+    
      } catch(err){
       return console.error(err)
      }
 },[])
 useEffect(()=> {callback();},[callback]);
 
-
-
-
+console.log(family);
 
   return (
     <div className="data_container">
@@ -58,13 +59,17 @@ useEffect(()=> {callback();},[callback]);
 
         <div className="form_content">
 
-          <div>
-        
+        <div className='div1'>
+          <div>  {family.length > 0 ? (family.map((familyItem, i) => (<Inputs key={i} family={familyItem} />))) : (<p>pending...</p>)}
           </div>
+          <div className="next">
+          <button type="submit">next</button>
+          </div>
+        </div>
 
            
-          <div>
-
+          <div className='div2'>
+            <div> 
             <label > Total HC : </label><input type='text'/>
             <label > Total HC Required: </label><input type='text'/>
             <label > Total HC Family1: </label><input type='text'/>
@@ -72,7 +77,10 @@ useEffect(()=> {callback();},[callback]);
             <label > Total HC Family3: </label><input type='text'/>
             <label > Total OS: </label><input type='text'/>
             <label > Total Special list out of the plant: </label><input type='text'/>
-            <label > Acual DH: </label><input type='text'/>
+            <label > Acual DH: </label><input type='text'/> 
+            </div>
+           
+
           </div>
         </div>
       </form>
