@@ -5,6 +5,7 @@ const bodyparser=require('body-parser')
 
 const  data= require('./routes/post_DATA')
 
+
 const app = express();
 
 //MidleWare

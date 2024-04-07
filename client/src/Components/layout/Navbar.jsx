@@ -1,4 +1,5 @@
 import React from 'react'
+import logo from '../assets/aptiv-logo.png'
 import { Link } from 'react-router-dom'
 
 import './Navbar.css'
@@ -8,7 +9,7 @@ const NavBar = () => {
     <div className="navbar-container">
       
       <div className="navbar-brand">
-      <h2>APTIV</h2>
+      <img className='logo' src={logo}/>
       </div>
 
       <ul className="navbar-nav">

@@ -22,12 +22,11 @@ function App() {
       <SideBar/>
         <div className="content">
         <Routes>
-        
         <Route path='/Home' element={<Home/>}/>
         <Route path='/' element={<Add_Data/>}/>
         <Route path='/Statistics' element={<Statistics/>}/>
         <Route path='*' element={<p>Nothing to show here ! </p>} />
-      </Routes>
+       </Routes>
 
         </div>
       </div>
