@@ -1,14 +1,12 @@
 
 import React from 'react';
 
-const Inputs = ({family,value,onInputChange }) => {
+const Inputs = ({family,value,handelSubmit }) => {
 
-  const handleInputChange = (event) => {
-    onInputChange(event.target.value);
-  };
-
+ 
   return (
     <> 
+    <form onSubmit={handelSubmit}> 
     <div> 
       <div className="form_content_header">
         <label> Family : <span>{family}</span> </label>
@@ -23,6 +21,8 @@ const Inputs = ({family,value,onInputChange }) => {
       <label>Containment:</label><input type='text' name="containment"  value={value}  onChange={handleInputChange}/>
       <label>SOS:</label><input type='text' name="sos"  value={value} onChange={handleInputChange} />
       </div>
+
+      </form>
     </>
   );
 };
