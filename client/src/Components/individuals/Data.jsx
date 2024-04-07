@@ -16,6 +16,8 @@ const Data = () => {
 
   const [project_Data, setProject_Data] = useState({})
   const [family, setFamily] = useState([])
+  const [inputs_values, setInputs_values] = useState({})
+
   const callback = useCallback(async ()=> {
 
   try {
@@ -34,7 +36,15 @@ const Data = () => {
 },[])
 useEffect(()=> {callback();},[callback]);
 
-console.log(family);
+const handleInputChanges = (e,i,value)=>{
+  e.preventDefault();
+  setInputs_values((prev)=> ({ ...prev,[i]:value}))
+}
+console.log(inputs_values);
+
+const inputsValues=()=>{
+
+}
 
   return (
     <div className="data_container">
@@ -60,10 +70,10 @@ console.log(family);
         <div className="form_content">
 
         <div className='div1'>
-          <div>  {family.length > 0 ? (family.map((familyItem, i) => (<Inputs key={i} family={familyItem} />))) : (<p>pending...</p>)}
+          <div>  {family.length > 0 ? (family.map((familyItem, i) => (<Inputs key={i} value={inputs_values[i]} family={familyItem} onInputChange={(e)=> handleInputChanges(i,e)}/>))) : (<p>pending...</p>)}
           </div>
           <div className="next">
-          <button type="submit">next</button>
+          <button type="submit" onClick={inputsValues}>next</button>
           </div>
         </div>
 
@@ -79,12 +89,9 @@ console.log(family);
             <label > Total Special list out of the plant: </label><input type='text'/>
             <label > Acual DH: </label><input type='text'/> 
             </div>
-           
-
           </div>
         </div>
       </form>
-
     </div>
    </div>
   )
