@@ -9,10 +9,7 @@ import './Data.css';
 
 const Data = () => {
 
-  const [project, setProjet] = useState({
-    projectName:'',
-    projectData:{}
-  });
+  const [project, setProject] = useState({ projectName: '', projectData: {} });
 
   const [family, setFamily] = useState([]);
   const today = new Date();
@@ -78,7 +75,7 @@ const Data = () => {
     setStep(step + 1);
     const globaldata= {projectName:'K9 HAB',familyInputs,projectOS,projectSpecialList,projectAcualDh}
     console.log(globaldata);
-    setProjet(globaldata)
+    setProject(globaldata)
     console.log(project);
   };
 
