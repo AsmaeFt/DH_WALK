@@ -15,7 +15,7 @@
     align-items: center;
     padding: 2rem 0 2rem 0;
 }
-.form_container form {
+.form_container .form {
     text-align: center;
     width: 100%;
 }
@@ -57,10 +57,14 @@
     padding: 1rem 0 1rem 0;
     border-top: 2px solid orangered;
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .div1 div:nth-child(1){
-    display: flex;
-    justify-content: space-around;
+    width: 100%;
+  
 }
 .div1 div:nth-child(1) div {
     display: inline-grid;
@@ -71,6 +75,9 @@
 
 .form_content_header label span{
     color: orangered;
+}
+form{
+    display: grid;
 }
  input{
    
@@ -89,6 +96,9 @@ input:focus-visible{
     outline: none;
     border-bottom: 1px solid orangered;
 
+}
+.next{
+    width: 100%;
 }
 .next button{
     background: linear-gradient(to left, transparent 50%, orangered 50%);
