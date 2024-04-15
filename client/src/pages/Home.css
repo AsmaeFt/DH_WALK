@@ -1,0 +1,45 @@
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+thead{
+    background-color: black;
+}
+th , td {
+    padding: 0.5rem;
+    font-size: 0.7rem;
+}
+tr:nth-child(even) {
+    background-color: #333333; 
+  }
+  tr{
+    transition: all 0.3s ease-in-out;
+  }
+  tr:hover{
+    transform: scale(1.01);
+    cursor: pointer;
+    background-color: rgb(24, 24, 24);
+  }
+  .projects{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 2rem 0rem;
+    
+  }
+  .projects label{
+    width: 20%;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 68, 0, 0.452);
+    border-radius: 0.4rem;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+  .projects label:hover{
+    transform: scale(1.04);
+    background-color: #333333;
+    border-top: 1px solid rgb(255, 68, 0);
+  }

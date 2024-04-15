@@ -51,25 +51,24 @@ const Data = () => {
     ]
   });
 
-  const [family, setFamily] = useState([]);
   const [familyInputs, setFamilyInputs] = useState([]);
   const [projectOS, setProjectOS] = useState({
-    Digitalization: 0,
-    Daily_Kaizen: 0,
-    OS_Auditing: 0,
-    OS_Auditing_Data_Reporting: 0
+    Digitalization: '',
+    Daily_Kaizen: '',
+    OS_Auditing: '',
+    OS_Auditing_Data_Reporting: ''
   });
   const [projectSpecialList, setProjectSpecialList] = useState({
-    Pregnant_women_out_of_the_plant: 0,
-    Maternity: 0,
-    Breastfeeding_leave: 0,
-    LTI_Long_term_weaknesses_LWD: 0,
-    Physical_incapacity_NMA: 0
+    Pregnant_women_out_of_the_plant: '',
+    Maternity: '',
+    Breastfeeding_leave: '',
+    LTI_Long_term_weaknesses_LWD: '',
+    Physical_incapacity_NMA: ''
   });
   const [projectActualDH, setProjectActualDH] = useState({
-    Attrition: 0,
-    Transfer: 0,
-    Hiring: 0
+    Attrition: '',
+    Transfer: '',
+    Hiring: ''
   });
   const [step, setStep] = useState(1);
 
@@ -84,7 +83,7 @@ const Data = () => {
       const getProject = projects.filter((e) => e.name === 'K9 KSK')[0];
       if (getProject) {
         const families = getProject.family.map((f) => f.name);
-        setFamily(families);
+        
         setFamilyInputs(
           families.map((family) => ({
             name: family,
@@ -176,7 +175,8 @@ const Data = () => {
           </div>
 
           <div className="form_content">
-            <div className="div1">
+          <div className="div_inputs">
+           <div className='inputs_'>
               {step === 1 && (
                 familyInputs.map((family, index) => (
                   <form key={index}>
@@ -232,6 +232,7 @@ const Data = () => {
                   </form>
                 ))
               )}
+             
               {step === 2 && (
                 <form>
                   <label>K9 KSK OS</label>
@@ -323,7 +324,7 @@ const Data = () => {
                 <div className="summary">
                   <div className="family_">
                     {familyInputs.map((family, index) => (
-                      <div key={index}>
+                      <div className='inputs_summary' key={index}>
                         <label>Family: {family.name}</label>
                         <label>Crew: {family.crews}</label>
                         <label>ME Definition: {family.ME_DEFINITION}</label>
@@ -337,7 +338,7 @@ const Data = () => {
                     ))}
                   </div>
                   <div className="others_">
-                    <div>
+                    <div className='inputs_summary'>
                       <h3>K9 KSK OS</h3>
                       <label>
                         Digitalization: <span>{projectOS.Digitalization}</span>
@@ -353,7 +354,7 @@ const Data = () => {
                         <span>{projectOS.OS_Auditing_Data_Reporting}</span>
                       </label>
                     </div>
-                    <div>
+                    <div className='inputs_summary'>
                       <h3>K9 KSK Special list out of the plant</h3>
                       <label>
                         Pregnant women out of the plant:{' '}
@@ -375,7 +376,7 @@ const Data = () => {
                         <span>{projectSpecialList.Physical_incapacity_NMA}</span>
                       </label>
                     </div>
-                    <div>
+                    <div className='inputs_summary'>
                       <h3>K9 KSK Actual DH</h3>
                       <label>
                         Attrition: <span>{projectActualDH.Attrition}</span>
@@ -390,6 +391,9 @@ const Data = () => {
                   </div>
                 </div>
               )}
+
+             </div>
+
               <div className="next">
                 <button onClick={submit}>
                   {step !== 5 ? 'Next' : 'Confirm Weekly DH'}
