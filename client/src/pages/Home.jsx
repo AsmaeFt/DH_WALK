@@ -12,6 +12,8 @@ const Home = () => {
   const fetchedData = useCallback(async () => {
     try {
       const res = await axios.get('http://localhost:1200/api/DATA');
+      const projectss= res.data.map((x)=> x.weeks.map((b)=> b.projectData.map((f)=> f.family)))
+      console.log(projectss);
       setDATA(res.data);
 
       const projects = await axios.get('http://localhost:1200/api/Get_project');
@@ -30,7 +32,7 @@ const Home = () => {
     fetchedData();
   }, [fetchedData]);
 
- console.log(family);
+
  
 
 const week = generateWeeks();
