@@ -1,122 +1,154 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import date from '../assets/dates.png';
 import car from '../assets/car.png';
-
-
-import { getWeek, handleChange } from '../functions/utilis';
-import './Data.css';
+import { getWeek } from '../functions/utilis';
+import './Data.css'
 
 const Data = () => {
-
   const [project, setProject] = useState({
     month_name: '',
     weeks: [
       {
         week_name: '',
-        projectData: {
-          projectName: '',
-          family: [], 
-          project_OS: {}, 
-          project_special_list: {}, 
-          project_actual_DH: {}
-        }
+        projectData: [
+          {
+            projectName: '',
+            family: [
+              {
+                name: '',
+                crews:0,
+                ME_DEFINITION: 0,
+                ME_SUPPORT: 0,
+                Rework: 0,
+                Poly: 0,
+                Back_Up: 0,
+                Containment: 0,
+                SOS: 0
+              }
+            ],
+            project_OS: {
+              Digitalization: 0,
+              Daily_Kaizen: 0,
+              OS_Auditing: 0,
+              OS_Auditing_Data_Reporting: 0
+            },
+            project_special_list: {
+              Pregnant_women_out_of_the_plant: 0,
+              Maternity: 0,
+              Breastfeeding_leave: 0,
+              LTI_Long_term_weaknesses_LWD: 0,
+              Physical_incapacity_NMA: 0
+            },
+            project_actual_DH: {
+              Attrition: 0,
+              Transfer: 0,
+              Hiring: 0
+            }
+          }
+        ]
       }
     ]
   });
-  
+
   const [family, setFamily] = useState([]);
-  const today = new Date();
-  const weeknumber = getWeek(today);
-  const [familyInputs, setFamilyInputs] = useState({});
-
-  const [projectOS, setProjectOS] = useState({ 
-    Digitalization: '',
-    Daily_Kaizen: '',
-    OS_Auditing: '',
-    OS_Auditing_Data_Reporting: ''
+  const [familyInputs, setFamilyInputs] = useState([]);
+  const [projectOS, setProjectOS] = useState({
+    Digitalization: 0,
+    Daily_Kaizen: 0,
+    OS_Auditing: 0,
+    OS_Auditing_Data_Reporting: 0
   });
-  const [projectSpecialList, setprojectSpecialList] = useState({
-    Pregnant_women_out_of_the_plant:'',
-    Maternity:'',
-    Breastfeeding_leave:'',
-    LTI_Long_term_weaknesses_LWD:'',
-    Physical_incapacity_NMA:''
-
+  const [projectSpecialList, setProjectSpecialList] = useState({
+    Pregnant_women_out_of_the_plant: 0,
+    Maternity: 0,
+    Breastfeeding_leave: 0,
+    LTI_Long_term_weaknesses_LWD: 0,
+    Physical_incapacity_NMA: 0
   });
-  const [projectAcualDh, setprojectAcualDh] = useState({
-        Attrition:'',
-        Transfer:'',
-        Hiring:''
-
-  })
-
+  const [projectActualDH, setProjectActualDH] = useState({
+    Attrition: 0,
+    Transfer: 0,
+    Hiring: 0
+  });
   const [step, setStep] = useState(1);
 
-  const [totalHc, settotalHc] = useState({});
+  useEffect(() => {
+    fetchProjectData();
+  }, []);
 
-  const fetchProjectData = useCallback(async () => {
+  const fetchProjectData = async () => {
     try {
       const res = await axios.get('http://localhost:1200/api/Get_project');
       const projects = await res.data;
-
       const getProject = projects.filter((e) => e.name === 'K9 KSK')[0];
       if (getProject) {
         const families = getProject.family.map((f) => f.name);
         setFamily(families);
         setFamilyInputs(
-          families.reduce((acc, family) => ({ ...acc, [family]: {} }), {})
+          families.map((family) => ({
+            name: family,
+            crews: '',
+            ME_DEFINITION: '',
+            ME_SUPPORT: '',
+            Rework: '',
+            Poly: '',
+            Back_Up: '',
+            Containment: '',
+            SOS: ''
+          }))
         );
       }
     } catch (err) {
       console.error(err);
     }
-  }, []);
-  useEffect(() => {
-    fetchProjectData();
-  }, [fetchProjectData]);
-
-  const handleInputChange = (e, familyIndex, field) => {
-    const { value } = e.target;
-    const familyName = family[familyIndex];
-
-    setFamilyInputs(prev => ({
-      ...prev,
-      [family[familyIndex]]: {
-        ...prev[family[familyIndex]],
-        [field]: value
-      }
-   
-    }));
-
-    settotalHc((prev)=> ({...prev,
-    [familyName]:(prev[familyName] || 0)+parseInt(value)
-  }));
   };
 
+  const handleInputChange = (e, index, field) => {
+    const { value } = e.target;
+    setFamilyInputs((prev) =>
+      prev.map((family, i) =>
+        i === index ? { ...family, [field]: value } : family
+      )
+    );
+  };
 
-    const month = new Date().toLocaleString('en-US', { month: 'long' });
-   const submit = () => {
-
-   
-    if(step!=5){
-      setStep(step+1)
-    
+  const submit = () => {
+    if (step !== 5) {
+      setStep(step + 1);
       setProject((prev) => ({
         ...prev,
-        month_name: month,
-        weeks:{week_name:'week:'+weeknumber,projectData:{projectName:'K9 HAB',family:[familyInputs],project_OS:{projectOS},project_special_list:{projectSpecialList},project_actual_DH:{projectAcualDh}}},
+        month_name: new Date().toLocaleString('en-US', { month: 'long' }),
+        weeks: [
+          {
+            week_name: `Week ${getWeek(new Date())}`,
+            projectData: [
+              {
+                projectName: 'K9 HAB',
+                family: familyInputs,
+                project_OS: projectOS,
+                project_special_list: projectSpecialList,
+                project_actual_DH: projectActualDH
+              }
+            ]
+          }
+        ]
       }));
-    
-      console.log(project);
 
+      console.log(JSON.stringify(project,null,2));
+    } else {
+      axios
+        .post('http://localhost:1200/api/add_data', project)
+        .then((res) => {
+          console.log(res.data);
+          return res.data;
+        })
+        .catch((err) => console.error(err));
     }
-    else {
-      axios.post('http://localhost:1200/api/add_data',project)
-      .then(res => {
-        console.log(res.data);
-      }).catch(err=> console.error(err))
-    }
+  };
+
+  const handleChange = (e, field, setter) => {
+    setter((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
   return (
@@ -126,10 +158,10 @@ const Data = () => {
           <div className="form_header">
             <img src={date} alt="date" />
             <label>
-              Week: <span> {weeknumber} </span>
+              Week: <span>{getWeek(new Date())}</span>
             </label>
             <label>
-              Month: <span>{month}</span>
+              Month: <span>{new Date().toLocaleString('en-US', { month: 'long' })}</span>
             </label>
             <label>
               Year: <span>{new Date().getFullYear()}</span>
@@ -139,122 +171,230 @@ const Data = () => {
           <div className="project">
             <img src={car} alt="car" />
             <label>
-              Project: <span> K9 KSK </span>
+              Project: <span>K9 KSK</span>
             </label>
           </div>
 
           <div className="form_content">
             <div className="div1">
-              <div>
               {step === 1 && (
-                family.map((familyMember, index) => (
+                familyInputs.map((family, index) => (
                   <form key={index}>
-                    <label>Family : {familyMember}</label>
-                    <br />
-                    <hr />
-                    <br />
-                    <input type="text" placeholder="crews" onChange={(e) => handleInputChange(e, index, 'crews')} />
-                    <input type="text" placeholder="ME definition" onChange={(e) => handleInputChange(e, index, 'ME_DEFINITION')} />
-                    <input type="text" placeholder="ME support" onChange={(e) => handleInputChange(e, index, 'ME_SUPPORT')} />
-                    <input type="text" placeholder="Rework" onChange={(e) => handleInputChange(e, index, 'Rework')} />
-                    <input type="text" placeholder="Poly" onChange={(e) => handleInputChange(e, index, 'Poly')} />
-                    <input type="text" placeholder="Back Up" onChange={(e) => handleInputChange(e, index, 'Back_Up')} />
-                    <input type="text" placeholder="Containment" onChange={(e) => handleInputChange(e, index, 'Containment')} />
-                    <input type="text" placeholder="SOS" onChange={(e) => handleInputChange(e, index, 'SOS')} />
- 
+                    <label>Family: {family.name}</label>
+                    <input
+                      type="text"
+                      placeholder="Crews"
+                      value={family.crews}
+                      onChange={(e) => handleInputChange(e, index, 'crews')}
+                    />
+                    <input
+                      type="text"
+                      placeholder="ME Definition"
+                      value={family.ME_DEFINITION}
+                      onChange={(e) => handleInputChange(e, index, 'ME_DEFINITION')}
+                    />
+                    <input
+                      type="text"
+                      placeholder="ME Support"
+                      value={family.ME_SUPPORT}
+                      onChange={(e) => handleInputChange(e, index, 'ME_SUPPORT')}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Rework"
+                      value={family.Rework}
+                      onChange={(e) => handleInputChange(e, index, 'Rework')}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Poly"
+                      value={family.Poly}
+                      onChange={(e) => handleInputChange(e, index, 'Poly')}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Back Up"
+                      value={family.Back_Up}
+                      onChange={(e) => handleInputChange(e, index, 'Back_Up')}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Containment"
+                      value={family.Containment}
+                      onChange={(e) => handleInputChange(e, index, 'Containment')}
+                    />
+                    <input
+                      type="text"
+                      placeholder="SOS"
+                      value={family.SOS}
+                      onChange={(e) => handleInputChange(e, index, 'SOS')}
+                    />
                   </form>
                 ))
               )}
               {step === 2 && (
                 <form>
-                  <label>K9 KSK OS </label>
-                  <input type="text" placeholder="Digitalization" value={projectOS.Digitalization} onChange={(e) => handleChange(e,'Digitalization',setProjectOS)} />
-                  <input type="text" placeholder="Daily Kaizen" value={projectOS.Daily_Kaizen} onChange={(e) => handleChange(e,'Daily_Kaizen',setProjectOS)} />
-                  <input type="text" placeholder="OS Auditing" value={projectOS.OS_Auditing} onChange={(e) => handleChange(e,'OS_Auditing',setProjectOS)} />
-                  <input type="text" placeholder="OS Auditing & Data Reporting" value={projectOS.OS_Auditing_Data_Reporting} onChange={(e) => handleChange(e, 'OS_Auditing_Data_Reporting',setProjectOS)} />
-               
+                  <label>K9 KSK OS</label>
+                  <input
+                    type="text"
+                    placeholder="Digitalization"
+                    value={projectOS.Digitalization}
+                    onChange={(e) => handleChange(e, 'Digitalization', setProjectOS)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Daily Kaizen"
+                    value={projectOS.Daily_Kaizen}
+                    onChange={(e) => handleChange(e, 'Daily_Kaizen', setProjectOS)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="OS Auditing"
+                    value={projectOS.OS_Auditing}
+                    onChange={(e) => handleChange(e, 'OS_Auditing', setProjectOS)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="OS Auditing & Data Reporting"
+                    value={projectOS.OS_Auditing_Data_Reporting}
+                    onChange={(e) => handleChange(e, 'OS_Auditing_Data_Reporting', setProjectOS)}
+                  />
                 </form>
               )}
               {step === 3 && (
                 <form>
                   <label>K9 KSK Special list out of the plant</label>
-                  <input type="text" placeholder="Pregnant women out of the plant" value={projectSpecialList.Pregnant_women_out_of_the_plant}  onChange={(e)=> handleChange(e,'Pregnant_women_out_of_the_plant',setprojectSpecialList)}/>
-                  <input type="text" placeholder="Maternity" value={projectSpecialList.Maternity} onChange={(e)=> handleChange(e,'Maternity',setprojectSpecialList)}/>
-                  <input type="text" placeholder="Breastfeeding leave"value={projectSpecialList.Breastfeeding_leave}  onChange={(e)=> handleChange(e,'Breastfeeding_leave',setprojectSpecialList)}/>
-                  <input type="text" placeholder="LTI: Long term weaknesses, LWD," value={projectSpecialList.LTI_Long_term_weaknesses_LWD} onChange={(e)=> handleChange(e,'LTI_Long_term_weaknesses_LWD',setprojectSpecialList)}/>
-                  <input type="text" placeholder="Physical incapacity & NMA" value={projectSpecialList.Physical_incapacity_NMA} onChange={(e)=> handleChange(e,'Physical_incapacity_NMA',setprojectSpecialList)}/>
-                 
-                
+                  <input
+                    type="text"
+                    placeholder="Pregnant women out of the plant"
+                    value={projectSpecialList.Pregnant_women_out_of_the_plant}
+                    onChange={(e) => handleChange(e, 'Pregnant_women_out_of_the_plant', setProjectSpecialList)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Maternity"
+                    value={projectSpecialList.Maternity}
+                    onChange={(e) => handleChange(e, 'Maternity', setProjectSpecialList)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Breastfeeding leave"
+                    value={projectSpecialList.Breastfeeding_leave}
+                    onChange={(e) => handleChange(e, 'Breastfeeding_leave', setProjectSpecialList)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="LTI: Long term weaknesses, LWD"
+                    value={projectSpecialList.LTI_Long_term_weaknesses_LWD}
+                    onChange={(e) => handleChange(e, 'LTI_Long_term_weaknesses_LWD', setProjectSpecialList)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Physical incapacity & NMA"
+                    value={projectSpecialList.Physical_incapacity_NMA}
+                    onChange={(e) => handleChange(e, 'Physical_incapacity_NMA', setProjectSpecialList)}
+                  />
                 </form>
               )}
               {step === 4 && (
                 <form>
                   <label>K9 KSK Actual DH</label>
-                  <input type="text" placeholder="Attrition" value={projectAcualDh.Attrition} onChange={(e)=> handleChange(e,'Attrition',setprojectAcualDh)} />
-                  <input type="text" placeholder="Transfer"  value={projectAcualDh.Transfer} onChange={(e)=> handleChange(e,'Transfer',setprojectAcualDh)}/>
-                  <input type="text" placeholder="Hiring"  value={projectAcualDh.Hiring} onChange={(e)=> handleChange(e,'Hiring',setprojectAcualDh)}/>
-                
+                  <input
+                    type="text"
+                    placeholder="Attrition"
+                    value={projectActualDH.Attrition}
+                    onChange={(e) => handleChange(e, 'Attrition', setProjectActualDH)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Transfer"
+                    value={projectActualDH.Transfer}
+                    onChange={(e) => handleChange(e, 'Transfer', setProjectActualDH)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Hiring"
+                    value={projectActualDH.Hiring}
+                    onChange={(e) => handleChange(e, 'Hiring', setProjectActualDH)}
+                  />
                 </form>
               )}
               {step === 5 && (
-                
-                      <div className="summary">
-                       
-                          <div className='family_'>
-
-                            {Object.keys(familyInputs).map((family, i) => (
-                              <div key={i}>
-                                <label>Family: {family}</label>
-                                <label>Crew: {familyInputs[family].crews}</label>
-                                <label>ME Definition: {familyInputs[family].Me_Definition}</label>
-                                <label>ME Support: {familyInputs[family].Me_Support}</label>
-                                <label>Rework: {familyInputs[family].Rework}</label>
-                                <label>Poly: {familyInputs[family].Poly}</label>
-                                <label>Back Up: {familyInputs[family].Back_up}</label>
-                                <label>Containment: {familyInputs[family].Containment}</label>
-                                <label>SOS: {familyInputs[family].SOS}</label>
-                              </div>
-                            ))}
-                          </div>
-
-                                <div className='others_'> 
-                                <div>
-                          <h3>K9 KSK OS</h3>
-                          <label>Digitalization: <span>{projectOS.Digitalization}</span> </label>              
-                          <label>Daily Kaizen: <span>{projectOS.Daily_Kaizen}</span></label>
-                          <label>OS Auditing:  <span>{projectOS.OS_Auditing}</span></label>
-                          <label>OS Auditing & Data Reporting: <span>{projectOS.OS_Auditing_Data_Reporting}</span></label>
-                          </div>
-
-                          <div> 
-                          <h3>K9 KSK Special list out of the plant</h3>
-                          <label>Pregnant women out of the plant:  <span>{projectSpecialList.Pregnant_women_out_of_the_plant}</span></label>
-                          <label>Maternity:  <span>{projectSpecialList.Maternity}</span></label>
-                          <label>Breastfeeding leave: <span>{projectSpecialList.Breastfeeding_leave}</span></label>
-                          <label>LTI: Long term weaknesses, LWD: <span>{projectSpecialList.LTI_Long_term_weaknesses_LWD}</span></label>
-                          <label>Physical incapacity & NMA: <span>{projectSpecialList.Physical_incapacity_NMA}</span></label>
-                          </div> 
-                      
-                          <div> 
-                              <h3>K9 KSK Actual DH</h3>
-                                <label>Attrition: <span>{projectAcualDh.Attrition}</span></label>
-                                <label>Transfer:  <span>{projectAcualDh.Transfer}</span></label>
-                                <label>Hiring: <span>{projectAcualDh.Hiring}</span></label>
-                          </div>
-                          </div>
-                        
-
-                     </div>
-                     )}
-            
-              </div>
-
+                <div className="summary">
+                  <div className="family_">
+                    {familyInputs.map((family, index) => (
+                      <div key={index}>
+                        <label>Family: {family.name}</label>
+                        <label>Crew: {family.crews}</label>
+                        <label>ME Definition: {family.ME_DEFINITION}</label>
+                        <label>ME Support: {family.ME_SUPPORT}</label>
+                        <label>Rework: {family.Rework}</label>
+                        <label>Poly: {family.Poly}</label>
+                        <label>Back Up: {family.Back_Up}</label>
+                        <label>Containment: {family.Containment}</label>
+                        <label>SOS: {family.SOS}</label>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="others_">
+                    <div>
+                      <h3>K9 KSK OS</h3>
+                      <label>
+                        Digitalization: <span>{projectOS.Digitalization}</span>
+                      </label>
+                      <label>
+                        Daily Kaizen: <span>{projectOS.Daily_Kaizen}</span>
+                      </label>
+                      <label>
+                        OS Auditing: <span>{projectOS.OS_Auditing}</span>
+                      </label>
+                      <label>
+                        OS Auditing & Data Reporting:{' '}
+                        <span>{projectOS.OS_Auditing_Data_Reporting}</span>
+                      </label>
+                    </div>
+                    <div>
+                      <h3>K9 KSK Special list out of the plant</h3>
+                      <label>
+                        Pregnant women out of the plant:{' '}
+                        <span>{projectSpecialList.Pregnant_women_out_of_the_plant}</span>
+                      </label>
+                      <label>
+                        Maternity: <span>{projectSpecialList.Maternity}</span>
+                      </label>
+                      <label>
+                        Breastfeeding leave:{' '}
+                        <span>{projectSpecialList.Breastfeeding_leave}</span>
+                      </label>
+                      <label>
+                        LTI: Long term weaknesses, LWD:{' '}
+                        <span>{projectSpecialList.LTI_Long_term_weaknesses_LWD}</span>
+                      </label>
+                      <label>
+                        Physical incapacity & NMA:{' '}
+                        <span>{projectSpecialList.Physical_incapacity_NMA}</span>
+                      </label>
+                    </div>
+                    <div>
+                      <h3>K9 KSK Actual DH</h3>
+                      <label>
+                        Attrition: <span>{projectActualDH.Attrition}</span>
+                      </label>
+                      <label>
+                        Transfer: <span>{projectActualDH.Transfer}</span>
+                      </label>
+                      <label>
+                        Hiring: <span>{projectActualDH.Hiring}</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="next">
-                <button onClick={submit}>{step !== 5 ? 'Next' : 'Confirm Weekly DH'}</button>
+                <button onClick={submit}>
+                  {step !== 5 ? 'Next' : 'Confirm Weekly DH'}
+                </button>
               </div>
-
-             
-            
             </div>
           </div>
         </div>

@@ -15,30 +15,30 @@ const special_list_schema = new mongoose.Schema({
 });
 
 const project_OS_schema = new mongoose.Schema({
-  Digitalization: { type: Number,  default: 0 },
-  Daily_Kaizen: { type: Number,  default: 0 },
-  OS_Auditing: { type: Number,  default: 0 },
-  OS_Auditing_Data_Reporting: { type: Number,  default: 0 },
+  Digitalization: { type: Number,  default: 0 , required:true},
+  Daily_Kaizen: { type: Number,  default: 0 , required:true},
+  OS_Auditing: { type: Number,  default: 0 , required:true},
+  OS_Auditing_Data_Reporting: { type: Number,  default: 0 , required:true},
 });
 
 const familySchema = new mongoose.Schema({
-  name: { type: String,  default: null },
-  crews: { type: Number,  default: 0 },
-  ME_DEFINITION: { type: Number, default: 0 },
-  ME_SUPPORT: { type: Number, default: 0 },
-  Rework: { type: Number,  default: 0 },
-  Poly: { type: Number,  default: 0 },
-  Back_Up: { type: Number, default: 0 },
-  Containment: { type: Number, default: 0 },
-  SOS: { type: Number,  default: 0 },
+  name: { type: String, required: true},
+  crews: { type: Number, required: true},
+  ME_DEFINITION: { type: Number, required: true},
+  ME_SUPPORT: { type: Number, required: true},
+  Rework: { type: Number, required: true},
+  Poly: { type: Number,  required: true },
+  Back_Up: { type: Number, required: true},
+  Containment: { type: Number, required: true},
+  SOS: { type: Number, required: true },
 });
 
 const ProjectSchema = new mongoose.Schema({
   projectName: { type: String, required: true},
   family: { type: [familySchema], required: true },
-  project_OS: { type: {project_OS_schema}, required: true },
-  project_special_list: { type: {special_list_schema}, required: true },
-  project_actual_DH: { type: {actual_DH_Schema}, required: true },
+  project_OS: { type: project_OS_schema, required: true },
+  project_special_list: { type: special_list_schema, required: true },
+  project_actual_DH: { type: actual_DH_Schema, required: true },
 });
 
 const WeekSchema = new mongoose.Schema({
