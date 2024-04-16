@@ -4,6 +4,7 @@ const actual_DH_Schema = new mongoose.Schema({
   Attrition: { type: Number,  default: 0 },
   Transfer: { type: Number,  default: 0 },
   Hiring: { type: Number, default: 0 },
+  last_HC :{type:Number,default:0},
 });
 
 const special_list_schema = new mongoose.Schema({

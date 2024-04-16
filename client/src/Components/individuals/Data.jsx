@@ -68,7 +68,8 @@ const Data = () => {
   const [projectActualDH, setProjectActualDH] = useState({
     Attrition: '',
     Transfer: '',
-    Hiring: ''
+    Hiring: '',
+    last_HC:''
   });
   const [step, setStep] = useState(1);
 
@@ -317,6 +318,12 @@ const Data = () => {
                     placeholder="Hiring"
                     value={projectActualDH.Hiring}
                     onChange={(e) => handleChange(e, 'Hiring', setProjectActualDH)}
+                  />
+                   <input
+                    type="text"
+                    placeholder="Latest HC "
+                    value={projectActualDH.last_HC}
+                    onChange={(e) => handleChange(e, 'last_HC', setProjectActualDH)}
                   />
                 </form>
               )}
