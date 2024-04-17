@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import date from '../assets/dates.png';
 import car from '../assets/car.png';
 import { getWeek } from '../functions/utilis';
 import './Data.css'
+
+
 
 const Data = () => {
   const [project, setProject] = useState({
@@ -43,13 +45,17 @@ const Data = () => {
             project_actual_DH: {
               Attrition: 0,
               Transfer: 0,
-              Hiring: 0
+              Hiring: 0,
+              last_HC:0
             }
           }
         ]
       }
     ]
   });
+
+  const [month, setmonth] = useState('');
+  const [week, setweek] = useState('');
 
   const [familyInputs, setFamilyInputs] = useState([]);
   const [projectOS, setProjectOS] = useState({
@@ -69,17 +75,19 @@ const Data = () => {
     Attrition: '',
     Transfer: '',
     Hiring: '',
-    last_HC:''
+    last_HC:'',
   });
   const [step, setStep] = useState(1);
 
   useEffect(() => {
     fetchProjectData();
+    setweek(`${new Date().getFullYear()}-W${getWeek(new Date()).toString().padStart(2, '0')}`);
+    setmonth(`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`);
   }, []);
 
   const fetchProjectData = async () => {
     try {
-      const res = await axios.get('http://localhost:1200/api/Get_project');
+      const res = await axios.get('http://10.236.150.19:8080/api/Get_project');
       const projects = await res.data;
       const getProject = projects.filter((e) => e.name === 'K9 KSK')[0];
       if (getProject) {
@@ -118,10 +126,10 @@ const Data = () => {
       setStep(step + 1);
       setProject((prev) => ({
         ...prev,
-        month_name: new Date().toLocaleString('en-US', { month: 'long' }),
+        month_name: month,
         weeks: [
           {
-            week_name: `Week ${getWeek(new Date())}`,
+            week_name: week,
             projectData: [
               {
                 projectName: 'K9 HAB',
@@ -138,7 +146,7 @@ const Data = () => {
       console.log(JSON.stringify(project,null,2));
     } else {
       axios
-        .post('http://localhost:1200/api/add_data', project)
+        .post('http://10.236.150.19:8080/api/add_data', project)
         .then((res) => {
           console.log(res.data);
           return res.data;
@@ -151,6 +159,20 @@ const Data = () => {
     setter((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
+  
+  const isFirstWeekOfYear = useCallback(() => {
+    const curentYEAR = new Date().getFullYear();
+    return (week === `${curentYEAR}-W01` && month === `${curentYEAR}-01`) 
+  
+  }, [week, month]);
+  
+  useEffect(() => {
+    isFirstWeekOfYear();
+  }, [week, month,isFirstWeekOfYear]);
+
+  console.log(week,month);
+
+ 
   return (
     <div className="data_container">
       <div className="form_container">
@@ -158,14 +180,12 @@ const Data = () => {
           <div className="form_header">
             <img src={date} alt="date" />
             <label>
-              Week: <span>{getWeek(new Date())}</span>
+              Week: <input type='week' value={week}  onChange={(e) => setweek(e.target.value)} />
             </label>
             <label>
-              Month: <span>{new Date().toLocaleString('en-US', { month: 'long' })}</span>
+              Month: <input type='month' value={month} onChange={(e) => setmonth(e.target.value)} />
             </label>
-            <label>
-              Year: <span>{new Date().getFullYear()}</span>
-            </label>
+          
           </div>
 
           <div className="project">
@@ -177,7 +197,7 @@ const Data = () => {
 
           <div className="form_content">
           <div className="div_inputs">
-           <div className='inputs_'>
+          <div className='inputs_'>
               {step === 1 && (
                 familyInputs.map((family, index) => (
                   <form key={index}>
@@ -233,7 +253,6 @@ const Data = () => {
                   </form>
                 ))
               )}
-             
               {step === 2 && (
                 <form>
                   <label>K9 KSK OS</label>
@@ -319,12 +338,13 @@ const Data = () => {
                     value={projectActualDH.Hiring}
                     onChange={(e) => handleChange(e, 'Hiring', setProjectActualDH)}
                   />
-                   <input
+                   { isFirstWeekOfYear() && (
+                    <input
                     type="text"
                     placeholder="Latest HC "
                     value={projectActualDH.last_HC}
                     onChange={(e) => handleChange(e, 'last_HC', setProjectActualDH)}
-                  />
+                  />)}
                 </form>
               )}
               {step === 5 && (
@@ -394,13 +414,14 @@ const Data = () => {
                       <label>
                         Hiring: <span>{projectActualDH.Hiring}</span>
                       </label>
+                      <label>
+                        Lates HC : <span>{projectActualDH.last_HC}</span>
+                      </label>
                     </div>
                   </div>
                 </div>
               )}
-
              </div>
-
               <div className="next">
                 <button onClick={submit}>
                   {step !== 5 ? 'Next' : 'Confirm Weekly DH'}

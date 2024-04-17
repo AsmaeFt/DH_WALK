@@ -42,7 +42,7 @@ app.use((err,req,res,next)=> {
 
 //Server
 
-const PORT = 1200
+const PORT = 8080
 app.listen(PORT,()=> {
     console.log(`App running on port :${PORT}`);
 })

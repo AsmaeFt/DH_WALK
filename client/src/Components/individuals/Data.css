@@ -34,9 +34,18 @@
     max-width: 1.4rem;
     margin-right: 0.3rem;
 }
-.form_header label span{
-    color: orangered;
-    margin-right: 1rem;
+.form_header label {
+    
+    margin-right: 2rem;
+    display: flex;
+    align-items: center;
+}
+.form_header label input{
+    margin-left: 1rem;
+    background: transparent;
+   border: 1px solid rgba(255, 68, 0, 0.534);
+   padding: 0.3rem;
+   border-radius: 1rem;
 }
 .project {
     margin-bottom: 1rem;
@@ -71,7 +80,7 @@ form label{
 }
 
 
- input{
+ .form_content input{
    
     background: transparent;
     border: none;
