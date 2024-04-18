@@ -51,14 +51,8 @@ const Vertical_table = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Project Name</td>
-              {data.flatMap(month => month.weeks).map(week => (
-                <td key={week._id}>{week.projectData.find(p => p.projectName === selectedProject)?.projectName}</td>
-              ))}
-            </tr>
-            <tr>
-              <td>Total HC Required</td>
+          <tr>
+              <td>{selectedProject} HC Required</td>
               {data.flatMap(month => month.weeks).map(week => {
                 const project = week.projectData.find(p => p.projectName === selectedProject);
                 if (!project) return <td key={week._id}>-</td>;
@@ -66,6 +60,13 @@ const Vertical_table = () => {
                 return <td key={week._id}>{totalHC}</td>;
               })}
             </tr>
+            <tr>
+              <td>{selectedProject}</td>
+              {data.flatMap(month => month.weeks).map(week => (
+                <td key={week._id}>{week.projectData.find(p => p.projectName === selectedProject)?.projectName}</td>
+              ))}
+            </tr>
+          
             <tr>
               <td>Actual Direct Headcount (DH)</td>
               {data.flatMap(month => month.weeks).map(week => {
