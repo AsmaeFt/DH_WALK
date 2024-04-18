@@ -4,6 +4,7 @@ import {BrowserRouter as Router , Route ,Routes, Navigate} from 'react-router-do
 
 //Import Components 
 import Home from './pages/Home'
+import Table from './Components/individuals/table';
 import NavBar from './Components/layout/Navbar';
 import SideBar from './Components/layout/SideBar';
 import Statistics from './pages/Statistics'
@@ -23,6 +24,7 @@ function App() {
         <div className="content">
         <Routes>
         <Route path='/Home' element={<Home/>}/>
+        <Route path='/Table' element={<Table/>}/>
         <Route path='/' element={<Add_Data/>}/>
         <Route path='/Statistics' element={<Statistics/>}/>
         <Route path='*' element={<p>Nothing to show here ! </p>} />
