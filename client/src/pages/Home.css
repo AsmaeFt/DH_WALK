@@ -23,11 +23,11 @@ tbody tr:nth-child(even) {
   tbody tr{
     transition: all 0.3s ease-in-out;
   }
- /*  tbody tr:hover{
+  tbody tr:hover{
     transform: scale(1.01);
     cursor: pointer;
     background-color: rgb(24, 24, 24);
-  } */
+  } 
   .projects{
     width: 100%;
     display: flex;

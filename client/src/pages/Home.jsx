@@ -9,14 +9,17 @@ import './Home.css';
 
 const Home = () => {
   const [DATA, setDATA] = useState([]);
+  const [filtredData, setfiltredData] = useState([])
+  
   const [project, setProject] = useState([]);
   const [totalProjectHC, setTotalProjectHC] = useState({});
   const [actualDH, setactualDH] = useState({});
   const [clickedPrpject, setclickedPrpject] = useState('K9 KSK');
 
+  const [monthSelected, setmonthSelected] = useState('');
+  const [weekSelected, setweekSelected] = useState('');
+
   const [Gap, setGap] = useState({});
-
-
 
   const fetchData = useCallback(async () => {
     try {
@@ -106,9 +109,13 @@ const Home = () => {
     calculateTotalProjectHC();
   }, [DATA]);
 
- 
+ useEffect(()=>{
+  const dataFilterd = DATA.filter((m)=> m.month_name===monthSelected || m.weeks.some((w)=> w.week_name===weekSelected))
+  setDATA(dataFilterd)
+  console.log(monthSelected);
+ },[monthSelected,weekSelected])
 
-
+console.log(DATA);
   return (
     <>
       <div className="header_container">
@@ -120,6 +127,11 @@ const Home = () => {
         {project.map((projectName, i) => (
           <label key={i} onClick={()=> setclickedPrpject(projectName)}><img src={car} alt="Car icon" />{projectName}</label>
         ))}
+      </div>
+
+      <div>
+        <label>Filter By Month </label> <input type='month' value={monthSelected} onChange={(e)=> setmonthSelected(e.target.value)}/>
+        <label>Filter By Week </label> <input type='week' value={weekSelected} onChange={(e)=> setweekSelected(e.target.value)}/>
       </div>
 
       <div className="table_container">
