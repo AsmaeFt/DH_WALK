@@ -116,13 +116,15 @@ const Vertical_table = () => {
                 ))}
             </tr>
 
-              
-            {data.length > 0 &&
-            data.flatMap(month=> month.weeks)
-            .flatMap(week=> week.projectData).find(p=> p.projectName===selectedProject)?.
-            family.map(fam=> (
-            
-              <React.Fragment key={fam.name}>
+            {
+               data
+                .flatMap((month) => month.weeks)
+                .map((week) => {
+
+                  const project = week.projectData.find(p=> p.projectName===selectedProject)
+                  if(project){
+                    project.family.map(fam=> (
+                      <React.Fragment key={fam.name}>
                 <tr>
                   <td className="container">{fam.name}</td>
                 </tr>
@@ -225,9 +227,11 @@ const Vertical_table = () => {
                       <td key={week._id}>{fam.SOS}</td>
                     ))}
                 </tr>
-              </React.Fragment>
-            ))
-          } 
+                    </React.Fragment>
+                    ))
+                  }
+                })}
+              
             <tr>
               <td className="container">{selectedProject} OS</td>
               {data
