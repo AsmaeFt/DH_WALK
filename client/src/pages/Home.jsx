@@ -181,6 +181,7 @@ console.log(DATA);
               month.weeks.map(week => (
                 week.projectData.map(project => (
                   project.family.map((fam, index) => {
+                    
                     const { ME_DEFINITION, ME_SUPPORT, Rework, Poly, Back_Up, Containment, crews, SOS } = fam;
                     const hcCrews = ME_DEFINITION + ME_SUPPORT + Rework + Poly + Back_Up + Containment;
                     const totalFamHc = (crews * hcCrews) + SOS;

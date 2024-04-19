@@ -6,12 +6,13 @@ const Vertical_table = () => {
   const [data, setData] = useState([]);
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("K9 KSK");
-  const [families, setfamilies] = useState([]);
+
 
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get("http://10.236.150.19:8080/api/DATA");
-      setData(response.data);
+      
+
       const projectNames = [
         ...new Set(
           response.data.flatMap((month) =>
@@ -23,27 +24,34 @@ const Vertical_table = () => {
       ];
       setProjects(projectNames);
 
-      const families = [
+      const f = [
         ...new Set(
           response.data.flatMap((month) =>
             month.weeks.flatMap((week) =>
-              week.projectData.flatMap((project) =>
-                project.family.map((family) => family.name)
-              )
+              week.projectData.flatMap((project) => project.family)
             )
           )
         ),
       ];
-      setfamilies(families);
-      console.log(families);
+
+      const clickedProject = response.data.map(month => ({
+        month_name: month.month_name,
+        weeks: month.weeks.map(week => ({
+          week_name: week.week_name,
+          projectData: week.projectData.filter(project => project.projectName === selectedProject)
+        }))
+      }));
+
+      setData(clickedProject);
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }, []);
+  }, [selectedProject]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [fetchData,]);
 
   return (
     <>
@@ -108,30 +116,116 @@ const Vertical_table = () => {
                 ))}
             </tr>
 
-         
-            {families.map((f, i) => (
-               <React.Fragment key={i}>
-                <tr >
-                <td>{f}</td>
-                {
-                   data
-                   .flatMap((month) => month.weeks)
-                   .map((week) => (
-                     <td key={week._id}>0</td>
-                   ))
-                }
-                
-              </tr>
-              <tr>
-               {
-                <td>12</td>
-               }
-              </tr>
-               </React.Fragment>
               
-              
-            ))}
-
+            {data.length > 0 &&
+          
+           
+              data[0].weeks[0].projectData[0].family.map((fam) => (
+                <React.Fragment key={fam._id}>
+                  <tr>
+                    <td className="container">{fam.name}</td>
+                  </tr>
+                  <tr>
+                    <td>Indirects %</td>
+                    {data
+                      .flatMap((month) => month.weeks)
+                      .map((week) => (
+                        <td key={week._id}>
+                          {Math.round(
+                            ((fam.ME_SUPPORT +
+                              fam.Rework +
+                              fam.Poly +
+                              fam.Back_Up +
+                              fam.Containment) /
+                              fam.ME_DEFINITION) *
+                              100
+                          )}
+                          %
+                        </td>
+                      ))}
+                  </tr>
+                  <tr>
+                    <td>Crews</td>
+                    {data
+                      .flatMap((month) => month.weeks)
+                      .map((week) => (
+                        <td key={week._id}>{fam.crews}</td>
+                      ))}
+                  </tr>
+                  <tr>
+                    <td>HC Crew</td>
+                    {data
+                      .flatMap((month) => month.weeks)
+                      .map((week) => (
+                        <td key={week._id}>
+                          {(fam.ME_DEFINITION +
+                            fam.ME_SUPPORT +
+                            fam.Rework +
+                            fam.Poly +
+                            fam.Back_Up +
+                            fam.Containment) *
+                            fam.crews}
+                        </td>
+                      ))}
+                  </tr>
+                  <tr>
+                    <td>ME Definition</td>
+                    {data
+                      .flatMap((month) => month.weeks)
+                      .map((week) => (
+                        <td key={week._id}>{fam.ME_DEFINITION}</td>
+                      ))}
+                  </tr>
+                  <tr>
+                    <td>ME Support</td>
+                    {data
+                      .flatMap((month) => month.weeks)
+                      .map((week) => (
+                        <td key={week._id}>{fam.ME_SUPPORT}</td>
+                      ))}
+                  </tr>
+                  <tr>
+                    <td>Rework</td>
+                    {data
+                      .flatMap((month) => month.weeks)
+                      .map((week) => (
+                        <td key={week._id}>{fam.Rework}</td>
+                      ))}
+                  </tr>
+                  <tr>
+                    <td>Poly</td>
+                    {data
+                      .flatMap((month) => month.weeks)
+                      .map((week) => (
+                        <td key={week._id}>{fam.Poly}</td>
+                      ))}
+                  </tr>
+                  <tr>
+                    <td>Back-up</td>
+                    {data
+                      .flatMap((month) => month.weeks)
+                      .map((week) => (
+                        <td key={week._id}>{fam.Back_Up}</td>
+                      ))}
+                  </tr>
+                  <tr>
+                    <td>Containment</td>
+                    {data
+                      .flatMap((month) => month.weeks)
+                      .map((week) => (
+                        <td key={week._id}>{fam.Containment}</td>
+                      ))}
+                  </tr>
+                  <tr>
+                    <td>SOS</td>
+                    {data
+                      .flatMap((month) => month.weeks)
+                      .map((week) => (
+                        <td key={week._id}>{fam.SOS}</td>
+                      ))}
+                  </tr>
+                </React.Fragment>
+              ))}
             <tr>
               <td className="container">{selectedProject} OS</td>
               {data
