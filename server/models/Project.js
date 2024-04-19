@@ -9,7 +9,7 @@ const familySchema = new mongoose.Schema({
 const project_Schema = new mongoose.Schema({
 
     name:{type:String , required:true},
-    family:{type :[familySchema],  required: true}
+    family:{type :[familySchema],}
 })
 
 const project = mongoose.model('Project',project_Schema)
