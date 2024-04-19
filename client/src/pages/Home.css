@@ -1,7 +1,4 @@
-.table_container{
-  height: 30rem;
-  overflow: auto;
-}
+
 table{
     width: 100%;
     border-collapse: collapse;
@@ -12,14 +9,16 @@ thead{
     top: 0;
     z-index: 1;
 }
+tr .container{
+  background-color: rgb(56, 56, 56);
+  border-top: 1px solid black;
+}
 th , td {
     padding: 0.5rem;
     font-size: 0.7rem;
     text-align: center;
 }
-tbody tr:nth-child(even) {
-    background-color: #333333; 
-  }
+
   tbody tr{
     transition: all 0.3s ease-in-out;
   }
