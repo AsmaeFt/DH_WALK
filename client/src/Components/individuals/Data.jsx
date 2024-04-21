@@ -86,7 +86,7 @@ const Data = () => {
 
   const fetchProjectData = async () => {
     try {
-      const res = await axios.get('http://10.236.150.19:8080/api/Get_project');
+      const res = await axios.get('http://localhost:8080/api/Get_project');
       const projects = await res.data;
       const getProject = projects.filter((e) => e.name === 'K9 KSK')[0];
       if (getProject) {
@@ -145,7 +145,7 @@ const Data = () => {
       console.log(JSON.stringify(project,null,2));
     } else {
       axios
-        .post('http://10.236.150.19:8080/api/add_data', project)
+        .post('http://localhost:8080/api/add_data', project)
         .then((res) => {
           console.log(res.data);
           return res.data;

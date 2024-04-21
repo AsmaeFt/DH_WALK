@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import {BrowserRouter as Router , Route ,Routes, Navigate} from 'react-router-dom';
 
 
@@ -16,8 +16,8 @@ import './App.css'
 function App() {
 
   return (
-    <>
-    <Router>
+    <>    
+      <Router>
       <NavBar />
       
       <div className="app-container">
