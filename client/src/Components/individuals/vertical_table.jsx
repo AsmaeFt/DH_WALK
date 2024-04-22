@@ -162,7 +162,7 @@ const Vertical_table = () => {
                 })}
             </tr>
 
-            {/* families  */}
+           
             {family.flatMap((f, i) => (
               <React.Fragment key={i}>
                 <tr>
@@ -748,3 +748,4 @@ const Vertical_table = () => {
 };
 
 export default Vertical_table;
+
