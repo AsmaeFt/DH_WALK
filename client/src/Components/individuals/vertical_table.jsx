@@ -1,19 +1,16 @@
-import React, { Fragment, useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import car from "../assets/car.png";
-import { UNSAFE_useScrollRestoration } from "react-router-dom";
 
 const Vertical_table = () => {
   const [data, setData] = useState([]);
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("K9 KSK");
-  const [family,setFamily]=useState([]);
-
-
+  const [family, setFamily] = useState([]);
+  
   const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/DATA');
-      
+      const response = await axios.get("http://localhost:8080/api/DATA");
 
       const projectNames = [
         ...new Set(
@@ -26,29 +23,30 @@ const Vertical_table = () => {
       ];
       setProjects(projectNames);
 
+      const clickedProject = response.data.map((month) => ({
+        month_name: month.month_name,
+        weeks: month.weeks.map((week) => ({
+          week_name: week.week_name,
+          projectData: week.projectData.filter(
+            (project) => project.projectName === selectedProject
+          ),
+        })),
+      }));
+
       const f = [
         ...new Set(
-          response.data.flatMap((month) =>
+          clickedProject.flatMap((month) =>
             month.weeks.flatMap((week) =>
-              week.projectData.flatMap((project) => project.family).map((f)=> f.name)
+              week.projectData
+                .flatMap((project) => project.family)
+                .map((f) => f.name)
             )
           )
         ),
       ];
       setFamily(f);
 
-     
-
-      const clickedProject = response.data.map(month => ({
-        month_name: month.month_name,
-        weeks: month.weeks.map(week => ({
-          week_name: week.week_name,
-          projectData: week.projectData.filter(project => project.projectName === selectedProject)
-        }))
-      }));
-
       setData(clickedProject);
-
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -56,7 +54,7 @@ const Vertical_table = () => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData,]);
+  }, [fetchData]);
 
   console.log(family);
   return (
@@ -113,78 +111,255 @@ const Vertical_table = () => {
                   return <td key={week._id}>{totalHC}</td>;
                 })}
             </tr>
-            <tr>
-              <td className="container">{selectedProject}</td>
-              {data
-                .flatMap((month) => month.weeks)
-                .map((week) => (
-                  <td key={week._id}>444</td>
-                ))}
-            </tr>
 
-            {
-            family.flatMap((f, i) => (
-              <React.Fragment >
+            <tr>
+              <td>{selectedProject}</td>
+            
+            </tr>
+            {/* families  */}
+            {family.flatMap((f, i) => (
+              <React.Fragment key={i}>
                 <tr>
-                  <td className="container">{f}</td>
+                  <td style={{backgroundColor:"orangered"}}>{f}</td>
+
+                  {data
+                  .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem,i) => familyItem.name === f
+                        );
+                        if (foundFamily) {
+                          const Total = (foundFamily.ME_DEFINITION
+                            +foundFamily.ME_SUPPORT+
+                            foundFamily.Rework + foundFamily.Poly + foundFamily.Back_Up+foundFamily.Containment)
+                            const F_TOTAL = ((Total*foundFamily.crews)+foundFamily.SOS)
+                            
+                          return <td style={{backgroundColor:"orangered", color:"white"}} key={i}>{F_TOTAL}</td>
+                        }
+                      }
+                      return <td key={i}>-</td>
+                    })}
+        
+
+           
+              
+         
+                 
+                </tr>
+                <tr>
+                  <td style={{backgroundColor:"grey"}}>Indirects %</td>
+                  {data
+                  .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem,i) => familyItem.name === f
+                        );
+                        if (foundFamily) {
+                          const Total = (foundFamily.ME_SUPPORT+
+                            foundFamily.Rework + foundFamily.Poly + foundFamily.Back_Up
+                            +foundFamily.Containment + foundFamily.SOS)
+                            const Indirects =  Math.round((Total/ foundFamily.ME_DEFINITION)*100)
+                          
+                            
+                          return <td style={{backgroundColor:"grey"}} key={i}>{Indirects} %</td>
+                        }
+                      }
+                      return <td key={i}>-</td>
+                    })}
+        
                 </tr>
                 <tr>
                   <td>Crews</td>
-                  {
-                         
-                          data.flatMap((m) => m.weeks).map((w) => {
-                            const project = w.projectData.find((p) => p.projectName === selectedProject);
-                            if (project) {
-                              const foundFamily = project.family.find((familyItem) => familyItem.name===f)
-                              if(foundFamily){
-          
-                                return <td>{foundFamily.crews}</td> 
-                                
-          
-                              }
-                            }
-                            return []; 
-                          })
-                  }
+                  {data
+                    .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem,i) => familyItem.name === f
+                        );
+                        if (foundFamily) {
+                          return <td key={i}>{foundFamily.crews}</td>;
+                        }
+                      }
+                      return   <td key={i}>-</td>
+                    })}
                 </tr>
                 <tr>
+                  <td style={{backgroundColor:"gray"}}> HC crew</td>
+                
+                           {data
+                            .flatMap((m) => m.weeks)
+                            .map((w) => {
+                              const project = w.projectData.find(
+                                (p) => p.projectName === selectedProject
+                              );
+                              if (project) {
+                                const foundFamily = project.family.find(
+                                  (familyItem,i) => familyItem.name === f
+                                );
+                                if (foundFamily) {
+                                  const Total = (foundFamily.ME_DEFINITION
+                                    +foundFamily.ME_SUPPORT+
+                                    foundFamily.Rework + foundFamily.Poly + foundFamily.Back_Up+foundFamily.Containment)
+                                   
+                                  return <td style={{backgroundColor:"gray", color:"black"}} key={i}>{Total}</td>
+                                }
+                              }
+                              return <td key={i}>-</td>
+                            })}
+                
+                 
+                </tr>
+              
+                <tr>
                   <td>ME DEFINITION</td>
-                  {
-                         
-                         data.flatMap((m) => m.weeks).map((w) => {
-                           const project = w.projectData.find((p) => p.projectName === selectedProject);
-                           if (project) {
-                             const foundFamily = project.family.find((familyItem) => familyItem.name===f)
-                             if(foundFamily){
-                               return <td>{foundFamily.ME_DEFINITION}</td> 
-                             }
-                           }
-                           return []; 
-                         })
-                 }  
+                  {data
+                    .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem,i) => familyItem.name === f
+                        );
+                        if (foundFamily) {
+                          return <td key={i}>{foundFamily.ME_DEFINITION}</td>
+                        }
+                      }
+                      return <td key={i}>-</td>
+                    })}
                 </tr>
 
                 <tr>
                   <td>ME SUPPORT</td>
-                  {
-                         
-                         data.flatMap((m) => m.weeks).map((w) => {
-                           const project = w.projectData.find((p) => p.projectName === selectedProject);
-                           if (project) {
-                             const foundFamily = project.family.find((familyItem) => familyItem.name===f)
-                             if(foundFamily){
-                               return <td>{foundFamily.ME_SUPPORT}</td> 
-                             }
-                           }
-                           return []; 
-                         })
-                 }
+                  {data
+                    .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem,i) => familyItem.name === f
+                        );
+                        if (foundFamily) {
+                          return <td key={i}>{foundFamily.ME_SUPPORT}</td>;
+                        }
+                      }
+                      return <td key={i}>-</td>
+                    })}
                 </tr>
-               
-           
+                <tr>
+                  <td>Rework</td>
+                  {data
+                    .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem) => familyItem.name === f);
+                        if (foundFamily) {
+                          return <td>{foundFamily.Rework}</td>;
+                        }
+                      }
+                      return <td >-</td>
+                    })}
+         
+                </tr>
+                <tr>
+                  <td>Poly</td>
+                  {data
+                    .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem) => familyItem.name === f);
+                        if (foundFamily) {
+                          return <td>{foundFamily.Poly}</td>;
+                        }
+                      }
+                      return <td >-</td>
+                    })}
+         
+                </tr>
+                <tr>
+                  <td>Back_Up</td>
+                  {data
+                    .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem) => familyItem.name === f);
+                        if (foundFamily) {
+                          return <td>{foundFamily.Back_Up}</td>;
+                        }
+                      }
+                      return <td >-</td>
+                    })}
+         
+                </tr>
+                <tr>
+                  <td>Containment</td>
+                  {data
+                    .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem) => familyItem.name === f);
+                        if (foundFamily) {
+                          return <td>{foundFamily.Containment}</td>;
+                        }
+                      }
+                      return <td >-</td>
+                    })}
+       
+                </tr>
+                <tr>
+                  <td>SOS</td>
+                  {data
+                    .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem) => familyItem.name === f);
+                        if (foundFamily) {
+                          return <td>{foundFamily.SOS}</td>;
+                        }
+                      }
+                      return <td >-</td>
+                    })}
+
+                </tr>
+
+
               </React.Fragment>
-            ))
-          }
+            ))}
             <tr>
               <td className="container">{selectedProject} OS</td>
               {data

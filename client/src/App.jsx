@@ -24,10 +24,9 @@ function App() {
     
         <div className="content">
         <Routes>
-        <Route path='/Home' element={<Home/>}/>
-        <Route path='/verticalt' element={<Verticaltable/>}/>
+        <Route path='/' element={<Verticaltable/>}/>
         <Route path='/Table' element={<Table/>}/>
-        <Route path='/' element={<Add_Data/>}/>
+        <Route path='/ADD_DATA' element={<Add_Data/>}/>
         <Route path='/Statistics' element={<Statistics/>}/>
         <Route path='*' element={<p>Nothing to show here ! </p>} />
        </Routes>
