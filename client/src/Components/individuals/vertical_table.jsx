@@ -7,7 +7,7 @@ const Vertical_table = () => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("K9 KSK");
   const [family, setFamily] = useState([]);
-  
+
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/DATA");
@@ -108,73 +108,135 @@ const Vertical_table = () => {
                         fam.SOS),
                     0
                   );
-                  return <td key={week._id}>{totalHC}</td>;
+
+                  const Total_Os =
+                    project.project_OS.Digitalization +
+                    project.project_OS.Daily_Kaizen +
+                    project.project_OS.OS_Auditing +
+                    project.project_OS.OS_Auditing_Data_Reporting;
+
+                  const total_special_list =
+                    project.project_special_list
+                      .Pregnant_women_out_of_the_plant +
+                    project.project_special_list.Maternity +
+                    project.project_special_list.Breastfeeding_leave +
+                    project.project_special_list.LTI_Long_term_weaknesses_LWD +
+                    project.project_special_list.Physical_incapacity_NMA;
+
+                    const HC_REQUIRED = totalHC + Total_Os +total_special_list
+                  return (
+                    <td className="container" key={week._id}>
+                      {HC_REQUIRED}
+                    </td>
+                  );
                 })}
             </tr>
 
             <tr>
-              <td>{selectedProject}</td>
-            
+              <td style={{ backgroundColor: "black" }}>{selectedProject}</td>
+              {data
+                .flatMap((month) => month.weeks)
+                .map((week) => {
+                  const project = week.projectData.find(
+                    (p) => p.projectName === selectedProject
+                  );
+                  if (!project) return <td key={week._id}>-</td>;
+                  const totalHC = project.family.reduce(
+                    (acc, fam) =>
+                      acc +
+                      ((fam.ME_DEFINITION +
+                        fam.ME_SUPPORT +
+                        fam.Rework +
+                        fam.Poly +
+                        fam.Back_Up +
+                        fam.Containment) *
+                        fam.crews +
+                        fam.SOS),
+                    0
+                  );
+                  return (
+                    <td style={{ backgroundColor: "black" }} key={week._id}>
+                      {totalHC}
+                    </td>
+                  );
+                })}
             </tr>
+
             {/* families  */}
             {family.flatMap((f, i) => (
               <React.Fragment key={i}>
                 <tr>
-                  <td style={{backgroundColor:"orangered"}}>{f}</td>
-
+                  <td style={{ backgroundColor: "orangered" }}>{f}</td>
                   {data
-                  .flatMap((m) => m.weeks)
+                    .flatMap((m) => m.weeks)
                     .map((w) => {
                       const project = w.projectData.find(
                         (p) => p.projectName === selectedProject
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem,i) => familyItem.name === f
+                          (familyItem, i) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          const Total = (foundFamily.ME_DEFINITION
-                            +foundFamily.ME_SUPPORT+
-                            foundFamily.Rework + foundFamily.Poly + foundFamily.Back_Up+foundFamily.Containment)
-                            const F_TOTAL = ((Total*foundFamily.crews)+foundFamily.SOS)
-                            
-                          return <td style={{backgroundColor:"orangered", color:"white"}} key={i}>{F_TOTAL}</td>
+                          const Total =
+                            foundFamily.ME_DEFINITION +
+                            foundFamily.ME_SUPPORT +
+                            foundFamily.Rework +
+                            foundFamily.Poly +
+                            foundFamily.Back_Up +
+                            foundFamily.Containment;
+                          const F_TOTAL =
+                            Total * foundFamily.crews + foundFamily.SOS;
+
+                          return (
+                            <td
+                              style={{
+                                backgroundColor: "orangered",
+                                color: "white",
+                              }}
+                              key={i}
+                            >
+                              {F_TOTAL}
+                            </td>
+                          );
                         }
                       }
-                      return <td key={i}>-</td>
+                      return <td key={i}>-</td>;
                     })}
-        
-
-           
-              
-         
-                 
                 </tr>
                 <tr>
-                  <td style={{backgroundColor:"grey"}}>Indirects %</td>
+                  <td style={{ backgroundColor: "grey" }}>Indirects %</td>
                   {data
-                  .flatMap((m) => m.weeks)
+                    .flatMap((m) => m.weeks)
                     .map((w) => {
                       const project = w.projectData.find(
                         (p) => p.projectName === selectedProject
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem,i) => familyItem.name === f
+                          (familyItem, i) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          const Total = (foundFamily.ME_SUPPORT+
-                            foundFamily.Rework + foundFamily.Poly + foundFamily.Back_Up
-                            +foundFamily.Containment + foundFamily.SOS)
-                            const Indirects =  Math.round((Total/ foundFamily.ME_DEFINITION)*100)
-                          
-                            
-                          return <td style={{backgroundColor:"grey"}} key={i}>{Indirects} %</td>
+                          const Total =
+                            foundFamily.ME_SUPPORT +
+                            foundFamily.Rework +
+                            foundFamily.Poly +
+                            foundFamily.Back_Up +
+                            foundFamily.Containment +
+                            foundFamily.SOS;
+                          const Indirects = Math.round(
+                            (Total / foundFamily.ME_DEFINITION) * 100
+                          );
+
+                          return (
+                            <td style={{ backgroundColor: "grey" }} key={i}>
+                              {Indirects} %
+                            </td>
+                          );
                         }
                       }
-                      return <td key={i}>-</td>
+                      return <td key={i}>-</td>;
                     })}
-        
                 </tr>
                 <tr>
                   <td>Crews</td>
@@ -186,42 +248,53 @@ const Vertical_table = () => {
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem,i) => familyItem.name === f
+                          (familyItem, i) => familyItem.name === f
                         );
                         if (foundFamily) {
                           return <td key={i}>{foundFamily.crews}</td>;
                         }
                       }
-                      return   <td key={i}>-</td>
+                      return <td key={i}>-</td>;
                     })}
                 </tr>
                 <tr>
-                  <td style={{backgroundColor:"gray"}}> HC crew</td>
-                
-                           {data
-                            .flatMap((m) => m.weeks)
-                            .map((w) => {
-                              const project = w.projectData.find(
-                                (p) => p.projectName === selectedProject
-                              );
-                              if (project) {
-                                const foundFamily = project.family.find(
-                                  (familyItem,i) => familyItem.name === f
-                                );
-                                if (foundFamily) {
-                                  const Total = (foundFamily.ME_DEFINITION
-                                    +foundFamily.ME_SUPPORT+
-                                    foundFamily.Rework + foundFamily.Poly + foundFamily.Back_Up+foundFamily.Containment)
-                                   
-                                  return <td style={{backgroundColor:"gray", color:"black"}} key={i}>{Total}</td>
-                                }
-                              }
-                              return <td key={i}>-</td>
-                            })}
-                
-                 
+                  <td style={{ backgroundColor: "gray" }}> HC crew</td>
+
+                  {data
+                    .flatMap((m) => m.weeks)
+                    .map((w) => {
+                      const project = w.projectData.find(
+                        (p) => p.projectName === selectedProject
+                      );
+                      if (project) {
+                        const foundFamily = project.family.find(
+                          (familyItem, i) => familyItem.name === f
+                        );
+                        if (foundFamily) {
+                          const Total =
+                            foundFamily.ME_DEFINITION +
+                            foundFamily.ME_SUPPORT +
+                            foundFamily.Rework +
+                            foundFamily.Poly +
+                            foundFamily.Back_Up +
+                            foundFamily.Containment;
+
+                          return (
+                            <td
+                              style={{
+                                backgroundColor: "gray",
+                                color: "black",
+                              }}
+                              key={i}
+                            >
+                              {Total}
+                            </td>
+                          );
+                        }
+                      }
+                      return <td key={i}>-</td>;
+                    })}
                 </tr>
-              
                 <tr>
                   <td>ME DEFINITION</td>
                   {data
@@ -232,13 +305,13 @@ const Vertical_table = () => {
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem,i) => familyItem.name === f
+                          (familyItem, i) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td key={i}>{foundFamily.ME_DEFINITION}</td>
+                          return <td key={i}>{foundFamily.ME_DEFINITION}</td>;
                         }
                       }
-                      return <td key={i}>-</td>
+                      return <td key={i}>-</td>;
                     })}
                 </tr>
 
@@ -252,13 +325,13 @@ const Vertical_table = () => {
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem,i) => familyItem.name === f
+                          (familyItem, i) => familyItem.name === f
                         );
                         if (foundFamily) {
                           return <td key={i}>{foundFamily.ME_SUPPORT}</td>;
                         }
                       }
-                      return <td key={i}>-</td>
+                      return <td key={i}>-</td>;
                     })}
                 </tr>
                 <tr>
@@ -271,14 +344,14 @@ const Vertical_table = () => {
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem) => familyItem.name === f);
+                          (familyItem) => familyItem.name === f
+                        );
                         if (foundFamily) {
                           return <td>{foundFamily.Rework}</td>;
                         }
                       }
-                      return <td >-</td>
+                      return <td>-</td>;
                     })}
-         
                 </tr>
                 <tr>
                   <td>Poly</td>
@@ -290,14 +363,14 @@ const Vertical_table = () => {
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem) => familyItem.name === f);
+                          (familyItem) => familyItem.name === f
+                        );
                         if (foundFamily) {
                           return <td>{foundFamily.Poly}</td>;
                         }
                       }
-                      return <td >-</td>
+                      return <td>-</td>;
                     })}
-         
                 </tr>
                 <tr>
                   <td>Back_Up</td>
@@ -309,14 +382,14 @@ const Vertical_table = () => {
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem) => familyItem.name === f);
+                          (familyItem) => familyItem.name === f
+                        );
                         if (foundFamily) {
                           return <td>{foundFamily.Back_Up}</td>;
                         }
                       }
-                      return <td >-</td>
+                      return <td>-</td>;
                     })}
-         
                 </tr>
                 <tr>
                   <td>Containment</td>
@@ -328,14 +401,14 @@ const Vertical_table = () => {
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem) => familyItem.name === f);
+                          (familyItem) => familyItem.name === f
+                        );
                         if (foundFamily) {
                           return <td>{foundFamily.Containment}</td>;
                         }
                       }
-                      return <td >-</td>
+                      return <td>-</td>;
                     })}
-       
                 </tr>
                 <tr>
                   <td>SOS</td>
@@ -347,17 +420,15 @@ const Vertical_table = () => {
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem) => familyItem.name === f);
+                          (familyItem) => familyItem.name === f
+                        );
                         if (foundFamily) {
                           return <td>{foundFamily.SOS}</td>;
                         }
                       }
-                      return <td >-</td>
+                      return <td>-</td>;
                     })}
-
                 </tr>
-
-
               </React.Fragment>
             ))}
             <tr>
@@ -381,6 +452,7 @@ const Vertical_table = () => {
                   );
                 })}
             </tr>
+
             <tr>
               <td>Digitalisation</td>
               {data
@@ -568,22 +640,23 @@ const Vertical_table = () => {
               </tr>
             </>
             <tr>
-              <td>Actual Direct Headcount (DH)</td>
+              <td className="container">{selectedProject} Actual DH</td>
               {data
                 .flatMap((month) => month.weeks)
                 .map((week) => {
                   const project = week.projectData.find(
                     (p) => p.projectName === selectedProject
                   );
-                  return (
-                    <td key={week._id}>
-                      {project ? project.project_actual_DH.last_HC : "-"}
-                    </td>
-                  );
+                  if(project){
+
+                    return (
+                    
+                      <td className="container" key={week._id}>
+                      
+                      </td>
+                    );
+                   }
                 })}
-            </tr>
-            <tr>
-              <td className="container">{selectedProject} Actual DH</td>
             </tr>
             <tr>
               <td>Attrition</td>

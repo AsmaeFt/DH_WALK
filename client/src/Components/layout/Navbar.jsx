@@ -17,7 +17,11 @@ const NavBar = () => {
      
 
         <li className="nav-item">
-            <Link to="/Home">Home</Link>
+            <Link to="/">DH Walk</Link>
+          </li>
+         
+        <li className="nav-item">
+            <Link to="/ADD_DATA">ADD DATA</Link>
           </li>
          
        
