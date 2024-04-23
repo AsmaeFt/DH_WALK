@@ -8,7 +8,7 @@ const Vertical_table = () => {
   const [selectedProject, setSelectedProject] = useState("K9 KSK");
   const [family, setFamily] = useState([]);
 
-  const [inputValues, setInputValues] = useState({});
+  const [inputs, setinputs] = useState("");
 
   const fetchData = useCallback(async () => {
     try {
@@ -58,7 +58,26 @@ const Vertical_table = () => {
     fetchData();
   }, [fetchData]);
 
-  console.log(inputValues);
+  const handleChange = (week, project, family, attribute, value) => {
+    setinputs({
+      week: week,
+      project: project,
+      family: family,
+      attribute: attribute,
+      value: value
+    });
+  };
+  
+  useEffect(()=>{
+
+    setTimeout(() => {
+      const res = axios.post('http://10.236.150.19:8080/api/editable',inputs)
+      return console.log(res.data);
+      
+    }, 10000);
+  },[inputs])
+  
+  console.log(inputs);
   return (
     <>
       <div className="header_container">
@@ -188,7 +207,6 @@ const Vertical_table = () => {
                             foundFamily.Containment;
                           const F_TOTAL =
                             Total * foundFamily.crews + foundFamily.SOS;
-                          const inputKey = `${w.week_name} - ${selectedProject} - ${foundFamily.name}`;
 
                           return (
                             <td
@@ -198,16 +216,7 @@ const Vertical_table = () => {
                               }}
                               key={i}
                             >
-                              <input
-                                type="text"
-                                value={inputValues[inputKey] || F_TOTAL}
-                                onChange={(e) => {
-                                  setInputValues({
-                                    ...inputValues,
-                                    [inputKey]: e.target.value,
-                                  });
-                                }}
-                              />
+                              {F_TOTAL}
                             </td>
                           );
                         }
@@ -262,7 +271,23 @@ const Vertical_table = () => {
                           (familyItem, i) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td key={i}>{foundFamily.crews}</td>;
+                          return (
+                            <td key={i}>
+                              <input
+                                
+                                placeholder={foundFamily.crews}
+                                onChange={(e) =>
+                                  handleChange(
+                                    w.week_name,
+                                    selectedProject,
+                                    foundFamily.name,
+                                    "crews",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                          );
                         }
                       }
                       return <td key={i}>-</td>;
@@ -336,7 +361,7 @@ const Vertical_table = () => {
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem, i) => familyItem.name === f
+                          (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
                           return <td key={i}>{foundFamily.ME_SUPPORT}</td>;
@@ -358,10 +383,10 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td>{foundFamily.Rework}</td>;
+                          return <td key={i}>{foundFamily.Rework}</td>;
                         }
                       }
-                      return <td>-</td>;
+                      return <td key={i}>-</td>;
                     })}
                 </tr>
                 <tr>
@@ -377,10 +402,10 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td>{foundFamily.Poly}</td>;
+                          return <td key={i}>{foundFamily.Poly}</td>;
                         }
                       }
-                      return <td>-</td>;
+                      return <td key={i}>-</td>;
                     })}
                 </tr>
                 <tr>
@@ -396,10 +421,10 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td>{foundFamily.Back_Up}</td>;
+                          return <td key={i}>{foundFamily.Back_Up}</td>;
                         }
                       }
-                      return <td>-</td>;
+                      return <td key={i}>-</td>;
                     })}
                 </tr>
                 <tr>
@@ -415,10 +440,10 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td>{foundFamily.Containment}</td>;
+                          return <td key={i}>{foundFamily.Containment}</td>;
                         }
                       }
-                      return <td>-</td>;
+                      return <td key={i}>-</td>;
                     })}
                 </tr>
                 <tr>
@@ -434,10 +459,10 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td>{foundFamily.SOS}</td>;
+                          return <td key={i}>{foundFamily.SOS}</td>;
                         }
                       }
-                      return <td>-</td>;
+                      return <td key={i}>-</td>;
                     })}
                 </tr>
               </React.Fragment>

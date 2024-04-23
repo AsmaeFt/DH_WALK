@@ -7,5 +7,8 @@ route.post('/add_data',data.addNewData)
 route.get('/DATA',data.GLOBALDATA)
 route.post('/add_project',project.addProject)
 route.get('/Get_project',project.GetProject)
-7
+
+route.post('/editable',data.editData)
+
+
 module.exports=route

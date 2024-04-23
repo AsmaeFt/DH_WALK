@@ -13,6 +13,7 @@ import Verticaltable from './Components/individuals/vertical_table';
 import Newtable from './Components/individuals/newtable';
 
 
+
 import './App.css'
 function App() {
 
