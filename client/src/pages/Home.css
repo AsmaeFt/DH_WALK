@@ -18,6 +18,9 @@ th , td {
     font-size: 0.7rem;
     text-align: center;
 }
+tr td input{
+  text-align: center;
+}
 
   tbody tr{
     transition: all 0.3s ease-in-out;

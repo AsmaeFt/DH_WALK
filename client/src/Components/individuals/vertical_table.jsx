@@ -8,6 +8,8 @@ const Vertical_table = () => {
   const [selectedProject, setSelectedProject] = useState("K9 KSK");
   const [family, setFamily] = useState([]);
 
+  const [inputValues, setInputValues] = useState({});
+
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/DATA");
@@ -56,7 +58,7 @@ const Vertical_table = () => {
     fetchData();
   }, [fetchData]);
 
-  console.log(family);
+  console.log(inputValues);
   return (
     <>
       <div className="header_container">
@@ -123,7 +125,7 @@ const Vertical_table = () => {
                     project.project_special_list.LTI_Long_term_weaknesses_LWD +
                     project.project_special_list.Physical_incapacity_NMA;
 
-                    const HC_REQUIRED = totalHC + Total_Os +total_special_list
+                  const HC_REQUIRED = totalHC + Total_Os + total_special_list;
                   return (
                     <td className="container" key={week._id}>
                       {HC_REQUIRED}
@@ -162,7 +164,6 @@ const Vertical_table = () => {
                 })}
             </tr>
 
-           
             {family.flatMap((f, i) => (
               <React.Fragment key={i}>
                 <tr>
@@ -187,6 +188,7 @@ const Vertical_table = () => {
                             foundFamily.Containment;
                           const F_TOTAL =
                             Total * foundFamily.crews + foundFamily.SOS;
+                          const inputKey = `${w.week_name} - ${selectedProject} - ${foundFamily.name}`;
 
                           return (
                             <td
@@ -196,7 +198,16 @@ const Vertical_table = () => {
                               }}
                               key={i}
                             >
-                              {F_TOTAL}
+                              <input
+                                type="text"
+                                value={inputValues[inputKey] || F_TOTAL}
+                                onChange={(e) => {
+                                  setInputValues({
+                                    ...inputValues,
+                                    [inputKey]: e.target.value,
+                                  });
+                                }}
+                              />
                             </td>
                           );
                         }
@@ -647,15 +658,9 @@ const Vertical_table = () => {
                   const project = week.projectData.find(
                     (p) => p.projectName === selectedProject
                   );
-                  if(project){
-
-                    return (
-                    
-                      <td className="container" key={week._id}>
-                      
-                      </td>
-                    );
-                   }
+                  if (project) {
+                    return <td className="container" key={week._id}></td>;
+                  }
                 })}
             </tr>
             <tr>
@@ -748,4 +753,3 @@ const Vertical_table = () => {
 };
 
 export default Vertical_table;
-
