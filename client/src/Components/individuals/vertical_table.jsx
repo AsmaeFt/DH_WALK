@@ -135,7 +135,7 @@ const Vertical_table = () => {
           </thead>
           <tbody>
             <tr>
-              <td>{selectedProject} HC Required</td>
+              <td className="container">{selectedProject} HC Required</td>
               {data
                 .flatMap((month) => month.weeks)
                 .map((week) => {
@@ -172,12 +172,16 @@ const Vertical_table = () => {
                     project.project_special_list.Physical_incapacity_NMA;
 
                   const HC_REQUIRED = totalHC + Total_Os + total_special_list;
-                  return <td key={week._id}>{HC_REQUIRED}</td>;
+                  return (
+                    <td className="container" key={week._id}>
+                      {HC_REQUIRED}
+                    </td>
+                  );
                 })}
             </tr>
 
             <tr>
-              <td>{selectedProject}</td>
+              <td className="container">{selectedProject}</td>
               {data
                 .flatMap((month) => month.weeks)
                 .map((week) => {
@@ -198,7 +202,11 @@ const Vertical_table = () => {
                         fam.SOS),
                     0
                   );
-                  return <td key={week._id}>{totalHC}</td>;
+                  return (
+                    <td className="container" key={week._id}>
+                      {totalHC}
+                    </td>
+                  );
                 })}
             </tr>
 
@@ -629,7 +637,6 @@ const Vertical_table = () => {
                   if (project) {
                     return (
                       <td key={week._id}>
-                        
                         {project.project_OS.Digitalization}
                       </td>
                     );
@@ -810,11 +817,20 @@ const Vertical_table = () => {
               {data
                 .flatMap((month) => month.weeks)
                 .map((week) => {
+                  const weeks = week.week_name==='2024-W01'
+                  if(weeks) return console.log('true');
+                  
                   const project = week.projectData.find(
                     (p) => p.projectName === selectedProject
                   );
                   if (project) {
-                    return <td className="container" key={week._id}></td>;
+                    const lasthc = project.project_actual_DH.last_HC;
+
+                    return (
+                      <td className="container" key={week._id}>
+                        100
+                      </td>
+                    );
                   }
                 })}
             </tr>
