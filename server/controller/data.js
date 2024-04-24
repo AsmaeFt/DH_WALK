@@ -70,7 +70,6 @@ exports.GLOBALDATA = async (req, res, next) => {
   }
 };
 
-
 exports.editData = async (req, res, next) => {
   try {
     const { week, project, family, attribute, value } = req.body;
@@ -105,21 +104,16 @@ exports.editData = async (req, res, next) => {
           { "projIdx.projectName": project },
           { "famIdx.name": family },
         ],
-        new: true, 
       }
     );
 
     if (!dataUpdated) {
-      return res.status(404).json({ error: "No matching document found." });
+      return res.status(404).json({ error: "No matching documents found." });
     }
 
-    // Find the index of the updated week
-    const weekIndex = dataUpdated.weeks.findIndex(
-      (w) => w.week_name === week
-    );
-
-    // Update subsequent weeks for the same project and family
+    const weekIndex = dataUpdated.weeks.findIndex((w) => w.week_name === week);
     const subsequentWeeks = dataUpdated.weeks.slice(weekIndex + 1);
+
     const updates = subsequentWeeks.map((w) => {
       const projIndex = w.projectData.findIndex(
         (p) => p.projectName === project
@@ -142,10 +136,10 @@ exports.editData = async (req, res, next) => {
     });
 
     await DATA.bulkWrite(updates);
-    const entireData = await DATA.find({})
-    return res
-      .status(200)
-      .json({ message: "Document updated successfully", entireData });
+
+    // Fetch and return updated data
+    const Data_Global = await DATA.find({});
+    res.status(200).json(Data_Global);
   } catch (err) {
     next(err);
   }

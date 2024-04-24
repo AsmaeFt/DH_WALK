@@ -1,18 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import car from "../assets/car.png";
-
+import { message } from "antd";
 const Vertical_table = () => {
   const [data, setData] = useState([]);
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("K9 KSK");
   const [family, setFamily] = useState([]);
 
-  const [inputs, setinputs] = useState("");
+  const [inputs, setinputs] = useState({});
 
   const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/DATA");
+      const response = await axios.get("http://10.236.150.19:8080/api/DATA");
 
       const projectNames = [
         ...new Set(
@@ -64,19 +64,38 @@ const Vertical_table = () => {
       project: project,
       family: family,
       attribute: attribute,
-      value: value
+      value: value,
     });
   };
-  
-  useEffect(()=>{
 
-    setTimeout(() => {
-      const res = axios.post('http://10.236.150.19:8080/api/editable',inputs)
-      return console.log(res.data);
-      
-    }, 10000);
-  },[inputs])
-  
+  const postData = useCallback(async () => {
+    try {
+      const res = await new Promise((resolve, reject) => {
+        setTimeout(async () => {
+          try {
+            const response = await axios.post(
+              "http://10.236.150.19:8080/api/editable",
+              inputs
+            );
+            resolve(response);
+          } catch (error) {
+            reject(error);
+          }
+        }, 100);
+      });
+      console.log(res.data);
+      setData(res.data);
+      message.success("data has been saved");
+      return res.data;
+    } catch (err) {
+      console.error("There was an error!", err);
+    }
+  }, [inputs]);
+
+  useEffect(() => {
+    postData();
+  }, [postData]);
+
   console.log(inputs);
   return (
     <>
@@ -98,17 +117,25 @@ const Vertical_table = () => {
         <table>
           <thead>
             <tr>
-              <th>Attributes / Weeks</th>
-              {data
-                .flatMap((month) => month.weeks)
-                .map((week, index) => (
-                  <th key={index}>{week.week_name}</th>
-                ))}
+              <th> Months </th>
+              {data.flatMap((m) =>
+                m.weeks.flatMap((w) => (
+                  <th key={`${m.month_name}-${w.week_name}`}>{m.month_name}</th>
+                ))
+              )}
+            </tr>
+            <tr>
+              <th>Weeks</th>
+              {data.flatMap((m) =>
+                m.weeks.flatMap((w) => (
+                  <th key={`${m.month_name}-${w.week_name}`}>{w.week_name}</th>
+                ))
+              )}
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td className="container">{selectedProject} HC Required</td>
+              <td>{selectedProject} HC Required</td>
               {data
                 .flatMap((month) => month.weeks)
                 .map((week) => {
@@ -145,16 +172,12 @@ const Vertical_table = () => {
                     project.project_special_list.Physical_incapacity_NMA;
 
                   const HC_REQUIRED = totalHC + Total_Os + total_special_list;
-                  return (
-                    <td className="container" key={week._id}>
-                      {HC_REQUIRED}
-                    </td>
-                  );
+                  return <td key={week._id}>{HC_REQUIRED}</td>;
                 })}
             </tr>
 
             <tr>
-              <td style={{ backgroundColor: "black" }}>{selectedProject}</td>
+              <td>{selectedProject}</td>
               {data
                 .flatMap((month) => month.weeks)
                 .map((week) => {
@@ -175,11 +198,7 @@ const Vertical_table = () => {
                         fam.SOS),
                     0
                   );
-                  return (
-                    <td style={{ backgroundColor: "black" }} key={week._id}>
-                      {totalHC}
-                    </td>
-                  );
+                  return <td key={week._id}>{totalHC}</td>;
                 })}
             </tr>
 
@@ -260,22 +279,23 @@ const Vertical_table = () => {
                 </tr>
                 <tr>
                   <td>Crews</td>
-                  {data
-                    .flatMap((m) => m.weeks)
-                    .map((w) => {
+                  {data.flatMap((m) =>
+                    m.weeks.map((w) => {
                       const project = w.projectData.find(
                         (p) => p.projectName === selectedProject
                       );
                       if (project) {
                         const foundFamily = project.family.find(
-                          (familyItem, i) => familyItem.name === f
+                          (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
+                          const value = foundFamily.crews;
                           return (
-                            <td key={i}>
+                            <td
+                              key={`${m.month_name}-${w.week_name}-${foundFamily.name}`}
+                            >
                               <input
-                                
-                                placeholder={foundFamily.crews}
+                                placeholder={value}
                                 onChange={(e) =>
                                   handleChange(
                                     w.week_name,
@@ -290,8 +310,11 @@ const Vertical_table = () => {
                           );
                         }
                       }
-                      return <td key={i}>-</td>;
-                    })}
+                      return (
+                        <td key={`${m.month_name}-${w.week_name}-empty`}>-</td>
+                      );
+                    })
+                  )}
                 </tr>
                 <tr>
                   <td style={{ backgroundColor: "gray" }}> HC crew</td>
@@ -344,7 +367,23 @@ const Vertical_table = () => {
                           (familyItem, i) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td key={i}>{foundFamily.ME_DEFINITION}</td>;
+                          return (
+                            <td key={i}>
+                              <input
+                                value={foundFamily.ME_DEFINITION}
+                                placeholder={foundFamily.ME_DEFINITION}
+                                onChange={(e) =>
+                                  handleChange(
+                                    w.week_name,
+                                    selectedProject,
+                                    foundFamily.name,
+                                    "ME_DEFINITION",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                          );
                         }
                       }
                       return <td key={i}>-</td>;
@@ -364,7 +403,22 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td key={i}>{foundFamily.ME_SUPPORT}</td>;
+                          return (
+                            <td key={i}>
+                              <input
+                                placeholder={foundFamily.ME_SUPPORT}
+                                onChange={(e) =>
+                                  handleChange(
+                                    w.week_name,
+                                    selectedProject,
+                                    foundFamily.name,
+                                    "ME_SUPPORT",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                          );
                         }
                       }
                       return <td key={i}>-</td>;
@@ -383,7 +437,22 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td key={i}>{foundFamily.Rework}</td>;
+                          return (
+                            <td key={i}>
+                              <input
+                                placeholder={foundFamily.Rework}
+                                onChange={(e) =>
+                                  handleChange(
+                                    w.week_name,
+                                    selectedProject,
+                                    foundFamily.name,
+                                    "Rework",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                          );
                         }
                       }
                       return <td key={i}>-</td>;
@@ -402,7 +471,22 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td key={i}>{foundFamily.Poly}</td>;
+                          return (
+                            <td key={i}>
+                              <input
+                                placeholder={foundFamily.Poly}
+                                onChange={(e) =>
+                                  handleChange(
+                                    w.week_name,
+                                    selectedProject,
+                                    foundFamily.name,
+                                    "Poly",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                          );
                         }
                       }
                       return <td key={i}>-</td>;
@@ -421,7 +505,22 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td key={i}>{foundFamily.Back_Up}</td>;
+                          return (
+                            <td key={i}>
+                              <input
+                                placeholder={foundFamily.Back_Up}
+                                onChange={(e) =>
+                                  handleChange(
+                                    w.week_name,
+                                    selectedProject,
+                                    foundFamily.name,
+                                    "Back_Up",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                          );
                         }
                       }
                       return <td key={i}>-</td>;
@@ -440,7 +539,22 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td key={i}>{foundFamily.Containment}</td>;
+                          return (
+                            <td key={i}>
+                              <input
+                                placeholder={foundFamily.Containment}
+                                onChange={(e) =>
+                                  handleChange(
+                                    w.week_name,
+                                    selectedProject,
+                                    foundFamily.name,
+                                    "Containment",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                          );
                         }
                       }
                       return <td key={i}>-</td>;
@@ -459,7 +573,22 @@ const Vertical_table = () => {
                           (familyItem) => familyItem.name === f
                         );
                         if (foundFamily) {
-                          return <td key={i}>{foundFamily.SOS}</td>;
+                          return (
+                            <td key={i}>
+                              <input
+                                placeholder={foundFamily.SOS}
+                                onChange={(e) =>
+                                  handleChange(
+                                    w.week_name,
+                                    selectedProject,
+                                    foundFamily.name,
+                                    "SOS",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                          );
                         }
                       }
                       return <td key={i}>-</td>;
@@ -500,6 +629,7 @@ const Vertical_table = () => {
                   if (project) {
                     return (
                       <td key={week._id}>
+                        
                         {project.project_OS.Digitalization}
                       </td>
                     );

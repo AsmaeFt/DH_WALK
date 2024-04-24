@@ -26,8 +26,8 @@ function App() {
     
         <div className="content">
         <Routes>
-        <Route path='/' element={<Newtable/>}/>
-        <Route path='/vert' element={<Verticaltable/>}/>
+        
+        <Route path='/' element={<Verticaltable/>}/>
         <Route path='/Table' element={<Table/>}/>
         <Route path='/ADD_DATA' element={<Add_Data/>}/>
         <Route path='/Statistics' element={<Statistics/>}/>

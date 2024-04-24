@@ -24,14 +24,14 @@ const project_OS_schema = new mongoose.Schema({
 
 const familySchema = new mongoose.Schema({
   name: { type: String, required: true },
-  crews: { type: Number, required: true },
-  ME_DEFINITION: { type: Number, required: true },
-  ME_SUPPORT: { type: Number, required: true },
-  Rework: { type: Number, required: true },
-  Poly: { type: Number, required: true },
-  Back_Up: { type: Number, required: true },
-  Containment: { type: Number, required: true },
-  SOS: { type: Number, required: true },
+  crews: { type: Number, required: true , default: 0},
+  ME_DEFINITION: { type: Number, required: true , default: 0},
+  ME_SUPPORT: { type: Number, required: true , default: 0},
+  Rework: { type: Number, required: true, default: 0 },
+  Poly: { type: Number, required: true , default: 0},
+  Back_Up: { type: Number, required: true , default: 0},
+  Containment: { type: Number, required: true , default: 0},
+  SOS: { type: Number, required: true , default: 0},
 });
 
 const ProjectSchema = new mongoose.Schema({
@@ -53,5 +53,5 @@ const MonthSchema = new mongoose.Schema({
 });
 
 const Month = mongoose.model('DATA', MonthSchema);
-
 module.exports = Month;
+

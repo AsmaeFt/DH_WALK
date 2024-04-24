@@ -4,7 +4,7 @@ import date from "../assets/dates.png";
 import car from "../assets/car.png";
 import { getWeek } from "../functions/utilis";
 import { message } from "antd";
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "./Data.css";
 
 const Data = () => {
@@ -96,7 +96,7 @@ const Data = () => {
 
   const fetchProjectData = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/Get_project");
+      const res = await axios.get("http://10.236.150.19:8080/api/Get_project");
       const projects = await res.data;
       const getProject = projects.filter((e) => e.name === "K9 KSK")[0];
       if (getProject) {
@@ -156,24 +156,17 @@ const Data = () => {
       }));
 
       console.log(JSON.stringify(project, null, 2));
-    } 
-    else {
-      if(project.lenght>0)
-      {
+    } else {
+    
         axios
-        .post("http://localhost:8080/api/add_data", project)
-        .then((res) => {
-          console.log(res.data);
-         message.success('data had been successully added');
-         navigate('/')
-        })
-        .catch((err) => console.error(err));
-      }
-      else{
-        message.error(' the inputs are empty !');
-
-      }
- 
+          .post("http://10.236.150.19:8080/api/add_data", project)
+          .then((res) => {
+            console.log(res.data);
+            message.success("data had been successully added");
+            navigate("/");
+          })
+          .catch((err) => console.error(err));
+     
     }
   };
 
