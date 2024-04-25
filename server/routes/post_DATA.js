@@ -7,7 +7,6 @@ route.post('/add_data',data.addNewData)
 route.get('/DATA',data.GLOBALDATA)
 route.post('/add_project',project.addProject)
 route.get('/Get_project',project.GetProject)
-
 route.post('/editable',data.editData)
 
 
