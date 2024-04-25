@@ -16,6 +16,8 @@ import Verticaltable from "./Components/individuals/vertical_table";
 import Dhwalk from './pages/DHwalk'
 import NewTablae from "./pages/NewTablae";
 
+
+import Main from "./pages/Maintest";
 import "./App.css";
 function App() {
   return (
@@ -27,7 +29,8 @@ function App() {
           <div className="content">
             <Routes>
               <Route path="/"element={<p>Nothing to show here ! </p>}/>
-              <Route path="/dhwalk" element={<Dhwalk/>} />
+              <Route path="/main" element={<Main/>} />
+              
               <Route path="/Table" element={<Table />} />
               <Route path="/ADD_DATA" element={<Add_Data />} />
               <Route path="/Statistics" element={<Statistics />} />
