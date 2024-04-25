@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const actual_DH_Schema = new mongoose.Schema({
   Attrition: { type: Number, default: 0 },
@@ -16,22 +16,22 @@ const special_list_schema = new mongoose.Schema({
 });
 
 const project_OS_schema = new mongoose.Schema({
-  Digitalization: { type: Number, default: 0, required: true },
-  Daily_Kaizen: { type: Number, default: 0, required: true },
-  OS_Auditing: { type: Number, default: 0, required: true },
-  OS_Auditing_Data_Reporting: { type: Number, default: 0, required: true },
+  Digitalization: { type: Number, default: 0 },
+  Daily_Kaizen: { type: Number, default: 0 },
+  OS_Auditing: { type: Number, default: 0 },
+  OS_Auditing_Data_Reporting: { type: Number, default: 0 },
 });
 
 const familySchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  crews: { type: Number, required: true , default: 0},
-  ME_DEFINITION: { type: Number, required: true , default: 0},
-  ME_SUPPORT: { type: Number, required: true , default: 0},
-  Rework: { type: Number, required: true, default: 0 },
-  Poly: { type: Number, required: true , default: 0},
-  Back_Up: { type: Number, required: true , default: 0},
-  Containment: { type: Number, required: true , default: 0},
-  SOS: { type: Number, required: true , default: 0},
+  name: { type: String },
+  crews: { type: Number, default: 0 },
+  ME_DEFINITION: { type: Number, default: 0 },
+  ME_SUPPORT: { type: Number, default: 0 },
+  Rework: { type: Number, default: 0 },
+  Poly: { type: Number, default: 0 },
+  Back_Up: { type: Number, default: 0 },
+  Containment: { type: Number, default: 0 },
+  SOS: { type: Number, default: 0 },
 });
 
 const ProjectSchema = new mongoose.Schema({
@@ -52,6 +52,5 @@ const MonthSchema = new mongoose.Schema({
   weeks: { type: [WeekSchema], required: true },
 });
 
-const Month = mongoose.model('DATA', MonthSchema);
+const Month = mongoose.model("DATA", MonthSchema);
 module.exports = Month;
-

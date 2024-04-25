@@ -20,9 +20,10 @@ export const handleChange = (e, key , setObject) => {
 
 
 export const  generateWeeks = ()=> {
-  const startDate = new Date('2024-01-01'); // Start from January 1st
+  const curentYear= new Date().getFullYear();
+  const startDate = new Date(`${curentYear}-01-01`); // Start from January 1st
   const weeks = [];
-  for (let i = 0; i < 53; i++) {
+  for (let i = 0; i < 52; i++) {
     const currentDate = new Date(startDate.getTime());
     currentDate.setDate(startDate.getDate() + i * 7); // Move to the next week
     const month = currentDate.toLocaleString('default', { month: 'short' }); // Get short month name

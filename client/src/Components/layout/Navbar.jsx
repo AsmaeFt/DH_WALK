@@ -19,13 +19,7 @@ const NavBar = () => {
         <li className="nav-item">
             <Link to="/">DH Walk</Link>
           </li>
-         
-        <li className="nav-item">
-            <Link to="/ADD_DATA">ADD DATA</Link>
-          </li>
-         
-       
-         
+
           
           <li className="nav-item">
             <span>Welcome Amjad</span>

@@ -96,7 +96,6 @@ const Vertical_table = () => {
     postData();
   }, [postData]);
 
-  console.log(inputs);
   return (
     <>
       <div className="header_container">

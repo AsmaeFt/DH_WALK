@@ -1,46 +1,44 @@
-import { Fragment, useState } from 'react'
-import {BrowserRouter as Router , Route ,Routes, Navigate} from 'react-router-dom';
+import { Fragment, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 
+//Import Components
 
-//Import Components 
-import Home from './pages/Home'
-import Table from './Components/individuals/table';
-import NavBar from './Components/layout/Navbar';
-import SideBar from './Components/layout/SideBar';
-import Statistics from './pages/Statistics'
-import Add_Data from './Components/individuals/Data'
-import Verticaltable from './Components/individuals/vertical_table';
-import Newtable from './Components/individuals/newtable';
+import Table from "./Components/individuals/table";
+import NavBar from "./Components/layout/Navbar";
+import Statistics from "./pages/Statistics";
+import Add_Data from "./Components/individuals/Data";
+import Verticaltable from "./Components/individuals/vertical_table";
+import Dhwalk from './pages/DHwalk'
+import NewTablae from "./pages/NewTablae";
 
-
-
-import './App.css'
+import "./App.css";
 function App() {
-
   return (
-    <>    
+    <>
       <Router>
-      <NavBar />
-      
-      <div className="app-container">
-    
-        <div className="content">
-        <Routes>
-        
-        <Route path='/' element={<Verticaltable/>}/>
-        <Route path='/Table' element={<Table/>}/>
-        <Route path='/ADD_DATA' element={<Add_Data/>}/>
-        <Route path='/Statistics' element={<Statistics/>}/>
-        <Route path='*' element={<p>Nothing to show here ! </p>} />
-       </Routes>
+        <NavBar />
 
+        <div className="app-container">
+          <div className="content">
+            <Routes>
+              <Route path="/"element={<p>Nothing to show here ! </p>}/>
+              <Route path="/dhwalk" element={<Dhwalk/>} />
+              <Route path="/Table" element={<Table />} />
+              <Route path="/ADD_DATA" element={<Add_Data />} />
+              <Route path="/Statistics" element={<Statistics />} />
+              <Route path="/new" element={<NewTablae />} />
+              <Route path="*" element={<p>Nothing to show here ! </p>} />
+            </Routes>
+          </div>
         </div>
-      </div>
-     
-    </Router>
-    
+      </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

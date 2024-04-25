@@ -5,9 +5,13 @@ import car from "../assets/car.png";
 import { getWeek } from "../functions/utilis";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
 import "./Data.css";
 
 const Data = () => {
+  const [listProject, setlistProject] = useState({});
+  const [selectedProject, setselectedProject] = useState("K9 KSK");
+
   const [project, setProject] = useState({
     month_name: "",
     weeks: [
@@ -78,10 +82,49 @@ const Data = () => {
     last_HC: "",
   });
   const [step, setStep] = useState(1);
-
   const navigate = useNavigate();
+
+  const fetchData = useCallback(async () => {
+    try {
+      const projects = await axios.get(
+        "http://10.236.150.19:8080/api/Get_project"
+      );
+      //get all project
+      const projectNames = await projects.data.flatMap((p) => p.name);
+      //get data for selectlist
+      const p = projectNames.map((p) => ({
+        value: p,
+        label: p,
+      }));
+      setlistProject(p);
+
+      //families
+      const families = projects.data
+        .filter((p) => p.name === selectedProject)
+        .flatMap((f) => f.family)
+        .map((f) => f.name);
+
+      setFamilyInputs(
+        families.map((family) => ({
+          name: family,
+          crews: "",
+          ME_DEFINITION: "",
+          ME_SUPPORT: "",
+          Rework: "",
+          Poly: "",
+          Back_Up: "",
+          Containment: "",
+          SOS: "",
+        }))
+      );
+    } catch (err) {
+      console.error("error is ", err);
+    }
+  }, [selectedProject]);
+
   useEffect(() => {
-    fetchProjectData();
+    fetchData();
+
     setweek(
       `${new Date().getFullYear()}-W${getWeek(new Date())
         .toString()
@@ -92,34 +135,7 @@ const Data = () => {
         .toString()
         .padStart(2, "0")}`
     );
-  }, []);
-
-  const fetchProjectData = async () => {
-    try {
-      const res = await axios.get("http://10.236.150.19:8080/api/Get_project");
-      const projects = await res.data;
-      const getProject = projects.filter((e) => e.name === "K9 KSK")[0];
-      if (getProject) {
-        const families = getProject.family.map((f) => f.name);
-
-        setFamilyInputs(
-          families.map((family) => ({
-            name: family,
-            crews: "",
-            ME_DEFINITION: "",
-            ME_SUPPORT: "",
-            Rework: "",
-            Poly: "",
-            Back_Up: "",
-            Containment: "",
-            SOS: "",
-          }))
-        );
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  }, [fetchData]);
 
   const handleInputChange = (e, index, field) => {
     const { value } = e.target;
@@ -144,7 +160,7 @@ const Data = () => {
             week_name: week,
             projectData: [
               {
-                projectName: "K9 KSK",
+                projectName: selectedProject,
                 family: familyInputs,
                 project_OS: projectOS,
                 project_special_list: projectSpecialList,
@@ -157,16 +173,14 @@ const Data = () => {
 
       console.log(JSON.stringify(project, null, 2));
     } else {
-    
-        axios
-          .post("http://10.236.150.19:8080/api/add_data", project)
-          .then((res) => {
-            console.log(res.data);
-            message.success("data had been successully added");
-            navigate("/");
-          })
-          .catch((err) => console.error(err));
-     
+      axios
+        .post("http://10.236.150.19:8080/api/add_data", project)
+        .then((res) => {
+          console.log(res.data);
+          message.success("data had been successully added");
+          navigate("/");
+        })
+        .catch((err) => console.error(err));
     }
   };
 
@@ -183,7 +197,10 @@ const Data = () => {
     isFirstWeekOfYear();
   }, [week, month, isFirstWeekOfYear]);
 
-  console.log(week, month);
+  const handleChangeselect = (e) => {
+    setselectedProject(e.value);
+  };
+  console.log(selectedProject);
 
   return (
     <div className="data_container">
@@ -209,11 +226,13 @@ const Data = () => {
             </label>
           </div>
 
-          <div className="project">
-            <img src={car} alt="car" />
-            <label>
-              Project: <span>K9 KSK</span>
-            </label>
+          <div className="projects">
+            <Select
+              placeholder={"Select Project . . ."}
+              value={selectedProject}
+              options={listProject}
+              onChange={handleChangeselect}
+            />
           </div>
 
           <div className="form_content">
