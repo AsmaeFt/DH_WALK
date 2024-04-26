@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import { generateWeeks } from "../functions/utilis";
 
-
-const Test = ({ family }) => {
+const Test = ({ family, data, sproject }) => {
   const weeksandmonths = generateWeeks();
-  const [input, setinput] = useState(0);
+  const [inputs, setinputs] = useState({});
+  const handleChange = (week, project, family, attribute, value) => {
+    setinputs({
+      week: week,
+      project: project,
+      family: family,
+      attribute: attribute,
+      value: value,
+    });
+  };
 
   return (
     <>
@@ -32,90 +40,332 @@ const Test = ({ family }) => {
           </tr>
           {family.flatMap((f, i) => (
             <React.Fragment key={i}>
-              <tr style={{ backgroundColor: "orangered" }}>
-                <td>{f}</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>--</td>
-                ))}
-              </tr>
               <tr>
-                <td>Indirects %</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>--</td>
-                ))}
+                <td style={{ backgroundColor: "orangered" }}>{f}</td>
               </tr>
+
+              <tr>
+                <td style={{ backgroundColor: "grey" }}>Indirects %</td>
+              </tr>
+
               <tr>
                 <td>Crews</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>
-                    <input
-                      value={input}
-                      onChange={(e) => setinput(e.target.value)}
-                    />
-                  </td>
-                ))}
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+                    if (project) {
+                      const foundFamily = project.family.find(
+                        (familyItem) => familyItem.name === f
+                      );
+                      if (foundFamily) {
+                        const value = foundFamily.crews;
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${foundFamily.name}`}
+                          >
+                            <input
+                              placeholder={value}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  sproject,
+                                  foundFamily.name,
+                                  "crews",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>-</td>
+                    );
+                  })
+                )}
               </tr>
-              <tr>
-                <td>HC Crew</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>--</td>
-                ))}
-              </tr>
+
               <tr>
                 <td>ME Definition</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>
-                    <input value={input} />
-                  </td>
-                ))}
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+                    if (project) {
+                      const foundFamily = project.family.find(
+                        (familyItem) => familyItem.name === f
+                      );
+                      if (foundFamily) {
+                        const value = foundFamily.ME_DEFINITION;
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${foundFamily.name}`}
+                          >
+                            <input
+                              placeholder={value}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  sproject,
+                                  foundFamily.name,
+                                  "ME_DEFINITION",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>-</td>
+                    );
+                  })
+                )}
               </tr>
+
               <tr>
-                <td>ME Support</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>
-                    <input value={input} />
-                  </td>
-                ))}
+                <td>ME SUPPORT</td>
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+                    if (project) {
+                      const foundFamily = project.family.find(
+                        (familyItem) => familyItem.name === f
+                      );
+                      if (foundFamily) {
+                        const value = foundFamily.ME_SUPPORT;
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${foundFamily.name}`}
+                          >
+                            <input
+                              placeholder={value}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  sproject,
+                                  foundFamily.name,
+                                  "ME_SUPPORT",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>-</td>
+                    );
+                  })
+                )}
               </tr>
+
               <tr>
                 <td>Rework</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>
-                    <input value={input} />
-                  </td>
-                ))}
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+                    if (project) {
+                      const foundFamily = project.family.find(
+                        (familyItem) => familyItem.name === f
+                      );
+                      if (foundFamily) {
+                        const value = foundFamily.Rework;
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${foundFamily.name}`}
+                          >
+                            <input
+                              placeholder={value}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  sproject,
+                                  foundFamily.name,
+                                  "Rework",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>-</td>
+                    );
+                  })
+                )}
               </tr>
+
+              <tr>
+                <td>Back_Up</td>
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+                    if (project) {
+                      const foundFamily = project.family.find(
+                        (familyItem) => familyItem.name === f
+                      );
+                      if (foundFamily) {
+                        const value = foundFamily.Back_Up;
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${foundFamily.name}`}
+                          >
+                            <input
+                              placeholder={value}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  sproject,
+                                  foundFamily.name,
+                                  "Back_Up",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>-</td>
+                    );
+                  })
+                )}
+              </tr>
+
               <tr>
                 <td>Poly</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>
-                    <input value={input} />
-                  </td>
-                ))}
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+                    if (project) {
+                      const foundFamily = project.family.find(
+                        (familyItem) => familyItem.name === f
+                      );
+                      if (foundFamily) {
+                        const value = foundFamily.Poly;
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${foundFamily.name}`}
+                          >
+                            <input
+                              placeholder={value}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  sproject,
+                                  foundFamily.name,
+                                  "Poly",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>-</td>
+                    );
+                  })
+                )}
               </tr>
-              <tr>
-                <td>Back-up</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>
-                    <input value={input} />
-                  </td>
-                ))}
-              </tr>
+
               <tr>
                 <td>Containment</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>
-                    <input value={input} />
-                  </td>
-                ))}
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+                    if (project) {
+                      const foundFamily = project.family.find(
+                        (familyItem) => familyItem.name === f
+                      );
+                      if (foundFamily) {
+                        const value = foundFamily.Containment;
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${foundFamily.name}`}
+                          >
+                            <input
+                              placeholder={value}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  sproject,
+                                  foundFamily.name,
+                                  "Containment",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>-</td>
+                    );
+                  })
+                )}
               </tr>
+
               <tr>
                 <td>SOS</td>
-                {weeksandmonths.flatMap((w, j) => (
-                  <td key={`${i}-${j}`}>
-                    <input value={input} />
-                  </td>
-                ))}
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+                    if (project) {
+                      const foundFamily = project.family.find(
+                        (familyItem) => familyItem.name === f
+                      );
+                      if (foundFamily) {
+                        const value = foundFamily.SOS;
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${foundFamily.name}`}
+                          >
+                            <input
+                              placeholder={value}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  sproject,
+                                  foundFamily.name,
+                                  "SOS",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>-</td>
+                    );
+                  })
+                )}
               </tr>
             </React.Fragment>
           ))}

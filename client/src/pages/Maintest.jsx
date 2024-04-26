@@ -6,14 +6,26 @@ const Main = () => {
   const [Project, setProject] = useState([]);
   const [selectedProject, setselectedProject] = useState("K9 KSK");
   const [families, setFamilies] = useState([]);
+  const [data, setdata] = useState([]);
 
   const getData = useCallback(async () => {
+    const data = axios.get("http://10.236.150.19:8080/api/gatDhwalk");
+    const dhwalkData = (await data).data;
+    setdata(dhwalkData);
+  
+  }, []);
+  useEffect(() => {
+    getData();
+  }, [getData]);
+
+  const getProject = useCallback(async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/Get_project");
+      const res = await axios.get("http://10.236.150.19:8080/api/Get_project");
       const Project = await res.data.flatMap((p) => p.name);
       const families = await res.data
         .filter((p) => p.name === selectedProject)
-        .flatMap((p) => p.family).map((f)=> f.name);
+        .flatMap((p) => p.family)
+        .map((f) => f.name);
       setFamilies(families);
       setProject(Project);
 
@@ -24,9 +36,9 @@ const Main = () => {
   }, [selectedProject]);
 
   useEffect(() => {
-    getData();
-  }, [getData]);
-  console.log(families);
+    getProject();
+  }, [getProject]);
+
   return (
     <>
       <h2>DH WALK</h2>
@@ -37,7 +49,7 @@ const Main = () => {
           </label>
         ))}
       </div>
-      <Test family={families} />
+      <Test family={families} data={data} sproject={selectedProject}/>
     </>
   );
 };
