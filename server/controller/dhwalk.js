@@ -37,30 +37,34 @@ exports.getDhwalk = async (req, res, next) => {
   }
 };
 
+
+
 exports.addDatanew = async (req, res, next) => {
   try {
-    const { year, weeks } = req.body;
-    const existingYear = await dhwalk.findOne({ year });
+    const { year, weeks: newWeeksData } = req.body; // Renamed to newWeeksData for clarity
+    const existYear = await dhwalk.findOne({ year });
 
-    if (existingYear) {
-      weeks.forEach(async (newWeek) => {
-        const existingWeekIndex = existingYear.weeks.findIndex(
-          (existingWeek) => existingWeek.week_name === newWeek.week_name
-        );
-
-        if (existingWeekIndex !== -1) {
-          existingYear.weeks[existingWeekIndex].projectData.push(...newWeek.projectData);
+    if (existYear) {
+      // Iterate over each week provided in the request
+      newWeeksData.forEach((newWeekData) => {
+        let existingWeek = existYear.weeks.find(w => w.week_name === newWeekData.week_name);
+        if (existingWeek) {
+          // Append new project data to existing week
+          existingWeek.projectData.push(...newWeekData.projectData);
         } else {
-          existingYear.weeks.push(newWeek);
+          // Add new week if it does not exist
+          existYear.weeks.push(newWeekData);
         }
       });
-      await existingYear.save();
-      res.status(201).json(existingYear);
+      await existYear.save();
     } else {
-      const newYear = new dhwalk({ year, weeks });
+      // If the year does not exist, create it with the provided weeks and project data
+      const newYearData = { year, weeks: newWeeksData };
+      const newYear = new dhwalk(newYearData);
       await newYear.save();
-      res.status(201).json(newYear);
     }
+
+    res.status(200).json({ message: 'Data processed successfully' });
   } catch (err) {
     next(err);
   }
