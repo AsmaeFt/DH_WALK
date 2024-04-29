@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import Test from "../Components/individuals/Test";
-
+import "./Home.css";
 const Main = () => {
   const [Project, setProject] = useState([]);
   const [selectedProject, setselectedProject] = useState("K9 KSK");
@@ -9,10 +9,9 @@ const Main = () => {
   const [data, setdata] = useState([]);
 
   const getData = useCallback(async () => {
-    const data = axios.get("http://10.236.150.19:8080/api/gatDhwalk");
+    const data = axios.get("http://10.236.150.19:8080/api/assembly_project");
     const dhwalkData = (await data).data;
     setdata(dhwalkData);
-  
   }, []);
   useEffect(() => {
     getData();
@@ -39,6 +38,9 @@ const Main = () => {
     getProject();
   }, [getProject]);
 
+  const updatedatastate = (newData) => {
+    setdata(newData);
+  };
   return (
     <>
       <h2>DH WALK</h2>
@@ -49,7 +51,7 @@ const Main = () => {
           </label>
         ))}
       </div>
-      <Test family={families} data={data} sproject={selectedProject}/>
+      <Test family={families} data={data} sproject={selectedProject} updateData={updatedatastate} />
     </>
   );
 };

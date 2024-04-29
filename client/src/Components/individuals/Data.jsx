@@ -13,10 +13,10 @@ const Data = () => {
   const [selectedProject, setselectedProject] = useState("K9 KSK");
 
   const [project, setProject] = useState({
-    month_name: "",
+    year:new Date().getFullYear(),
     weeks: [
       {
-        week_name: "",
+        week_name:new Date().getFullYear()+'-'+'w01',
         projectData: [
           {
             projectName: "",
@@ -63,23 +63,23 @@ const Data = () => {
 
   const [familyInputs, setFamilyInputs] = useState([]);
   const [projectOS, setProjectOS] = useState({
-    Digitalization: "",
-    Daily_Kaizen: "",
-    OS_Auditing: "",
-    OS_Auditing_Data_Reporting: "",
+    Digitalization: 0,
+    Daily_Kaizen: 0,
+    OS_Auditing: 0,
+    OS_Auditing_Data_Reporting:0,
   });
   const [projectSpecialList, setProjectSpecialList] = useState({
-    Pregnant_women_out_of_the_plant: "",
-    Maternity: "",
-    Breastfeeding_leave: "",
-    LTI_Long_term_weaknesses_LWD: "",
-    Physical_incapacity_NMA: "",
+    Pregnant_women_out_of_the_plant: 0,
+    Maternity: 0,
+    Breastfeeding_leave: 0,
+    LTI_Long_term_weaknesses_LWD: 0,
+    Physical_incapacity_NMA: 0,
   });
   const [projectActualDH, setProjectActualDH] = useState({
-    Attrition: "",
-    Transfer: "",
-    Hiring: "",
-    last_HC: "",
+    Attrition: 0,
+    Transfer: 0,
+    Hiring: 0,
+    last_HC: 0,
   });
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
@@ -124,17 +124,6 @@ const Data = () => {
 
   useEffect(() => {
     fetchData();
-
-    setweek(
-      `${new Date().getFullYear()}-W${getWeek(new Date())
-        .toString()
-        .padStart(2, "0")}`
-    );
-    setmonth(
-      `${new Date().getFullYear()}-${(new Date().getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}`
-    );
   }, [fetchData]);
 
   const handleInputChange = (e, index, field) => {
@@ -154,10 +143,10 @@ const Data = () => {
       setStep(step + 1);
       setProject((prev) => ({
         ...prev,
-        month_name: month,
+        year: new Date().getFullYear(),
         weeks: [
           {
-            week_name: week,
+            week_name: new Date().getFullYear()+'-'+'w01',
             projectData: [
               {
                 projectName: selectedProject,
@@ -174,7 +163,7 @@ const Data = () => {
       console.log(JSON.stringify(project, null, 2));
     } else {
       axios
-        .post("http://10.236.150.19:8080/api/add_data", project)
+        .post('http://10.236.150.19:8080/api/assembly_project', project)
         .then((res) => {
           console.log(res.data);
           message.success("data had been successully added");
@@ -209,20 +198,10 @@ const Data = () => {
           <div className="form_header">
             <img src={date} alt="date" />
             <label>
-              Week:{" "}
-              <input
-                type="week"
-                value={week}
-                onChange={(e) => setweek(e.target.value)}
-              />
+              Week: w01
             </label>
             <label>
-              Month:{" "}
-              <input
-                type="month"
-                value={month}
-                onChange={(e) => setmonth(e.target.value)}
-              />
+              year : {new Date().getFullYear()}
             </label>
           </div>
 
