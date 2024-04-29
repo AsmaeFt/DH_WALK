@@ -2,7 +2,6 @@ const { generateWeeks } = require("../functions/utilis");
 const dhwalk = require("../models/DHwalk");
 const creaError = require("../utilitis/globalError");
 
-
 exports.getDhwalk = async (req, res, next) => {
   try {
     const data = await dhwalk.find({});
@@ -35,14 +34,13 @@ exports.addProjectData = async (req, res, next) => {
         await data.save();
         res.status(201).json("Project data added to all weeks successfully!");
       }
-    } 
-    else {
+    } else {
       const generatedWeeks = generateWeeks();
       const newWeeksData = generatedWeeks.map((genWeek) => {
         const weekData = weeks.find((week) => week.week_name === genWeek.week);
         return {
           week_name: new Date().getFullYear() + "-" + genWeek.week,
-          projectData: weekData ? weekData.projectData :projectData,
+          projectData: weekData ? weekData.projectData : projectData,
         };
       });
 
@@ -55,7 +53,7 @@ exports.addProjectData = async (req, res, next) => {
   }
 };
 
- exports.editData = async (req, res, next) => {
+exports.editData = async (req, res, next) => {
   try {
     const { week, project, family, attribute, value } = req.body;
     const validAttributes = [
@@ -128,4 +126,34 @@ exports.addProjectData = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-};  
+};
+
+exports.editDatas = async (req, res, next) => {
+  try {
+    const { week, project, path, value } = req.body; // Expecting 'path' to include the full dot notation path to the attribute
+
+    // Construct the full update path
+    const updatePath = `weeks.$[weekIdx].projectData.$[projIdx].${path}`;
+
+    const updateResult = await dhwalk.updateOne(
+      { "weeks.week_name": week, "weeks.projectData.projectName": project },
+      { $set: { [updatePath]: value } },
+      {
+        arrayFilters: [
+          { "weekIdx.week_name": week },
+          { "projIdx.projectName": project },
+        ],
+      }
+    );
+
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json({ error: "No matching document found." });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Update successful", details: updateResult });
+  } catch (err) {
+    next(err);
+  }
+};
