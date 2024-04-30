@@ -11,7 +11,8 @@ route.get('/Get_project',project.GetProject)
 
 route.get('/assembly_project',dhwalk.getDhwalk)  
 route.post('/assembly_project',dhwalk.addProjectData)  
-route.post('/assembly_project_Edit',dhwalk.editData)  
+route.post('/assembly_Family_Edit',dhwalk.editDataFamily)  
+route.post('/assembly_Others_Edits',dhwalk.editDataothers)  
 
 
 

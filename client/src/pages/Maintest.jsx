@@ -41,6 +41,7 @@ const Main = () => {
   const updatedatastate = (newData) => {
     setdata(newData);
   };
+
   return (
     <>
       <h2>DH WALK</h2>
@@ -57,3 +58,4 @@ const Main = () => {
 };
 
 export default Main;
+

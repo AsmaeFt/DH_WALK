@@ -53,7 +53,7 @@ exports.addProjectData = async (req, res, next) => {
   }
 };
 
-exports.editData = async (req, res, next) => {
+exports.editDataFamily = async (req, res, next) => {
   try {
     const { week, project, family, attribute, value } = req.body;
     const validAttributes = [
@@ -128,16 +128,18 @@ exports.editData = async (req, res, next) => {
   }
 };
 
-exports.editDatas = async (req, res, next) => {
+exports.editDataothers = async (req, res, next) => {
   try {
-    const { week, project, path, value } = req.body; // Expecting 'path' to include the full dot notation path to the attribute
-
-    // Construct the full update path
+    const { week, project, path, value } = req.body;
     const updatePath = `weeks.$[weekIdx].projectData.$[projIdx].${path}`;
-
-    const updateResult = await dhwalk.updateOne(
-      { "weeks.week_name": week, "weeks.projectData.projectName": project },
-      { $set: { [updatePath]: value } },
+    const updateResult = await dhwalk.findOneAndUpdate(
+      {
+        "weeks.week_name": week,
+        "weeks.projectData.projectName": project,
+      },
+      {
+        $set: { [updatePath]: value },
+      },
       {
         arrayFilters: [
           { "weekIdx.week_name": week },
@@ -146,13 +148,28 @@ exports.editDatas = async (req, res, next) => {
       }
     );
 
-    if (updateResult.matchedCount === 0) {
-      return res.status(404).json({ error: "No matching document found." });
-    }
+    const weekIndex = updateResult.weeks.findIndex((w) => w.week_name === week);
+    const subsequentWeeks = updateResult.weeks.slice(weekIndex + 1);
+    const updates = subsequentWeeks.map((w) => {
+      const projectIndx = w.projectData.findIndex(
+        (p) => p.projectName === project
+      );
+      const updatePath = `weeks.$[weekIdx].projectData.$[projIdx].${path}`;
+      return {
+        updateOne: {
+          filter:{"weeks.week_name":w.week_name},
+          update:{$set:{[updatePath]:value}},
+          arrayFilters:[
+            { "weekIdx._id": w._id },
+            { "projIdx._id": w.projectData[projectIndx]._id },
+          ]
+        },
+      };
+    });
+    await dhwalk.bulkWrite(updates)
 
-    res
-      .status(200)
-      .json({ message: "Update successful", details: updateResult });
+    const Data_Global = await dhwalk.find({});
+    res.status(200).json(Data_Global);
   } catch (err) {
     next(err);
   }
