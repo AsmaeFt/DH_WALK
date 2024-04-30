@@ -78,6 +78,9 @@ tr td input{
     background-color: #333333;
     border-top: 1px solid rgb(255, 68, 0);
   }
+  .headers{
+    background-color: orangered;
+  }
 
 /*   .round-loader {
   

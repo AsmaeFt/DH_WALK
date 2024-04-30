@@ -55,7 +55,7 @@ const Main = () => {
   const updatedatastate = (newData) => {
     setdata(newData);
   };
-  console.log(data);
+  
   return (
     <>
       <h2>DH WALK</h2>

@@ -72,7 +72,6 @@ const Test = ({ family, data, sproject, updateData }) => {
     inputsothers();
   }, [inputsothers]);
 
-
   return (
     <>
       <table>
@@ -101,10 +100,81 @@ const Test = ({ family, data, sproject, updateData }) => {
             <React.Fragment key={i}>
               <tr>
                 <td style={{ backgroundColor: "orangered" }}>{f}</td>
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+
+                    if (project) {
+                      const fam = project.family.find((fam) => fam.name === f);
+
+                      if (fam) {
+                        const HC_Crew =
+                          fam.ME_DEFINITION +
+                          fam.ME_SUPPORT +
+                          fam.Rework +
+                          fam.Poly +
+                          fam.Back_Up +
+                          fam.Containment;
+                        const totalF = HC_Crew * fam.crews + fam.SOS;
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${fam.name}`}
+                            className="headers"
+                          >
+                            {totalF}
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>
+                        {loading ? <div className="round-loader"></div> : "-"}
+                      </td>
+                    );
+                  })
+                )}
               </tr>
 
               <tr>
                 <td style={{ backgroundColor: "grey" }}>Indirects %</td>
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+
+                    if (project) {
+                      const fam = project.family.find((fam) => fam.name === f);
+
+                      if (fam) {
+                        const HC_Crew =
+                          fam.SOS +
+                          fam.ME_SUPPORT +
+                          fam.Rework +
+                          fam.Poly +
+                          fam.Back_Up +
+                          fam.Containment;
+                        const Indirects = Math.round(
+                          (HC_Crew / fam.ME_DEFINITION) * 100
+                        );
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${fam.name}`}
+                          >
+                            {Indirects}%
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>
+                        {loading ? <div className="round-loader"></div> : "-"}
+                      </td>
+                    );
+                  })
+                )}
               </tr>
 
               <tr>
@@ -114,14 +184,13 @@ const Test = ({ family, data, sproject, updateData }) => {
                     const project = w.projectData.find(
                       (p) => p.projectName === sproject
                     );
-                  
+
                     if (project) {
                       const foundFamily = project.family.find(
                         (fam) => fam.name === f
                       );
-                     
+
                       if (foundFamily) {
-                       
                         return (
                           <td
                             key={`${y.month_name}-${w.week_name}-${foundFamily.name}`}
@@ -151,6 +220,44 @@ const Test = ({ family, data, sproject, updateData }) => {
                 )}
               </tr>
 
+              <tr>
+                <td className="headers"> HC Crew</td>
+                {data.flatMap((y) =>
+                  y.weeks.map((w) => {
+                    const project = w.projectData.find(
+                      (p) => p.projectName === sproject
+                    );
+
+                    if (project) {
+                      const fam = project.family.find((fam) => fam.name === f);
+
+                      if (fam) {
+                        const Total =
+                          fam.ME_DEFINITION +
+                          fam.ME_SUPPORT +
+                          fam.Rework +
+                          fam.Poly +
+                          fam.Back_Up +
+                          fam.Containment;
+
+                        return (
+                          <td
+                            key={`${y.month_name}-${w.week_name}-${fam.name}`}
+                            className="headers"
+                          >
+                            {Total}
+                          </td>
+                        );
+                      }
+                    }
+                    return (
+                      <td key={`${y.month_name}-${w.week_name}-empty`}>
+                        {loading ? <div className="round-loader"></div> : "-"}
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
               <tr>
                 <td>ME Definition</td>
                 {data.flatMap((y) =>
@@ -447,7 +554,36 @@ const Test = ({ family, data, sproject, updateData }) => {
             </React.Fragment>
           ))}
           <tr>
-            <td>{sproject}OS</td>
+            <td className="headers">{sproject} OS</td>
+
+            {data.flatMap((y) =>
+              y.weeks.map((w) => {
+                const project = w.projectData.find(
+                  (p) => p.projectName === sproject
+                );
+
+                if (project) {
+                  const total =
+                    project.project_OS.Digitalization +
+                    project.project_OS.Daily_Kaizen +
+                    project.project_OS.OS_Auditing +
+                    project.project_OS.OS_Auditing_Data_Reporting;
+                  return (
+                    <td
+                      className="headers"
+                      key={`${y.month_name}-${w.week_name}`}
+                    >
+                      {total}
+                    </td>
+                  );
+                }
+                return (
+                  <td key={`${y.month_name}-${w.week_name}-empty`}>
+                    {loading ? <div className="round-loader"></div> : "-"}
+                  </td>
+                );
+              })
+            )}
           </tr>
           <tr>
             <td>Digitalization</td>
@@ -461,16 +597,17 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_OS.Digitalization}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_OS.Digitalization",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={project.project_OS.Digitalization}
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_OS.Digitalization",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -493,16 +630,17 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_OS.Daily_Kaizen}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_OS.Daily_Kaizen",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={project.project_OS.Daily_Kaizen}
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_OS.Daily_Kaizen",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -525,16 +663,17 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_OS.OS_Auditing}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_OS.OS_Auditing",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={project.project_OS.OS_Auditing}
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_OS.OS_Auditing",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -557,16 +696,19 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_OS.OS_Auditing_Data_Reporting}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_OS.OS_Auditing_Data_Reporting",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={
+                          project.project_OS.OS_Auditing_Data_Reporting
+                        }
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_OS.OS_Auditing_Data_Reporting",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -579,7 +721,37 @@ const Test = ({ family, data, sproject, updateData }) => {
             )}
           </tr>
           <tr>
-            <td>{sproject}Special list out of the plant</td>
+            <td className="headers">{sproject}Special list out of the plant</td>
+            {data.flatMap((y) =>
+              y.weeks.map((w) => {
+                const project = w.projectData.find(
+                  (p) => p.projectName === sproject
+                );
+
+                if (project) {
+                  const total =
+                    project.project_special_list
+                      .Pregnant_women_out_of_the_plant +
+                    project.project_special_list.Maternity +
+                    project.project_special_list.Breastfeeding_leave +
+                    project.project_special_list.LTI_Long_term_weaknesses_LWD +
+                    project.project_special_list.Physical_incapacity_NMA;
+                  return (
+                    <td
+                      className="headers"
+                      key={`${y.month_name}-${w.week_name}`}
+                    >
+                      {total}
+                    </td>
+                  );
+                }
+                return (
+                  <td key={`${y.month_name}-${w.week_name}-empty`}>
+                    {loading ? <div className="round-loader"></div> : "-"}
+                  </td>
+                );
+              })
+            )}
           </tr>
           <tr>
             <td>Pregnant women out of the plant</td>
@@ -592,16 +764,20 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_special_list.Pregnant_women_out_of_the_plant}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_special_list.Pregnant_women_out_of_the_plant",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={
+                          project.project_special_list
+                            .Pregnant_women_out_of_the_plant
+                        }
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_special_list.Pregnant_women_out_of_the_plant",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -612,7 +788,6 @@ const Test = ({ family, data, sproject, updateData }) => {
                 );
               })
             )}
-      
           </tr>
           <tr>
             <td>Maternity </td>
@@ -625,16 +800,17 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_special_list.Maternity}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_special_list.Maternity",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={project.project_special_list.Maternity}
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_special_list.Maternity",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -645,7 +821,6 @@ const Test = ({ family, data, sproject, updateData }) => {
                 );
               })
             )}
-      
           </tr>
           <tr>
             <td>Breastfeeding leave</td>
@@ -658,16 +833,19 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_special_list.Breastfeeding_leave}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_special_list.Breastfeeding_leave",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={
+                          project.project_special_list.Breastfeeding_leave
+                        }
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_special_list.Breastfeeding_leave",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -690,16 +868,20 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_special_list.LTI_Long_term_weaknesses_LWD}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_special_list.LTI_Long_term_weaknesses_LWD",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={
+                          project.project_special_list
+                            .LTI_Long_term_weaknesses_LWD
+                        }
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_special_list.LTI_Long_term_weaknesses_LWD",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -722,16 +904,19 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_special_list.Physical_incapacity_NMA}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_special_list.Physical_incapacity_NMA",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={
+                          project.project_special_list.Physical_incapacity_NMA
+                        }
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_special_list.Physical_incapacity_NMA",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -744,7 +929,58 @@ const Test = ({ family, data, sproject, updateData }) => {
             )}
           </tr>
           <tr>
-            <td>{sproject} Actual DH</td>
+            <td className="headers">{sproject} Actual DH</td>
+            {data.flatMap((y) => {
+              let previousValue = null; // Initialize with null to handle the first comparison
+
+              return y.weeks.map((w) => {
+                const project = w.projectData.find(
+                  (p) => p.projectName === sproject
+                );
+
+                if (project) {
+                  let actualDH;
+                  if (w.week_name === "2024-W01") {
+                    actualDH =
+                      project.project_actual_DH.last_HC -
+                      project.project_actual_DH.Attrition +
+                      project.project_actual_DH.Hiring -
+                      project.project_actual_DH.Transfer;
+                  } else {
+                    actualDH =
+                      previousValue -
+                      project.project_actual_DH.Attrition +
+                      project.project_actual_DH.Hiring -
+                      project.project_actual_DH.Transfer;
+                  }
+
+                  // Determine the cell color based on the comparison
+                  const cellStyle =
+                    previousValue === null
+                      ? {}
+                      : actualDH > previousValue
+                      ? { color: "green" }
+                      : actualDH < previousValue
+                      ? { color: "red" }
+                      : {};
+
+                  // Update previousValue for the next iteration
+                  previousValue = actualDH;
+
+                  return (
+                    <td key={`${y.year}-${w.week_name}`} style={cellStyle}>
+                      {actualDH}
+                    </td>
+                  );
+                }
+
+                return (
+                  <td key={`${y.year}-${w.week_name}-empty`}>
+                    {loading ? <div className="round-loader"></div> : "-"}
+                  </td>
+                );
+              });
+            })}
           </tr>
           <tr>
             <td>Attrition</td>
@@ -757,16 +993,17 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_actual_DH.Attrition}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_actual_DH.Attrition",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={project.project_actual_DH.Attrition}
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_actual_DH.Attrition",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -789,16 +1026,17 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_actual_DH.Transfer}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_actual_DH.Transfer",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={project.project_actual_DH.Transfer}
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_actual_DH.Transfer",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -811,8 +1049,8 @@ const Test = ({ family, data, sproject, updateData }) => {
             )}
           </tr>
           <tr>
-            <td>Hiring</td>  
-            
+            <td>Hiring</td>
+
             {data.flatMap((y) =>
               y.weeks.map((w) => {
                 const project = w.projectData.find(
@@ -822,16 +1060,17 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
-                      <input 
-                      placeholder={project.project_actual_DH.Hiring}
-                      onChange={(e) =>
-                        handleOthers(
-                          w.week_name,
-                          sproject,
-                          "project_actual_DH.Hiring",
-                          e.target.value
-                        )
-                      } />
+                      <input
+                        placeholder={project.project_actual_DH.Hiring}
+                        onChange={(e) =>
+                          handleOthers(
+                            w.week_name,
+                            sproject,
+                            "project_actual_DH.Hiring",
+                            e.target.value
+                          )
+                        }
+                      />
                     </td>
                   );
                 }
@@ -849,4 +1088,3 @@ const Test = ({ family, data, sproject, updateData }) => {
   );
 };
 export default Test;
-
