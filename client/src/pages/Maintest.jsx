@@ -10,9 +10,18 @@ const Main = () => {
 
   const getData = useCallback(async () => {
     const data = axios.get("http://10.236.150.19:8080/api/assembly_project");
-    const dhwalkData = (await data).data;
-    setdata(dhwalkData);
-  }, []);
+    const globaldata = (await data).data;
+    const filteredData = globaldata.map(yearData => ({
+      year: yearData.year,
+      weeks: yearData.weeks.map(week => ({
+          week_name: week.week_name,
+          projectData: week.projectData.filter(project => project.projectName === selectedProject),
+          _id: week._id
+      })).filter(week => week.projectData.length > 0)
+  }));
+
+    setdata(filteredData);
+  }, [selectedProject]);
   useEffect(() => {
     getData();
   }, [getData]);
@@ -41,7 +50,7 @@ const Main = () => {
   const updatedatastate = (newData) => {
     setdata(newData);
   };
-
+  console.log(data);
   return (
     <>
       <h2>DH WALK</h2>
@@ -52,10 +61,14 @@ const Main = () => {
           </label>
         ))}
       </div>
-      <Test family={families} data={data} sproject={selectedProject} updateData={updatedatastate} />
+      <Test
+        family={families}
+        data={data}
+        sproject={selectedProject}
+        updateData={updatedatastate}
+      />
     </>
   );
 };
 
 export default Main;
-

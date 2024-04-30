@@ -114,7 +114,7 @@ const Test = ({ family, data, sproject, updateData }) => {
                     const project = w.projectData.find(
                       (p) => p.projectName === sproject
                     );
-                  console.log(project);
+                  
                     if (project) {
                       const foundFamily = project.family.find(
                         (fam) => fam.name === f
