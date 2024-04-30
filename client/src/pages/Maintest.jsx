@@ -10,15 +10,20 @@ const Main = () => {
 
   const getData = useCallback(async () => {
     const data = axios.get("http://10.236.150.19:8080/api/assembly_project");
+
     const globaldata = (await data).data;
-    const filteredData = globaldata.map(yearData => ({
+    const filteredData = globaldata.map((yearData) => ({
       year: yearData.year,
-      weeks: yearData.weeks.map(week => ({
+      weeks: yearData.weeks
+        .map((week) => ({
           week_name: week.week_name,
-          projectData: week.projectData.filter(project => project.projectName === selectedProject),
-          _id: week._id
-      })).filter(week => week.projectData.length > 0)
-  }));
+          projectData: week.projectData.filter(
+            (project) => project.projectName === selectedProject
+          ),
+          _id: week._id,
+        }))
+        .filter((week) => week.projectData.length > 0),
+    }));
 
     setdata(filteredData);
   }, [selectedProject]);
