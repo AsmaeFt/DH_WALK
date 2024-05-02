@@ -86,19 +86,86 @@ const Test = ({ family, data, sproject, updateData }) => {
         <tbody>
           <tr>
             <td>Project DH required </td>
-            {weeksandmonths.flatMap((w, i) => (
-              <td key={w.week}>1</td>
-            ))}
+            {data.flatMap((y) =>
+              y.weeks.flatMap((w) => {
+                const project = w.projectData.find(
+                  (p) => p.projectName === sproject
+                );
+                if (project) {
+                  let familyTotal = 0;
+                  let DHRequired = 0;
+                  project.family.map((fam) => {
+                    if (fam != null) {
+                      const HC_Crew =
+                        fam.ME_DEFINITION +
+                        fam.ME_SUPPORT +
+                        fam.Rework +
+                        fam.Poly +
+                        fam.Back_Up +
+                        fam.Containment;
+                      const totalF = HC_Crew * fam.crews + fam.SOS;
+                      familyTotal += totalF;
+                    }
+                    const totalOS =
+                      project.project_OS.Digitalization +
+                      project.project_OS.Daily_Kaizen +
+                      project.project_OS.OS_Auditing +
+                      project.project_OS.OS_Auditing_Data_Reporting;
+
+                    const totalSP =
+                      project.project_special_list
+                        .Pregnant_women_out_of_the_plant +
+                      project.project_special_list.Maternity +
+                      project.project_special_list.Breastfeeding_leave +
+                      project.project_special_list
+                        .LTI_Long_term_weaknesses_LWD +
+                      project.project_special_list.Physical_incapacity_NMA;
+
+                    DHRequired = totalOS + totalSP + familyTotal;
+                  });
+                  return (
+                    <td key={`${y.month_name}-${w.week_name}`}>{DHRequired}</td>
+                  );
+                }
+              })
+            )}
           </tr>
           <tr>
             <td>Project</td>
-            
-          </tr>
+            {data.flatMap((y) =>
+              y.weeks.flatMap((w) => {
+                const project = w.projectData.find(
+                  (p) => p.projectName === sproject
+                );
+                if (project) {
+                  let familyTotal = 0;
+                  project.family.map((fam) => {
+                    if (fam != null) {
+                      const HC_Crew =
+                        fam.ME_DEFINITION +
+                        fam.ME_SUPPORT +
+                        fam.Rework +
+                        fam.Poly +
+                        fam.Back_Up +
+                        fam.Containment;
+                      const totalF = HC_Crew * fam.crews + fam.SOS;
+                      familyTotal += totalF;
+                    }
+                  });
 
+                  return (
+                    <td key={`${y.month_name}-${w.week_name}`}>
+                      {familyTotal}
+                    </td>
+                  );
+                }
+              })
+            )}
+          </tr>
           {family.flatMap((f, i) => (
             <React.Fragment key={i}>
               <tr>
-                <td style={{ backgroundColor: "orangered" }}>{f}</td>
+                <td style={{ backgroundColor: "#d16f4b" }}>{f}</td>
                 {data.flatMap((y) =>
                   y.weeks.map((w) => {
                     const project = w.projectData.find(
@@ -120,8 +187,8 @@ const Test = ({ family, data, sproject, updateData }) => {
 
                         return (
                           <td
+                            style={{ backgroundColor: "#d16f4b" }}
                             key={`${y.month_name}-${w.week_name}-${fam.name}`}
-                            className="headers"
                           >
                             {totalF}
                           </td>
@@ -161,6 +228,7 @@ const Test = ({ family, data, sproject, updateData }) => {
                         );
                         return (
                           <td
+                            style={{ backgroundColor: "grey" }}
                             key={`${y.month_name}-${w.week_name}-${fam.name}`}
                           >
                             {Indirects}%
@@ -221,7 +289,7 @@ const Test = ({ family, data, sproject, updateData }) => {
               </tr>
 
               <tr>
-                <td className="headers"> HC Crew</td>
+                <td style={{ backgroundColor: "grey" }}> HC Crew</td>
                 {data.flatMap((y) =>
                   y.weeks.map((w) => {
                     const project = w.projectData.find(
@@ -242,8 +310,8 @@ const Test = ({ family, data, sproject, updateData }) => {
 
                         return (
                           <td
+                            style={{ backgroundColor: "grey" }}
                             key={`${y.month_name}-${w.week_name}-${fam.name}`}
-                            className="headers"
                           >
                             {Total}
                           </td>
@@ -554,7 +622,7 @@ const Test = ({ family, data, sproject, updateData }) => {
             </React.Fragment>
           ))}
           <tr>
-            <td className="headers">{sproject} OS</td>
+            <td style={{ backgroundColor: "black" }}>{sproject} OS </td>
 
             {data.flatMap((y) =>
               y.weeks.map((w) => {
@@ -570,8 +638,8 @@ const Test = ({ family, data, sproject, updateData }) => {
                     project.project_OS.OS_Auditing_Data_Reporting;
                   return (
                     <td
-                      className="headers"
-                      key={`${y.month_name}-${w.week_name}`}
+                      style={{ backgroundColor: "black" }}
+                      key={`${y.year}-${w.week_name}`}
                     >
                       {total}
                     </td>
@@ -626,7 +694,6 @@ const Test = ({ family, data, sproject, updateData }) => {
                 const project = w.projectData.find(
                   (p) => p.projectName === sproject
                 );
-
                 if (project) {
                   return (
                     <td key={`${y.month_name}-${w.week_name}`}>
@@ -721,7 +788,9 @@ const Test = ({ family, data, sproject, updateData }) => {
             )}
           </tr>
           <tr>
-            <td className="headers">{sproject}Special list out of the plant</td>
+            <td style={{ backgroundColor: "black" }}>
+              {sproject}Special list out of the plant
+            </td>
             {data.flatMap((y) =>
               y.weeks.map((w) => {
                 const project = w.projectData.find(
@@ -738,7 +807,7 @@ const Test = ({ family, data, sproject, updateData }) => {
                     project.project_special_list.Physical_incapacity_NMA;
                   return (
                     <td
-                      className="headers"
+                      style={{ backgroundColor: "black" }}
                       key={`${y.month_name}-${w.week_name}`}
                     >
                       {total}
@@ -929,7 +998,7 @@ const Test = ({ family, data, sproject, updateData }) => {
             )}
           </tr>
           <tr>
-            <td className="headers">{sproject} Actual DH</td>
+            <td style={{ backgroundColor: "black" }}>{sproject} Actual DH</td>
             {data.flatMap((y) => {
               let previousValue = null; // Initialize with null to handle the first comparison
 
@@ -968,7 +1037,10 @@ const Test = ({ family, data, sproject, updateData }) => {
                   previousValue = actualDH;
 
                   return (
-                    <td key={`${y.year}-${w.week_name}`} style={cellStyle}>
+                    <td
+                      style={{ ...cellStyle, backgroundColor: "black" }}
+                      key={`${y.year}-${w.week_name}`}
+                    >
                       {actualDH}
                     </td>
                   );

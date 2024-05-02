@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import Test from "../Components/individuals/Test";
+import Dhwalk from "../Components/individuals/Dhwalk";
+
 import "./Home.css";
 const Main = () => {
   const [Project, setProject] = useState([]);
@@ -8,9 +10,10 @@ const Main = () => {
   const [families, setFamilies] = useState([]);
   const [data, setdata] = useState([]);
 
+  const [showDHwalk, setshowDHwalk] = useState(false);
+
   const getData = useCallback(async () => {
     const data = axios.get("http://10.236.150.19:8080/api/assembly_project");
-
     const globaldata = (await data).data;
     const filteredData = globaldata.map((yearData) => ({
       year: yearData.year,
@@ -55,7 +58,11 @@ const Main = () => {
   const updatedatastate = (newData) => {
     setdata(newData);
   };
-  
+
+  const toggleDHwalk = () => {
+    setshowDHwalk(!showDHwalk);
+  };
+
   return (
     <>
       <h2>DH WALK</h2>
@@ -66,12 +73,15 @@ const Main = () => {
           </label>
         ))}
       </div>
-      <Test
-        family={families}
-        data={data}
-        sproject={selectedProject}
-        updateData={updatedatastate}
-      />
+      <div className="table_container">
+        <Test
+          family={families}
+          data={data}
+          sproject={selectedProject}
+          updateData={updatedatastate}
+        />
+      </div>
+      <div>{showDHwalk && <Dhwalk />}</div>
     </>
   );
 };
