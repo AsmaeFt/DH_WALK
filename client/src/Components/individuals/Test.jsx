@@ -92,10 +92,9 @@ const Test = ({ family, data, sproject, updateData }) => {
           </tr>
           <tr>
             <td>Project</td>
-            {weeksandmonths.flatMap((w, i) => (
-              <td key={w.week}>2</td>
-            ))}
+            
           </tr>
+
           {family.flatMap((f, i) => (
             <React.Fragment key={i}>
               <tr>
@@ -118,6 +117,7 @@ const Test = ({ family, data, sproject, updateData }) => {
                           fam.Back_Up +
                           fam.Containment;
                         const totalF = HC_Crew * fam.crews + fam.SOS;
+
                         return (
                           <td
                             key={`${y.month_name}-${w.week_name}-${fam.name}`}
