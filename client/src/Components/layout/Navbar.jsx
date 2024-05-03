@@ -6,7 +6,7 @@ import "./Navbar.css";
 
 const NavBar = () => {
   const location = useLocation();
-  const isMainPage = location.pathname === "/main";
+  const isMainPage = location.pathname === "/";
   return (
     <>
       {!isMainPage && (

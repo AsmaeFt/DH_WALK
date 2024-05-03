@@ -44,3 +44,7 @@ export const DH_Calculs = (data, sproject) => {
   );
   return weekly_DH;
 };
+
+export const OS_calculs = (data)=>{
+  
+}

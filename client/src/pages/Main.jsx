@@ -21,7 +21,7 @@ const Main = () => {
             <Card
               Department="Final Assembly"
               border="3px solid #1b0f7d"
-              navigate={() => navigate("/")}
+              navigate={() => navigate("/final_assembly")}
             />
           </div>
           <div className="card-wrapper">

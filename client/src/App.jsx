@@ -20,8 +20,8 @@ function App() {
         <div className="app-container">
           <div className="content">
             <Routes>
-              <Route path="/" element={<Main />} />
-              <Route path="/main" element={<MainPage />} />
+              <Route path="/" element={<MainPage />} />
+              <Route path="/final_assembly" element={<Main />} />
               <Route path="/ADD_DATA" element={<Add_Data />} />
               <Route path="*" element={<p>Nothing to show here ! </p>} />
             </Routes>
