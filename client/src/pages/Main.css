@@ -1,0 +1,59 @@
+.cardContainer {
+    width: 100%;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.card_content {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.card-wrapper {
+  position: relative;
+  width: 25rem;
+  height: 24rem;
+  margin: 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: #0000008c;
+}
+.card:hover {
+  background-color: #0000001a;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../Components//assets/Quality.jpg");
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: -1;
+  border-radius: 7px;
+}
+
+.card:hover:before {
+  transform: scale(1.1);
+}
+.card p {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+

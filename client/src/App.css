@@ -25,5 +25,6 @@
   flex: 1;
   overflow: auto;
   padding: 1rem;
- /*  margin-left:  3rem;; */
+  height: 90vh;
+  align-items: center;
 }
