@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { generateWeeks } from "../functions/utilis";
 import axios from "axios";
-import { calculate_DH_Required } from "../functions/Get_calculations";
+import { DH_Calculs } from "../functions/Get_calculations";
 
 const Test = ({ family, data, sproject, updateData }) => {
   const weeksandmonths = generateWeeks();
@@ -73,8 +73,8 @@ const Test = ({ family, data, sproject, updateData }) => {
     inputsothers();
   }, [inputsothers]);
 
-  const dhrequired = calculate_DH_Required(data, sproject);
-  console.log(dhrequired);
+  const dh_calculs = DH_Calculs(data, sproject);
+  console.log(dh_calculs);
 
   return (
     <>
@@ -90,7 +90,7 @@ const Test = ({ family, data, sproject, updateData }) => {
         <tbody>
           <tr>
             <td>Project DH required </td>
-            {dhrequired.flatMap((w, i) => (
+            {dh_calculs.flatMap((w, i) => (
               <td key={i}>{w.DHRequired}</td>
             ))}
           </tr>
@@ -588,7 +588,7 @@ const Test = ({ family, data, sproject, updateData }) => {
           <tr>
             <td style={{ backgroundColor: "black" }}>{sproject} OS </td>
 
-            {dhrequired.flatMap((w, i) => (
+            {dh_calculs.flatMap((w, i) => (
               <td style={{ backgroundColor: "black" }} key={i}>
                 {w.totalOS}
               </td>
@@ -732,36 +732,11 @@ const Test = ({ family, data, sproject, updateData }) => {
             <td style={{ backgroundColor: "black" }}>
               {sproject}Special list out of the plant
             </td>
-            {data.flatMap((y) =>
-              y.weeks.map((w) => {
-                const project = w.projectData.find(
-                  (p) => p.projectName === sproject
-                );
-
-                if (project) {
-                  const total =
-                    project.project_special_list
-                      .Pregnant_women_out_of_the_plant +
-                    project.project_special_list.Maternity +
-                    project.project_special_list.Breastfeeding_leave +
-                    project.project_special_list.LTI_Long_term_weaknesses_LWD +
-                    project.project_special_list.Physical_incapacity_NMA;
-                  return (
-                    <td
-                      style={{ backgroundColor: "black" }}
-                      key={`${y.month_name}-${w.week_name}`}
-                    >
-                      {total}
-                    </td>
-                  );
-                }
-                return (
-                  <td key={`${y.month_name}-${w.week_name}-empty`}>
-                    {loading ? <div className="round-loader"></div> : "-"}
-                  </td>
-                );
-              })
-            )}
+            {dh_calculs.flatMap((w, i) => (
+              <td style={{ backgroundColor: "black" }} key={i}>
+                {w.totalSP}
+              </td>
+            ))}
           </tr>
           <tr>
             <td>Pregnant women out of the plant</td>
