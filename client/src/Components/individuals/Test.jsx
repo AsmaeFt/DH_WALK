@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { generateWeeks } from "../functions/utilis";
 import axios from "axios";
+import { calculate_DH_Required } from "../functions/Get_calculations";
 
 const Test = ({ family, data, sproject, updateData }) => {
   const weeksandmonths = generateWeeks();
@@ -72,6 +73,9 @@ const Test = ({ family, data, sproject, updateData }) => {
     inputsothers();
   }, [inputsothers]);
 
+  const dhrequired = calculate_DH_Required(data, sproject);
+  console.log(dhrequired);
+
   return (
     <>
       <table>
@@ -86,49 +90,9 @@ const Test = ({ family, data, sproject, updateData }) => {
         <tbody>
           <tr>
             <td>Project DH required </td>
-            {data.flatMap((y) =>
-              y.weeks.flatMap((w) => {
-                const project = w.projectData.find(
-                  (p) => p.projectName === sproject
-                );
-                if (project) {
-                  let familyTotal = 0;
-                  let DHRequired = 0;
-                  project.family.map((fam) => {
-                    if (fam != null) {
-                      const HC_Crew =
-                        fam.ME_DEFINITION +
-                        fam.ME_SUPPORT +
-                        fam.Rework +
-                        fam.Poly +
-                        fam.Back_Up +
-                        fam.Containment;
-                      const totalF = HC_Crew * fam.crews + fam.SOS;
-                      familyTotal += totalF;
-                    }
-                    const totalOS =
-                      project.project_OS.Digitalization +
-                      project.project_OS.Daily_Kaizen +
-                      project.project_OS.OS_Auditing +
-                      project.project_OS.OS_Auditing_Data_Reporting;
-
-                    const totalSP =
-                      project.project_special_list
-                        .Pregnant_women_out_of_the_plant +
-                      project.project_special_list.Maternity +
-                      project.project_special_list.Breastfeeding_leave +
-                      project.project_special_list
-                        .LTI_Long_term_weaknesses_LWD +
-                      project.project_special_list.Physical_incapacity_NMA;
-
-                    DHRequired = totalOS + totalSP + familyTotal;
-                  });
-                  return (
-                    <td key={`${y.month_name}-${w.week_name}`}>{DHRequired}</td>
-                  );
-                }
-              })
-            )}
+            {dhrequired.flatMap((w, i) => (
+              <td key={i}>{w.DHRequired}</td>
+            ))}
           </tr>
           <tr>
             <td>Project</td>
@@ -624,34 +588,11 @@ const Test = ({ family, data, sproject, updateData }) => {
           <tr>
             <td style={{ backgroundColor: "black" }}>{sproject} OS </td>
 
-            {data.flatMap((y) =>
-              y.weeks.map((w) => {
-                const project = w.projectData.find(
-                  (p) => p.projectName === sproject
-                );
-
-                if (project) {
-                  const total =
-                    project.project_OS.Digitalization +
-                    project.project_OS.Daily_Kaizen +
-                    project.project_OS.OS_Auditing +
-                    project.project_OS.OS_Auditing_Data_Reporting;
-                  return (
-                    <td
-                      style={{ backgroundColor: "black" }}
-                      key={`${y.year}-${w.week_name}`}
-                    >
-                      {total}
-                    </td>
-                  );
-                }
-                return (
-                  <td key={`${y.month_name}-${w.week_name}-empty`}>
-                    {loading ? <div className="round-loader"></div> : "-"}
-                  </td>
-                );
-              })
-            )}
+            {dhrequired.flatMap((w, i) => (
+              <td style={{ backgroundColor: "black" }} key={i}>
+                {w.totalOS}
+              </td>
+            ))}
           </tr>
           <tr>
             <td>Digitalization</td>

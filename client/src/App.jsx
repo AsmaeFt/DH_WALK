@@ -10,7 +10,7 @@ import {
 import NavBar from "./Components/layout/Navbar";
 import Add_Data from "./Components/individuals/Data";
 import Main from "./pages/Maintest";
-import MainPage from './pages/Main'
+import MainPage from "./pages/Main";
 import "./App.css";
 function App() {
   return (

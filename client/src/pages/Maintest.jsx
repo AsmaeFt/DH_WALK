@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import Test from "../Components/individuals/Test";
-import Dhwalk from "../Components/individuals/Dhwalk";
+
 
 import "./Home.css";
 const Main = () => {
@@ -10,7 +10,7 @@ const Main = () => {
   const [families, setFamilies] = useState([]);
   const [data, setdata] = useState([]);
 
-  const [showDHwalk, setshowDHwalk] = useState(false);
+
 
   const getData = useCallback(async () => {
     const data = axios.get("http://10.236.150.19:8080/api/assembly_project");
@@ -59,14 +59,11 @@ const Main = () => {
     setdata(newData);
   };
 
-  const toggleDHwalk = () => {
-    setshowDHwalk(!showDHwalk);
-  };
+
 
   return (
     <>
-    
-      <h2>DH WALK</h2>
+      <h2>Final Assembly Projects </h2>
       <div className="projects">
         {Project.map((p, i) => (
           <label onClick={() => setselectedProject(p)} key={i}>
@@ -82,9 +79,7 @@ const Main = () => {
           updateData={updatedatastate}
         />
       </div>
-      <div>{showDHwalk && <Dhwalk />}</div>
     </>
   );
 };
-
 export default Main;
