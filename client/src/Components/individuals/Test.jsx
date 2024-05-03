@@ -75,7 +75,6 @@ const Test = ({ family, data, sproject, updateData }) => {
 
   const dh_calculs = DH_Calculs(data, sproject);
   console.log(dh_calculs);
-
   return (
     <>
       <table>
@@ -87,7 +86,7 @@ const Test = ({ family, data, sproject, updateData }) => {
             ))}
           </tr>
         </thead>
-        
+
         <tbody>
           <tr>
             <td>Project DH required </td>
@@ -105,7 +104,6 @@ const Test = ({ family, data, sproject, updateData }) => {
                 if (project) {
                   let familyTotal = 0;
                   project.family.map((fam) => {
-                    
                     if (fam != null) {
                       const HC_Crew =
                         fam.ME_DEFINITION +
@@ -116,7 +114,6 @@ const Test = ({ family, data, sproject, updateData }) => {
                         fam.Containment;
                       const totalF = HC_Crew * fam.crews + fam.SOS;
                       familyTotal += totalF;
-                     
                     }
                   });
 

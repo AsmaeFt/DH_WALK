@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import Test from "../Components/individuals/Test";
 
-
 import "./Home.css";
 const Main = () => {
   const [Project, setProject] = useState([]);
@@ -10,7 +9,7 @@ const Main = () => {
   const [families, setFamilies] = useState([]);
   const [data, setdata] = useState([]);
 
-
+  const [currentView, setCurrentView] = useState("Test");
 
   const getData = useCallback(async () => {
     const data = axios.get("http://10.236.150.19:8080/api/assembly_project");
@@ -59,25 +58,34 @@ const Main = () => {
     setdata(newData);
   };
 
-
-
   return (
     <>
       <h2>Final Assembly Projects </h2>
       <div className="projects">
         {Project.map((p, i) => (
-          <label onClick={() => setselectedProject(p)} key={i}>
+          <label
+            onClick={() => {
+              setselectedProject(p);
+              setCurrentView("Test");
+            }}
+            key={i}
+          >
             {p}
           </label>
         ))}
+        <label onClick={() => setCurrentView("OtherComponent")}>OS - AFM</label>
       </div>
       <div className="table_container">
-        <Test
-          family={families}
-          data={data}
-          sproject={selectedProject}
-          updateData={updatedatastate}
-        />
+        {currentView === "Test" ? (
+          <Test
+            family={families}
+            data={data}
+            sproject={selectedProject}
+            updateData={updatedatastate}
+          />
+        ) : (
+          <p> OS - AFM </p>
+        )}
       </div>
     </>
   );
