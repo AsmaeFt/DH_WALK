@@ -76,7 +76,7 @@ const Main = () => {
         ))}
         <label onClick={() => setCurrentView("OtherComponent")}>OS - AFM</label>
       </div>
-      <div className="table_container">
+      <div className="table_container fadeUp">
         <table> 
           <TableHeader/>
           {currentView === "Test" ? (

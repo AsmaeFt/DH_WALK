@@ -91,27 +91,17 @@ tr td input{
     background-color: orangered;
   }
 
-/*   .round-loader {
-  
-    width: 1rem;  
-    height: 1rem; 
-    border-radius: 50%;   
-    animation: rotate 1.5s linear infinite;  
-    background: conic-gradient(
-      from 0deg at 50% 50%, 
-      rgba(168, 29, 29, 0) 0%, 
-      rgb(209, 52, 4) 50%, 
-      rgba(145, 96, 96, 0.692) 100%
-    );
+@keyframes fadeUp {
+  0%{
+    opacity: 0;
+    transform: translateY(40px);
   }
-  
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  100%{
+    opacity: 1;
+    transform:translateY(0);
   }
-   */
+}
+.fadeUp{
+  animation: fadeUp 0.5s ease-in-out;
+}
   
