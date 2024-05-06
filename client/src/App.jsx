@@ -11,6 +11,7 @@ import NavBar from "./Components/layout/Navbar";
 import Add_Data from "./Components/individuals/Data";
 import Main from "./pages/Maintest";
 import MainPage from "./pages/Main";
+import Quality from "./Components/individuals/Quality";
 import "./App.css";
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Routes>
               <Route path="/" element={<MainPage />} />
               <Route path="/final_assembly" element={<Main />} />
+              <Route path="/Quality" element={<Quality />} />
               <Route path="/ADD_DATA" element={<Add_Data />} />
               <Route path="*" element={<p>Nothing to show here ! </p>} />
             </Routes>

@@ -33,13 +33,25 @@ const Main = () => {
             />
           </div>
           <div className="card-wrapper">
-            <Card Department="Quality" border="3px solid green" />
+            <Card
+              Department="Quality"
+              border="3px solid green"
+              navigate={() => navigate("/Quality")}
+            />
           </div>
           <div className="card-wrapper">
-            <Card Department="Cutting" border="3px solid gray" />
+            <Card
+              Department="Cutting"
+              border="3px solid gray"
+              navigate={() => navigate("/Cutting")}
+            />
           </div>
           <div className="card-wrapper">
-            <Card Department="MPC" border="3px solid yellow" />
+            <Card
+              Department="MPC"
+              border="3px solid yellow"
+              navigate={() => navigate("/MPC")}
+            />
           </div>
         </div>
       </div>

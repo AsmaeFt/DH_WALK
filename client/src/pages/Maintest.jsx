@@ -90,7 +90,6 @@ const Main = () => {
           <Os_AFM project={Project} />
         )}
         </table>
-       
       </div>
     </>
   );
