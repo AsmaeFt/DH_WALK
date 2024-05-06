@@ -4,18 +4,26 @@ import Card from "../Components/ui/Card";
 import { useNavigate } from "react-router-dom";
 
 import Overlay from "../Components/ui/Overlay";
-  //images
-  import production from '../Components/assets/production.jpg'
-  import Quality from '../Components/assets/Quality.jpg'
+//images
+import production from "../Components/assets/production.jpg";
+import Quality from "../Components/assets/Quality.jpg";
 const Main = () => {
   const navigate = useNavigate();
 
-
-
   return (
     <>
-    <Overlay/>
+      <Overlay />
+
       <div className="cardContainer">
+        <div className="titelHeader">
+          {" "}
+          <span className="dot">.</span> DH walk{" "}
+          <span style={{ color: "orangered" }}>
+            {" "}
+            {new Date().getFullYear()}{" "}
+          </span>{" "}
+          <span className="dot"> .</span>{" "}
+        </div>
         <div className="card_content">
           <div className="card-wrapper">
             <Card

@@ -1,18 +1,26 @@
 .cardContainer {
   width: 100%;
- 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 90vh;
+  align-content: center;
 }
 .card_content {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  height: 90vh;
   align-items: center;
 }
+.dot{
+  font-size: 5rem;
+  color: orangered;
+}
+
+.titelHeader{
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
 .card-wrapper {
   position: relative;
   width: 24rem;
@@ -33,7 +41,7 @@
   background-color: #0000008c;
 }
 .card:hover {
-  background-color: #0000001a;
+  background-color: #00000069;
 }
 
 .card::before {

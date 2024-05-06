@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import Test from "../Components/individuals/Test";
-
+import TableHeader from "../Components/ui/TableHeader";
+import Os_AFM from "../Components/individuals/Os_AFM";
 import "./Home.css";
 const Main = () => {
   const [Project, setProject] = useState([]);
@@ -76,7 +77,9 @@ const Main = () => {
         <label onClick={() => setCurrentView("OtherComponent")}>OS - AFM</label>
       </div>
       <div className="table_container">
-        {currentView === "Test" ? (
+        <table> 
+          <TableHeader/>
+          {currentView === "Test" ? (
           <Test
             family={families}
             data={data}
@@ -84,8 +87,10 @@ const Main = () => {
             updateData={updatedatastate}
           />
         ) : (
-          <p> OS - AFM </p>
+          <Os_AFM project={Project} />
         )}
+        </table>
+       
       </div>
     </>
   );

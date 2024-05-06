@@ -6,6 +6,7 @@ export const DH_Calculs = (data, sproject) => {
       if (project) {
         let familyTotal = 0;
         let DHRequired = 0;
+        let totalSOS = 0;
         const totalOS =
           project.project_OS.Digitalization +
           project.project_OS.Daily_Kaizen +
@@ -30,6 +31,7 @@ export const DH_Calculs = (data, sproject) => {
               fam.Containment;
             const totalF = HC_Crew * fam.crews + fam.SOS;
             familyTotal += totalF;
+            totalSOS += fam.SOS;
           }
 
           DHRequired = totalOS + totalSP + familyTotal;
@@ -38,6 +40,7 @@ export const DH_Calculs = (data, sproject) => {
           DHRequired,
           totalOS,
           totalSP,
+          totalSOS,
         });
       }
     })
@@ -45,6 +48,4 @@ export const DH_Calculs = (data, sproject) => {
   return weekly_DH;
 };
 
-export const OS_calculs = (data)=>{
-  
-}
+export const OS_calculs = (data) => {};
