@@ -1,12 +1,16 @@
 export const DH_Calculs = (data, sproject) => {
   const weekly_DH = [];
-  data.flatMap((y) =>
+  data.flatMap((y) =>{
+    
     y.weeks.flatMap((w) => {
       const project = w.projectData.find((p) => p.projectName === sproject);
       if (project) {
+       
         let familyTotal = 0;
         let DHRequired = 0;
         let totalSOS = 0;
+        let actualDH = 0;
+
         const totalOS =
           project.project_OS.Digitalization +
           project.project_OS.Daily_Kaizen +
@@ -36,6 +40,9 @@ export const DH_Calculs = (data, sproject) => {
 
           DHRequired = totalOS + totalSP + familyTotal;
         });
+
+       
+
         weekly_DH.push({
           DHRequired,
           totalOS,
@@ -44,8 +51,7 @@ export const DH_Calculs = (data, sproject) => {
         });
       }
     })
-  );
+});
   return weekly_DH;
 };
-
 export const OS_calculs = (data) => {};

@@ -14,7 +14,6 @@ exports.getDhwalk = async (req, res, next) => {
 exports.addProjectData = async (req, res, next) => {
   try {
     const { year, weeks } = req.body;
-
     const projectData = weeks.flatMap((p) => p.projectData)[0];
     const projectName = projectData.projectName;
 
@@ -34,7 +33,8 @@ exports.addProjectData = async (req, res, next) => {
         await data.save();
         res.status(201).json("Project data added to all weeks successfully!");
       }
-    } else {
+    } 
+    else {
       const generatedWeeks = generateWeeks();
       const newWeeksData = generatedWeeks.map((genWeek) => {
         const weekData = weeks.find((week) => week.week_name === genWeek.week);
@@ -157,16 +157,16 @@ exports.editDataothers = async (req, res, next) => {
       const updatePath = `weeks.$[weekIdx].projectData.$[projIdx].${path}`;
       return {
         updateOne: {
-          filter:{"weeks.week_name":w.week_name},
-          update:{$set:{[updatePath]:value}},
-          arrayFilters:[
+          filter: { "weeks.week_name": w.week_name },
+          update: { $set: { [updatePath]: value } },
+          arrayFilters: [
             { "weekIdx._id": w._id },
             { "projIdx._id": w.projectData[projectIndx]._id },
-          ]
+          ],
         },
       };
     });
-    await dhwalk.bulkWrite(updates)
+    await dhwalk.bulkWrite(updates);
 
     const Data_Global = await dhwalk.find({});
     res.status(200).json(Data_Global);

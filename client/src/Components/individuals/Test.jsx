@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
 
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { DH_Calculs } from "../functions/Get_calculations";
 
 const Test = ({ family, data, sproject, updateData }) => {
-  
   const [inputs, setinputs] = useState({});
   const [inputothers, setinputothers] = useState({});
   const [loading, setLoading] = useState(true);
-
   const handleOthers = (week, project, path, value) => {
     setinputothers({
       week: week,
@@ -17,7 +15,6 @@ const Test = ({ family, data, sproject, updateData }) => {
       value: value,
     });
   };
-
   const handleChange = (week, project, family, attribute, value) => {
     setinputs({
       week: week,
@@ -27,7 +24,6 @@ const Test = ({ family, data, sproject, updateData }) => {
       value: value,
     });
   };
-
   const inputChange = useCallback(async () => {
     if (inputs.value !== undefined) {
       const fetchData = async () => {
@@ -74,6 +70,7 @@ const Test = ({ family, data, sproject, updateData }) => {
   }, [inputsothers]);
 
   const dh_calculs = DH_Calculs(data, sproject);
+  console.log((dh_calculs.actualDH));
   return (
     <>
         <tbody>
@@ -105,7 +102,7 @@ const Test = ({ family, data, sproject, updateData }) => {
                       const totalF = HC_Crew * fam.crews + fam.SOS;
                       familyTotal += totalF;
                       totalSOS += fam.SOS;
-                      console.log(totalSOS);
+                     
                     }
                   });
 
@@ -908,8 +905,7 @@ const Test = ({ family, data, sproject, updateData }) => {
           <tr>
             <td style={{ backgroundColor: "black" }}>{sproject} Actual DH</td>
             {data.flatMap((y) => {
-              let previousValue = null; // Initialize with null to handle the first comparison
-
+              let previousValue = null; 
               return y.weeks.map((w) => {
                 const project = w.projectData.find(
                   (p) => p.projectName === sproject
@@ -917,7 +913,7 @@ const Test = ({ family, data, sproject, updateData }) => {
 
                 if (project) {
                   let actualDH;
-                  if (w.week_name === "2024-W01") {
+                  if (w.week_name === `${new Date().getFullYear()}-W01`) {
                     actualDH =
                       project.project_actual_DH.last_HC -
                       project.project_actual_DH.Attrition +
@@ -931,7 +927,7 @@ const Test = ({ family, data, sproject, updateData }) => {
                       project.project_actual_DH.Transfer;
                   }
 
-                  // Determine the cell color based on the comparison
+                  
                   const cellStyle =
                     previousValue === null
                       ? {}
@@ -1062,8 +1058,63 @@ const Test = ({ family, data, sproject, updateData }) => {
               })
             )}
           </tr>
+          <tr>
+            <td   style={{ backgroundColor: "orangered" }}>Gap</td>
+            {data.flatMap((y) => {
+              let previousValue = null; 
+              return y.weeks.map((w) => {
+                const project = w.projectData.find(
+                  (p) => p.projectName === sproject
+                );
+
+                if (project) {
+                  let actualDH;
+                  if (w.week_name === `${new Date().getFullYear()}-W01`) {
+                    actualDH =
+                      project.project_actual_DH.last_HC -
+                      project.project_actual_DH.Attrition +
+                      project.project_actual_DH.Hiring -
+                      project.project_actual_DH.Transfer;
+                  } else {
+                    actualDH =
+                      previousValue -
+                      project.project_actual_DH.Attrition +
+                      project.project_actual_DH.Hiring -
+                      project.project_actual_DH.Transfer;
+                  }
+                  previousValue = actualDH;
+                  
+                  let gap = 0;
+                    dh_calculs.flatMap((w,i)=>{
+                       gap = actualDH - w.DHRequired
+                      console.log(gap);
+
+                
+                    })
+                    return (
+                      <td
+                        style={{ backgroundColor: "orangered" }}
+                        key={`${y.year}-${w.week_name}`}
+                      >
+                        {gap}
+                      </td>
+                    );
+                  
+        
+                }
+
+                return (
+                  <td key={`${y.year}-${w.week_name}-empty`}>
+                    {loading ? <div className="round-loader"></div> : "-"}
+                  </td>
+                );
+              });
+            })}
+   
+          </tr>
         </tbody>
     </>
   );
 };
 export default Test;
+

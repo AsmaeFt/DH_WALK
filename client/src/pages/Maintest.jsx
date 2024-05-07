@@ -1,21 +1,23 @@
-import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import Test from "../Components/individuals/Test";
 import TableHeader from "../Components/ui/TableHeader";
 import Os_AFM from "../Components/individuals/Os_AFM";
+import { DATA, GettheProject } from "../services/api";
 import "./Home.css";
+
 const Main = () => {
-  const [Project, setProject] = useState([]);
-  const [selectedProject, setselectedProject] = useState("K9 KSK");
+  const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("K9 KSK");
   const [families, setFamilies] = useState([]);
-  const [data, setdata] = useState([]);
-
+  const [data, setData] = useState([]);
   const [currentView, setCurrentView] = useState("Test");
+  const [globalData, setGlobalData] = useState([]);
 
-  const getData = useCallback(async () => {
-    const data = axios.get("http://10.236.150.19:8080/api/assembly_project");
-    const globaldata = (await data).data;
-    const filteredData = globaldata.map((yearData) => ({
+  const fetchData = useCallback(async () => {
+    const fetchedGlobalData = await DATA();
+    setGlobalData(fetchedGlobalData);
+
+    const filteredData = fetchedGlobalData.map((yearData) => ({
       year: yearData.year,
       weeks: yearData.weeks
         .map((week) => ({
@@ -28,48 +30,61 @@ const Main = () => {
         .filter((week) => week.projectData.length > 0),
     }));
 
-    setdata(filteredData);
+    setData(filteredData);
   }, [selectedProject]);
+
   useEffect(() => {
+    const getData = () => fetchData();
     getData();
-  }, [getData]);
+  }, [fetchData]);
 
-  const getProject = useCallback(async () => {
+  const fetchProject = useCallback(async () => {
     try {
-      const res = await axios.get("http://10.236.150.19:8080/api/Get_project");
-      const Project = await res.data.flatMap((p) => p.name);
-      const families = await res.data
-        .filter((p) => p.name === selectedProject)
-        .flatMap((p) => p.family)
-        .map((f) => f.name);
-      setFamilies(families);
-      setProject(Project);
-
-      return res.data;
-    } catch (er) {
-      console.error("error is ", er);
+      const { proj, fam } = await GettheProject(selectedProject);
+      setFamilies(fam);
+      setProjects(proj);
+    } catch (err) {
+      console.error("Error fetching project data:", err);
     }
   }, [selectedProject]);
 
   useEffect(() => {
-    getProject();
-  }, [getProject]);
+    fetchProject();
+  }, [fetchProject]);
 
-  const updatedatastate = (newData) => {
-    setdata(newData);
+  const handleDataUpdate = (newData) => {
+    setData(newData);
+  };
+
+  const renderView = () => {
+    switch (currentView) {
+      case "Test":
+        return (
+          <Test
+            family={families}
+            data={data}
+            sproject={selectedProject}
+            updateData={handleDataUpdate}
+          />
+        );
+      case "OtherComponent":
+        return <Os_AFM project={projects} data={globalData} />;
+      default:
+        return null;
+    }
   };
 
   return (
     <>
-      <h2>Final Assembly Projects </h2>
+      <h2>Final Assembly Projects</h2>
       <div className="projects">
-        {Project.map((p, i) => (
+        {projects.map((p, i) => (
           <label
+            key={i}
             onClick={() => {
-              setselectedProject(p);
+              setSelectedProject(p);
               setCurrentView("Test");
             }}
-            key={i}
           >
             {p}
           </label>
@@ -77,21 +92,13 @@ const Main = () => {
         <label onClick={() => setCurrentView("OtherComponent")}>OS - AFM</label>
       </div>
       <div className="table_container fadeUp">
-        <table> 
-          <TableHeader/>
-          {currentView === "Test" ? (
-          <Test
-            family={families}
-            data={data}
-            sproject={selectedProject}
-            updateData={updatedatastate}
-          />
-        ) : (
-          <Os_AFM project={Project} />
-        )}
+        <table>
+          <TableHeader />
+          {renderView()}
         </table>
       </div>
     </>
   );
 };
+
 export default Main;
