@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 
+const After_SalesacualDhSchema = new mongoose.Schema({
+  Attrition: { type: Number },
+  Transfer: { type: Number },
+  Hiring: { type: Number },
+});
 const After_SalesSPLSchema = new mongoose.Schema({
   Pregnant_women_out_of_the_plant: { type: Number },
   Maternity: { type: Number },
@@ -16,7 +21,7 @@ const WeekSchema = new mongoose.Schema({
   week_name: { type: String, required: true },
   After_Sales: { type: [After_SalesSchema], required: true },
   After_Sales_spl: { type: After_SalesSPLSchema, required: true },
-  After_Sales_ActualDH: { type: After_SalesSPLSchema, required: true },
+  After_Sales_ActualDH: { type: After_SalesacualDhSchema, required: true},
 });
 
 const YearSchema = new mongoose.Schema({

@@ -11,30 +11,30 @@ exports.getData = async (req, res, next) => {
     next(err);
   }
 };
+
 exports.addData = async (req, res, next) => {
   try {
     const { year, weeks } = req.body;
     const { After_Sales, After_Sales_spl, After_Sales_ActualDH } = weeks[0];
-
-    const generatedWeeks = generateWeeks();
     const data = await OS_AFM.findOne({ year });
+
     if (!data) {
       const generatedWeeks = generateWeeks();
       const newWeeksData = generatedWeeks.map((genWeek) => {
         const weekData = weeks.find((week) => week.week_name === genWeek.week);
         return {
           week_name: new Date().getFullYear() + "-" + genWeek.week,
-          projectData: weekData ? weekData.projectData : projectData,
+          After_Sales: weekData ? weekData.After_Sales : After_Sales,
+          After_Sales_spl: weekData ? weekData.After_Sales_spl : After_Sales_spl,
+          After_Sales_ActualDH: weekData ? weekData.After_Sales_ActualDH : After_Sales_ActualDH,
         };
       });
 
+      console.log(newWeeksData);
       const newYearData = { year, weeks: newWeeksData };
-      await new dhwalk(newYearData).save();
+      await new OS_AFM(newYearData).save();
       res.status(201).json("Data added to all weeks successfully!");
     }
-    const newYearData = { year, weeks: newData };
-    await new Os_AFM(newYearData).save();
-    res.status(201).json("data added to all weeks successfully!");
   } catch (err) {
     next(err);
   }
