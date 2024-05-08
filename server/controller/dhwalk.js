@@ -177,12 +177,12 @@ exports.editDataothers = async (req, res, next) => {
 
 exports.getFiltredData = async (req, res, next) => {
   try {
-    const projectName = "K9 KSK";
+    const projectName = req.query.projectName;
     const data = await dhwalk.aggregate([
-      { $unwind: '$weeks' },
-      { $unwind: '$weeks.projectData' },
-      { $match: { 'weeks.projectData.projectName': projectName } },
-      { $group: { _id: null, projectData: { $push: '$weeks.projectData' } } },
+      { $unwind: "$weeks" },
+      { $unwind: "$weeks.projectData" },
+      { $match: { "weeks.projectData.projectName": projectName } },
+      { $group: { _id: null, projectData: { $push: "$weeks.projectData" } } },
     ]);
 
     if (data.length > 0) {

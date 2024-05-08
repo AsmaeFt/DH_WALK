@@ -4,6 +4,7 @@ import TableHeader from "../Components/ui/TableHeader";
 import Os_AFM from "../Components/individuals/Os_AFM";
 import { DATA, GettheProject } from "../services/api";
 import "./Home.css";
+import axios from "axios";
 
 const Main = () => {
   const [projects, setProjects] = useState([]);
@@ -58,8 +59,16 @@ const Main = () => {
     setData(newData);
   };
 
-  
-   
+  const filterData = async (p) => {
+    try {
+      const res = await axios.get(
+        `http://10.236.150.19:8080/api/getfiltredata?projectName=${p}`
+      );
+      console.log(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const renderView = () => {
     switch (currentView) {
@@ -87,6 +96,7 @@ const Main = () => {
           <label
             key={i}
             onClick={() => {
+              filterData(p);
               setSelectedProject(p);
               setCurrentView("Test");
             }}
