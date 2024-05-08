@@ -9,7 +9,9 @@ const Main = () => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("K9 KSK");
   const [families, setFamilies] = useState([]);
+
   const [data, setData] = useState([]);
+
   const [currentView, setCurrentView] = useState("Test");
   const [globalData, setGlobalData] = useState([]);
 
@@ -55,6 +57,9 @@ const Main = () => {
   const handleDataUpdate = (newData) => {
     setData(newData);
   };
+
+  
+   
 
   const renderView = () => {
     switch (currentView) {

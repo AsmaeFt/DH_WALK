@@ -7,6 +7,7 @@ const Test = ({ family, data, sproject, updateData }) => {
   const [inputs, setinputs] = useState({});
   const [inputothers, setinputothers] = useState({});
   const [loading, setLoading] = useState(true);
+
   const handleOthers = (week, project, path, value) => {
     setinputothers({
       week: week,
@@ -70,7 +71,7 @@ const Test = ({ family, data, sproject, updateData }) => {
   }, [inputsothers]);
 
   const dh_calculs = DH_Calculs(data, sproject);
-  console.log((dh_calculs.actualDH));
+
   return (
     <>
         <tbody>
@@ -102,7 +103,6 @@ const Test = ({ family, data, sproject, updateData }) => {
                       const totalF = HC_Crew * fam.crews + fam.SOS;
                       familyTotal += totalF;
                       totalSOS += fam.SOS;
-                     
                     }
                   });
 
@@ -1087,9 +1087,6 @@ const Test = ({ family, data, sproject, updateData }) => {
                   let gap = 0;
                     dh_calculs.flatMap((w,i)=>{
                        gap = actualDH - w.DHRequired
-                      console.log(gap);
-
-                
                     })
                     return (
                       <td
@@ -1110,7 +1107,6 @@ const Test = ({ family, data, sproject, updateData }) => {
                 );
               });
             })}
-   
           </tr>
         </tbody>
     </>

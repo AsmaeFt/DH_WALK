@@ -7,11 +7,16 @@ export const DATA = async () => {
 };
 
 export const GettheProject = async (selectedProject) => {
-    const res = await axios.get(`${api}/Get_project`);
-    const proj = await res.data.flatMap((p) => p.name);
-    const fam = await res.data
+  const res = await axios.get(`${api}/Get_project`);
+  const proj = await res.data.flatMap((p) => p.name);
+  const fam = await res.data
     .filter((p) => p.name === selectedProject)
     .flatMap((p) => p.family)
     .map((f) => f.name);
-  return {proj , fam}
+  return { proj, fam };
+};
+
+export const getOSafm = async () => {
+  const res = await axios.get(`${api}/GetOSAFM`);
+  return res.data;
 };

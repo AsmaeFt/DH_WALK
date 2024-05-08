@@ -1,3 +1,4 @@
+const { Error } = require("mongoose");
 const { generateWeeks } = require("../functions/utilis");
 const dhwalk = require("../models/DHwalk");
 const creaError = require("../utilitis/globalError");
@@ -33,8 +34,7 @@ exports.addProjectData = async (req, res, next) => {
         await data.save();
         res.status(201).json("Project data added to all weeks successfully!");
       }
-    } 
-    else {
+    } else {
       const generatedWeeks = generateWeeks();
       const newWeeksData = generatedWeeks.map((genWeek) => {
         const weekData = weeks.find((week) => week.week_name === genWeek.week);
@@ -170,6 +170,26 @@ exports.editDataothers = async (req, res, next) => {
 
     const Data_Global = await dhwalk.find({});
     res.status(200).json(Data_Global);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getFiltredData = async (req, res, next) => {
+  try {
+    const projectName = "K9 KSK";
+    const data = await dhwalk.aggregate([
+      { $unwind: '$weeks' },
+      { $unwind: '$weeks.projectData' },
+      { $match: { 'weeks.projectData.projectName': projectName } },
+      { $group: { _id: null, projectData: { $push: '$weeks.projectData' } } },
+    ]);
+
+    if (data.length > 0) {
+      res.status(200).json(data[0].projectData);
+    } else {
+      throw new Error(`Project "${projectName}" doesn't exist`);
+    }
   } catch (err) {
     next(err);
   }
