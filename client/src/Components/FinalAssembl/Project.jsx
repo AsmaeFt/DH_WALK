@@ -1,4 +1,9 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useSyncExternalStore,
+} from "react";
 import c from "./FinalAssembly.module.css";
 import api from "../../services/api";
 import axios from "axios";
@@ -7,14 +12,13 @@ import axios from "axios";
 const Project = ({ data, sproject, family, updateData }) => {
   const [loading, setLoading] = useState(true);
   const [inputs, setinputs] = useState({});
+  const [othInp, setotheInp] = useState({});
 
   let Total_os = [];
   let Total_slop = [];
   let ActualDh = [];
-
   let totalProject = [];
   let DH_required = [];
-
   let Gap = [];
   // const weeks = generateWeeks();
 
@@ -114,16 +118,38 @@ const Project = ({ data, sproject, family, updateData }) => {
     inputChange();
   }, [inputChange]);
 
-  
-/*     data.map((p) =>
-      p.projectData.map((pr) => {
-        const fam = pr.family.flatMap((fam) => fam.name);
-        if (fam != null) {
-          console.log(fam);
+  const handleOthers = (projectName, week, path, value) => {
+    setotheInp({
+      projectName: projectName,
+      week: week,
+      path: path,
+      value: value,
+    });
+  };
+
+  const inputOthChange = useCallback(async () => {
+    if (othInp.value !== undefined) {
+      const fetchData = async () => {
+        try {
+          const response = await axios.post(
+            `${api}/assembly_Others_Edits`,
+            othInp
+          );
+
+          setLoading(false);
+          updateData(response.data); 
+          console.log("API Response:", response.data);
+        } catch (error) {
+          console.error("Error posting data:", error);
         }
-      })
-    ); */
-  
+      };
+      fetchData();
+    }
+  }, [othInp]);
+  useEffect(() => {
+    inputOthChange();
+  }, [inputOthChange]);
+  console.log(othInp);
   return (
     <>
       <tbody>
@@ -155,7 +181,6 @@ const Project = ({ data, sproject, family, updateData }) => {
                 {data.flatMap((p, projectIndex) =>
                   p.projectData.flatMap((pr, projectDataIndex) => {
                     const fam = pr.family.find((fam) => fam.name === f);
-                    // console.log(fam);
                     if (fam) {
                       const HC_Crew =
                         fam.ME_DEFINITION +
@@ -182,18 +207,18 @@ const Project = ({ data, sproject, family, updateData }) => {
                     const fam = pr.family.find((fam) => fam.name === f);
                     if (fam) {
                       const HC_Crew =
-                        fam.ME_DEFINITION +
                         fam.ME_SUPPORT +
                         fam.Rework +
                         fam.Poly +
                         fam.Back_Up +
-                        fam.Containment;
+                        fam.Containment +
+                        fam.SOS;
                       const Indirects = Math.round(
                         (HC_Crew / fam.ME_DEFINITION) * 100
                       );
                       return (
                         <td key={`${f}-${projectIndex}-${projectDataIndex}`}>
-                          {Indirects || "-"}
+                          {Indirects + "%" || "-"}
                         </td>
                       );
                     }
@@ -403,7 +428,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                               handleChange(
                                 sproject,
                                 p.week_name,
-                                sproject,
+
                                 fam.name,
                                 "Containment",
                                 e.target.value
@@ -461,7 +486,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             <td>Digitalization</td>
             {data.map((p) =>
               p.projectData.map((pr, i) => (
-                <td key={i}>{pr.project_OS.Digitalization}</td>
+                <td key={i}>
+                  <input
+                    placeholder={pr.project_OS.Digitalization}
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_OS.Digitalization",
+                        e.target.value
+                      )
+                    }
+                  />
+                </td>
               ))
             )}
           </tr>

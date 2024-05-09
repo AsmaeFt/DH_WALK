@@ -55,7 +55,7 @@ exports.addProjectData = async (req, res, next) => {
 
 exports.editDataFamily = async (req, res, next) => {
   try {
-    const {projectName, week, project, family, attribute, value } = req.body;
+    const {projectName, week,  family, attribute, value } = req.body;
     const validAttributes = [
       "crews",
       "ME_DEFINITION",
@@ -148,12 +148,12 @@ exports.editDataFamily = async (req, res, next) => {
 
 exports.editDataothers = async (req, res, next) => {
   try {
-    const { week, project, path, value } = req.body;
+    const { projectName , week, path, value } = req.body;
     const updatePath = `weeks.$[weekIdx].projectData.$[projIdx].${path}`;
     const updateResult = await dhwalk.findOneAndUpdate(
       {
         "weeks.week_name": week,
-        "weeks.projectData.projectName": project,
+        "weeks.projectData.projectName": projectName,
       },
       {
         $set: { [updatePath]: value },
@@ -161,7 +161,7 @@ exports.editDataothers = async (req, res, next) => {
       {
         arrayFilters: [
           { "weekIdx.week_name": week },
-          { "projIdx.projectName": project },
+          { "projIdx.projectName": projectName },
         ],
       }
     );
@@ -170,7 +170,7 @@ exports.editDataothers = async (req, res, next) => {
     const subsequentWeeks = updateResult.weeks.slice(weekIndex + 1);
     const updates = subsequentWeeks.map((w) => {
       const projectIndx = w.projectData.findIndex(
-        (p) => p.projectName === project
+        (p) => p.projectName === projectName
       );
       const updatePath = `weeks.$[weekIdx].projectData.$[projIdx].${path}`;
       return {
@@ -186,8 +186,26 @@ exports.editDataothers = async (req, res, next) => {
     });
     await dhwalk.bulkWrite(updates);
 
-    const Data_Global = await dhwalk.find({});
-    res.status(200).json(Data_Global);
+    const data = await dhwalk.aggregate([
+      { $unwind: "$weeks" },
+      { $unwind: "$weeks.projectData" },
+      { $match: { "weeks.projectData.projectName": projectName } },
+      {
+        $group: {
+          _id: "$weeks.week_name",
+          projectData: { $push: "$weeks.projectData" },
+        },
+        
+      },
+      { $sort: { _id: 1 } },
+      { $group: { _id: null, data: { $push: { week_name: "$_id", projectData: "$projectData" } } } },
+    ]);
+
+    if (data.length > 0) {
+      res.status(200).json(data[0].data);
+    } else {
+      throw new Error(`Project "${projectName}" doesn't exist`);
+    }
   } catch (err) {
     next(err);
   }
