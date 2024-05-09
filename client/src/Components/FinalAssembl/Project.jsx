@@ -115,14 +115,14 @@ const Project = ({ data, sproject, family, updateData }) => {
   }, [inputChange]);
 
   
-    data.map((p) =>
+/*     data.map((p) =>
       p.projectData.map((pr) => {
         const fam = pr.family.flatMap((fam) => fam.name);
         if (fam != null) {
           console.log(fam);
         }
       })
-    );
+    ); */
   
   return (
     <>
