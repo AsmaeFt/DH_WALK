@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import date from "../assets/dates.png";
 import car from "../assets/car.png";
-import { getWeek } from "../functions/utilis";
+import api from "../../services/api";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
-import "./Data.css";
+
 
 const Data = () => {
   const [listProject, setlistProject] = useState({});
@@ -87,7 +87,7 @@ const Data = () => {
   const fetchData = useCallback(async () => {
     try {
       const projects = await axios.get(
-        "http://10.236.150.19:8080/api/Get_project"
+        `${api}/Get_project`
       );
       //get all project
       const projectNames = await projects.data.flatMap((p) => p.name);
@@ -163,7 +163,7 @@ const Data = () => {
       console.log(JSON.stringify(project, null, 2));
     } else {
       axios
-        .post('http://10.236.150.19:8080/api/assembly_project', project)
+        .post(`${api}/assembly_project`, project)
         .then((res) => {
           console.log(res.data);
           message.success("data had been successully added");

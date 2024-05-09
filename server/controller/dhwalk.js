@@ -182,11 +182,19 @@ exports.getFiltredData = async (req, res, next) => {
       { $unwind: "$weeks" },
       { $unwind: "$weeks.projectData" },
       { $match: { "weeks.projectData.projectName": projectName } },
-      { $group: { _id: null, projectData: { $push: "$weeks.projectData" } } },
+      {
+        $group: {
+          _id: "$weeks.week_name",
+          projectData: { $push: "$weeks.projectData" },
+        },
+        
+      },
+      { $sort: { _id: 1 } },
+      { $group: { _id: null, data: { $push: { week_name: "$_id", projectData: "$projectData" } } } },
     ]);
 
     if (data.length > 0) {
-      res.status(200).json(data[0].projectData);
+      res.status(200).json(data[0].data);
     } else {
       throw new Error(`Project "${projectName}" doesn't exist`);
     }

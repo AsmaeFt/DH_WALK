@@ -1,5 +1,5 @@
 import React from "react";
-
+import c from '../../pages/Dhwalk.module.css'
 const Card = ({ Department, border, navigate }) => {
   const handleClick = () => {
     if (navigate) {
@@ -7,7 +7,7 @@ const Card = ({ Department, border, navigate }) => {
     }
   };
   return (
-    <div className="card" style={{ borderTop: border }} onClick={handleClick}>
+    <div className={c.card} style={{ borderTop: border }} onClick={handleClick}>
       <p>{Department}</p>
     </div>
   );

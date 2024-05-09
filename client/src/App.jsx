@@ -7,12 +7,11 @@ import {
 } from "react-router-dom";
 
 //Import Components
+
 import NavBar from "./Components/layout/Navbar";
-import Add_Data from "./Components/individuals/Data";
-import Main from "./pages/Maintest";
-import MainPage from "./pages/Main";
-import Quality from "./Components/individuals/Quality";
-import Mpc from "./Components/individuals/MPC";
+import Dhwalk from "./pages/Dhwalk";
+import FinalAssembly from "./Components/FinalAssembl/FinalAssembly";
+import Add_data from "./Components/ADD_data/FinalAssembl";
 import "./App.css";
 function App() {
   return (
@@ -22,11 +21,9 @@ function App() {
         <div className="app-container">
           <div className="content">
             <Routes>
-              <Route path="/" element={<MainPage />} />
-              <Route path="/final_assembly" element={<Main />} />
-              <Route path="/Quality" element={<Quality />} />
-              <Route path="/MPC" element={<Mpc />} />
-              <Route path="/ADD_DATA" element={<Add_Data />} />
+              <Route path="/" element={<Dhwalk />} />
+              <Route path="/FAM" element={<FinalAssembly />} />
+              <Route path="/add_data" element={<Add_data />} />
               <Route path="*" element={<p>Nothing to show here ! </p>} />
             </Routes>
           </div>

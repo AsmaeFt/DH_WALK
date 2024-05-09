@@ -1,0 +1,74 @@
+.projects{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.projects label{
+    width: 20%;
+    background-color: rgb(56 56 56);
+    padding: 0.8rem;
+    text-align: center;
+    border-radius: 0.6em;
+    border-top: 2px solid orangered;
+    cursor: pointer;
+}
+.table{
+    margin-top: 1rem;
+    height: 80vh;
+    overflow: auto;
+    box-shadow: 2px 1px 4px #1a1a1a;
+    border-radius: 4px;
+}
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+tr td:nth-child(1){
+  background-color: #006b6342;
+  position: sticky;
+  top: 0;
+  left: 0;
+}
+thead tr{
+    background-color: #4E7C88;
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+thead tr:nth-child(2){
+  background-color: rgb(122, 122, 122);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+thead tr:nth-child(3){
+  background-color: rgb(97, 109, 180);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+tr .container{
+  background-color: grey;
+}
+th , td {
+    padding: 0.5rem;
+    font-size: 0.7rem;
+    text-align: center;
+}
+tr td input{
+  text-align: center;
+  width: 2rem;
+  border: none;
+}
+.total {
+  background-color: orangered;
+}
