@@ -2,9 +2,11 @@ const { generateWeeks } = require("../functions/utilis");
 const year = require("../models/OS_aftermarket");
 const OS_AFM = require("../models/OS_aftermarket");
 const creaError = require("../utilitis/globalError");
+const projects = require("../controller/dhwalk");
 
 exports.getData = async (req, res, next) => {
   try {
+    
     const data = await OS_AFM.find({});
     res.status(201).json(data);
   } catch (err) {
@@ -25,8 +27,12 @@ exports.addData = async (req, res, next) => {
         return {
           week_name: new Date().getFullYear() + "-" + genWeek.week,
           After_Sales: weekData ? weekData.After_Sales : After_Sales,
-          After_Sales_spl: weekData ? weekData.After_Sales_spl : After_Sales_spl,
-          After_Sales_ActualDH: weekData ? weekData.After_Sales_ActualDH : After_Sales_ActualDH,
+          After_Sales_spl: weekData
+            ? weekData.After_Sales_spl
+            : After_Sales_spl,
+          After_Sales_ActualDH: weekData
+            ? weekData.After_Sales_ActualDH
+            : After_Sales_ActualDH,
         };
       });
 

@@ -1,9 +1,6 @@
-import { Fragment, useState } from "react";
 import {
-  BrowserRouter as Router,
   Route,
   Routes,
-  Navigate,
 } from "react-router-dom";
 
 //Import Components
@@ -16,7 +13,7 @@ import "./App.css";
 function App() {
   return (
     <>
-      <Router>
+   
         <NavBar />
         <div className="app-container">
           <div className="content">
@@ -28,7 +25,6 @@ function App() {
             </Routes>
           </div>
         </div>
-      </Router>
     </>
   );
 }
