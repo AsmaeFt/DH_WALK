@@ -23,8 +23,21 @@ const OS_afm = ({ project }) => {
     fetchData();
   }, [fetchData]);
 
-
-
+  let Total_SOS = [];
+  projectData.map((y) => {
+    y.weeks.map((w) => {
+      let sos = 0;
+      // Iterate over projects in the current week
+      w.projectData.map((project) => {
+        project.family.map((f) => {
+          sos += f.SOS;
+        });
+      });
+      Total_SOS.push(sos);
+    });
+  });
+  
+  console.log(Total_SOS);
   return (
     <>
       <tbody>
@@ -37,6 +50,11 @@ const OS_afm = ({ project }) => {
           </tr>
           <tr>
             <td> OS </td>
+            {
+              Total_SOS.map((t,i)=>(
+                <td key={i}>{t}</td>
+              ))
+            }
           </tr>
         </React.Fragment>
 

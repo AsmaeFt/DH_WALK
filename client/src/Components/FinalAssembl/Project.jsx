@@ -90,6 +90,7 @@ const Project = ({ data, sproject, family, updateData }) => {
       Gap.push(gap);
     });
   });
+
   
   const handleChange = (projectName, week, family, attribute, value) => {
     setinputs({
