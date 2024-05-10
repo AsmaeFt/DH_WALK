@@ -13,8 +13,6 @@ const FinalAssembly = () => {
   const [family, setfamily] = useState([]);
   const [currentView, setCurrentView] = useState("Project");
 
-  console.log("runing...");
-
   const projects = useCallback(async () => {
     const res = await axios.get(`${api}/Get_project`);
 
@@ -35,7 +33,6 @@ const FinalAssembly = () => {
     const res = await axios.get(`${api}/getfiltredata?projectName=K9 KSK`);
     const data = res.data;
     setdata(data);
-   /*  console.log(data); */
   }, []);
   useEffect(() => {
     fetchInitialData();
@@ -47,7 +44,6 @@ const FinalAssembly = () => {
       const data = res.data;
       setdata(data);
       setsproj(p);
-     /*  console.log(p, "aze", res.data); */
     } catch (err) {
       console.error(err);
     }
@@ -55,23 +51,23 @@ const FinalAssembly = () => {
   const handleDataUpdate = (newData) => {
     setdata(newData);
   };
- 
+
   const renderview = () => {
     switch (currentView) {
       case "Project":
-        return ( <Project
-        data={data}
-        sproject={sproj}
-        family={family}
-        updateData={handleDataUpdate}
-      />)
-      case "AFM" :
         return (
-        <OS_afm project={pr}/>
-        )
+          <Project
+            data={data}
+            sproject={sproj}
+            family={family}
+            updateData={handleDataUpdate}
+          />
+        );
+      case "AFM":
+        return <OS_afm project={pr} />;
     }
   };
-  console.log(sproj);
+
   return (
     <>
       <div className={c.header}>
@@ -79,17 +75,24 @@ const FinalAssembly = () => {
       </div>
       <div className={c.projects}>
         {pr.flatMap((p, i) => (
-          <label key={i} onClick={() => {filterdata(p); setCurrentView("Project")}}>
+          <label
+            key={i}
+            onClick={() => {
+              filterdata(p);
+              setCurrentView("Project");
+            }}
+          >
             {p}
           </label>
         ))}
-         <label onClick={() => setCurrentView("AFM")}>OS - AFM</label>
+        <label onClick={() => setCurrentView("AFM")}>OS - AFM</label>
       </div>
 
       <div className={c.table}>
         <table>
           <TableHeader />
-         {renderview()}
+          {renderview()}
+          
         </table>
       </div>
     </>

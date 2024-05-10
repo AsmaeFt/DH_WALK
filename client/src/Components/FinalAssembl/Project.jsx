@@ -20,8 +20,9 @@ const Project = ({ data, sproject, family, updateData }) => {
   let totalProject = [];
   let DH_required = [];
   let Gap = [];
+  let SOS = [];
   // const weeks = generateWeeks();
-
+  let prev = 0;
   data.flatMap((pr) => {
     pr.projectData.flatMap((p) => {
       const TotalOS =
@@ -39,8 +40,6 @@ const Project = ({ data, sproject, family, updateData }) => {
         p.project_special_list.Physical_incapacity_NMA;
       Total_slop.push(totalSLOP);
 
-      let prev = 0;
-
       let actualdh;
       if (pr.week_name === `${new Date().getFullYear()}-W01`) {
         actualdh =
@@ -48,17 +47,20 @@ const Project = ({ data, sproject, family, updateData }) => {
           p.project_actual_DH.Attrition +
           p.project_actual_DH.Hiring -
           p.project_actual_DH.Transfer;
+        prev = actualdh;
       } else {
         actualdh =
           prev -
           p.project_actual_DH.Attrition +
           p.project_actual_DH.Hiring -
           p.project_actual_DH.Transfer;
+        prev = actualdh;
       }
-      prev = actualdh;
+
       ActualDh.push(actualdh);
 
       let familyTotal = 0;
+      let totalSos = 0;
       p.family.forEach((fam) => {
         if (fam != null) {
           const HC_Crew =
@@ -70,9 +72,12 @@ const Project = ({ data, sproject, family, updateData }) => {
             fam.Containment;
           const totalF = HC_Crew * fam.crews + fam.SOS;
           familyTotal += totalF;
+          totalSos += fam.SOS;
         }
       });
-
+      
+      SOS.push(totalSos);
+     
       if (familyTotal !== null) {
         totalProject.push(familyTotal);
       }
@@ -85,7 +90,7 @@ const Project = ({ data, sproject, family, updateData }) => {
       Gap.push(gap);
     });
   });
-
+  
   const handleChange = (projectName, week, family, attribute, value) => {
     setinputs({
       projectName: projectName,
@@ -137,7 +142,7 @@ const Project = ({ data, sproject, family, updateData }) => {
           );
 
           setLoading(false);
-          updateData(response.data); 
+          updateData(response.data);
           console.log("API Response:", response.data);
         } catch (error) {
           console.error("Error posting data:", error);
@@ -149,7 +154,7 @@ const Project = ({ data, sproject, family, updateData }) => {
   useEffect(() => {
     inputOthChange();
   }, [inputOthChange]);
-  console.log(othInp);
+
   return (
     <>
       <tbody>
@@ -506,7 +511,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             <td>Daily Kaizen</td>
             {data.map((p) =>
               p.projectData.map((pr, i) => (
-                <td key={i}>{pr.project_OS.Daily_Kaizen}</td>
+                <td key={i}>
+                  <input
+                    placeholder={pr.project_OS.Daily_Kaizen}
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_OS.Daily_Kaizen",
+                        e.target.value
+                      )
+                    }
+                  />
+                </td>
               ))
             )}
           </tr>
@@ -514,7 +531,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             <td>OS Auditing</td>
             {data.map((p) =>
               p.projectData.map((pr, i) => (
-                <td key={i}>{pr.project_OS.OS_Auditing}</td>
+                <td key={i}>
+                  <input
+                    placeholder={pr.project_OS.OS_Auditing}
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_OS.OS_Auditing ",
+                        e.target.value
+                      )
+                    }
+                  />
+                </td>
               ))
             )}
           </tr>
@@ -522,7 +551,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             <td>OS Auditing & Data Reporting</td>
             {data.map((p) =>
               p.projectData.map((pr, i) => (
-                <td key={i}>{pr.project_OS.OS_Auditing_Data_Reporting}</td>
+                <td key={i}>
+                  <input
+                    placeholder={pr.project_OS.OS_Auditing_Data_Reporting}
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_OS.OS_Auditing_Data_Reporting",
+                        e.target.value
+                      )
+                    }
+                  />
+                </td>
               ))
             )}
           </tr>
@@ -540,7 +581,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             {data.map((p) =>
               p.projectData.map((pr, i) => (
                 <td key={i}>
-                  {pr.project_special_list.Pregnant_women_out_of_the_plant}
+                  <input
+                    placeholder={
+                      pr.project_special_list.Pregnant_women_out_of_the_plant
+                    }
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_special_list.Pregnant_women_out_of_the_plant",
+                        e.target.value
+                      )
+                    }
+                  />
                 </td>
               ))
             )}
@@ -549,7 +602,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             <td>Maternity</td>
             {data.map((p) =>
               p.projectData.map((pr, i) => (
-                <td key={i}>{pr.project_special_list.Maternity}</td>
+                <td key={i}>
+                  <input
+                    placeholder={pr.project_special_list.Maternity}
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_special_list.Maternity",
+                        e.target.value
+                      )
+                    }
+                  />
+                </td>
               ))
             )}
           </tr>
@@ -557,7 +622,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             <td>Breastfeeding leave</td>
             {data.map((p) =>
               p.projectData.map((pr, i) => (
-                <td key={i}>{pr.project_special_list.Breastfeeding_leave}</td>
+                <td key={i}>
+                  <input
+                    placeholder={pr.project_special_list.Breastfeeding_leave}
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_special_list.Breastfeeding_leave",
+                        e.target.value
+                      )
+                    }
+                  />
+                </td>
               ))
             )}
           </tr>
@@ -566,7 +643,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             {data.map((p) =>
               p.projectData.map((pr, i) => (
                 <td key={i}>
-                  {pr.project_special_list.LTI_Long_term_weaknesses_LWD}
+                  <input
+                    placeholder={
+                      pr.project_special_list.LTI_Long_term_weaknesses_LWD
+                    }
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_special_list.LTI_Long_term_weaknesses_LWD",
+                        e.target.value
+                      )
+                    }
+                  />
                 </td>
               ))
             )}
@@ -576,7 +665,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             {data.map((p) =>
               p.projectData.map((pr, i) => (
                 <td key={i}>
-                  {pr.project_special_list.Physical_incapacity_NMA}
+                  <input
+                    placeholder={
+                      pr.project_special_list.Physical_incapacity_NMA
+                    }
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_special_list.Physical_incapacity_NMA",
+                        e.target.value
+                      )
+                    }
+                  />
                 </td>
               ))
             )}
@@ -594,7 +695,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             <td>Attrition</td>
             {data.map((p) =>
               p.projectData.map((pr, i) => (
-                <td key={i}>{pr.project_actual_DH.Attrition}</td>
+                <td key={i}>
+                  <input
+                    placeholder={pr.project_actual_DH.Attrition}
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_actual_DH.Attrition",
+                        e.target.value
+                      )
+                    }
+                  />
+                </td>
               ))
             )}
           </tr>
@@ -603,7 +716,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             <td>Transfer</td>
             {data.map((p) =>
               p.projectData.map((pr, i) => (
-                <td key={i}>{pr.project_actual_DH.Transfer}</td>
+                <td key={i}>
+                  <input
+                    placeholder={pr.project_actual_DH.Transfer}
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_actual_DH.Transfer",
+                        e.target.value
+                      )
+                    }
+                  />
+                </td>
               ))
             )}
           </tr>
@@ -612,7 +737,19 @@ const Project = ({ data, sproject, family, updateData }) => {
             <td>Hiring</td>
             {data.map((p) =>
               p.projectData.map((pr, i) => (
-                <td key={i}>{pr.project_actual_DH.Hiring}</td>
+                <td key={i}>
+                  <input
+                    placeholder={pr.project_actual_DH.Hiring}
+                    onChange={(e) =>
+                      handleOthers(
+                        sproject,
+                        p.week_name,
+                        "project_actual_DH.Hiring",
+                        e.target.value
+                      )
+                    }
+                  />
+                </td>
               ))
             )}
           </tr>

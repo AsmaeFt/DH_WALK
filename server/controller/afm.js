@@ -2,11 +2,12 @@ const { generateWeeks } = require("../functions/utilis");
 const year = require("../models/OS_aftermarket");
 const OS_AFM = require("../models/OS_aftermarket");
 const creaError = require("../utilitis/globalError");
+
 const projects = require("../controller/dhwalk");
 
 exports.getData = async (req, res, next) => {
   try {
-    
+    const projectdata = projects
     const data = await OS_AFM.find({});
     res.status(201).json(data);
   } catch (err) {

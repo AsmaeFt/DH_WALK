@@ -29,12 +29,15 @@ exports.addProjectData = async (req, res, next) => {
 
       if (projectExists) {
         return res.status(409).json({ message: "Project already exists" });
-      } else {
+      } 
+      else {
         data.weeks.forEach((w) => w.projectData.push(projectData));
         await data.save();
         res.status(201).json("Project data added to all weeks successfully!");
       }
-    } else {
+    } 
+    else 
+    {
       const generatedWeeks = generateWeeks();
       const newWeeksData = generatedWeeks.map((genWeek) => {
         const weekData = weeks.find((week) => week.week_name === genWeek.week);
@@ -43,11 +46,11 @@ exports.addProjectData = async (req, res, next) => {
           projectData: weekData ? weekData.projectData : projectData,
         };
       });
-
       const newYearData = { year, weeks: newWeeksData };
       await new dhwalk(newYearData).save();
       res.status(201).json("Data added to all weeks successfully!");
     }
+    console.log(projectData);
   } catch (err) {
     next(err);
   }
@@ -55,7 +58,7 @@ exports.addProjectData = async (req, res, next) => {
 
 exports.editDataFamily = async (req, res, next) => {
   try {
-    const {projectName, week,  family, attribute, value } = req.body;
+    const { projectName, week, family, attribute, value } = req.body;
     const validAttributes = [
       "crews",
       "ME_DEFINITION",
@@ -120,7 +123,6 @@ exports.editDataFamily = async (req, res, next) => {
 
     await dhwalk.bulkWrite(updates);
 
-   
     const data = await dhwalk.aggregate([
       { $unwind: "$weeks" },
       { $unwind: "$weeks.projectData" },
@@ -130,10 +132,14 @@ exports.editDataFamily = async (req, res, next) => {
           _id: "$weeks.week_name",
           projectData: { $push: "$weeks.projectData" },
         },
-        
       },
       { $sort: { _id: 1 } },
-      { $group: { _id: null, data: { $push: { week_name: "$_id", projectData: "$projectData" } } } },
+      {
+        $group: {
+          _id: null,
+          data: { $push: { week_name: "$_id", projectData: "$projectData" } },
+        },
+      },
     ]);
 
     if (data.length > 0) {
@@ -148,7 +154,7 @@ exports.editDataFamily = async (req, res, next) => {
 
 exports.editDataothers = async (req, res, next) => {
   try {
-    const { projectName , week, path, value } = req.body;
+    const { projectName, week, path, value } = req.body;
     const updatePath = `weeks.$[weekIdx].projectData.$[projIdx].${path}`;
     const updateResult = await dhwalk.findOneAndUpdate(
       {
@@ -195,10 +201,14 @@ exports.editDataothers = async (req, res, next) => {
           _id: "$weeks.week_name",
           projectData: { $push: "$weeks.projectData" },
         },
-        
       },
       { $sort: { _id: 1 } },
-      { $group: { _id: null, data: { $push: { week_name: "$_id", projectData: "$projectData" } } } },
+      {
+        $group: {
+          _id: null,
+          data: { $push: { week_name: "$_id", projectData: "$projectData" } },
+        },
+      },
     ]);
 
     if (data.length > 0) {
@@ -223,10 +233,14 @@ exports.getFiltredData = async (req, res, next) => {
           _id: "$weeks.week_name",
           projectData: { $push: "$weeks.projectData" },
         },
-        
       },
       { $sort: { _id: 1 } },
-      { $group: { _id: null, data: { $push: { week_name: "$_id", projectData: "$projectData" } } } },
+      {
+        $group: {
+          _id: null,
+          data: { $push: { week_name: "$_id", projectData: "$projectData" } },
+        },
+      },
     ]);
 
     if (data.length > 0) {
@@ -238,3 +252,5 @@ exports.getFiltredData = async (req, res, next) => {
     next(err);
   }
 };
+
+
