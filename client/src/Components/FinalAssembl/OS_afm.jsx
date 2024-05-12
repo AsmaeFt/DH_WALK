@@ -9,6 +9,7 @@ const OS_afm = ({ project }) => {
   const projectData = useSelector((s) => s.projectData.data);
   const weeksandmonths = generateWeeks();
   const [osdata, setosdata] = useState([]);
+  const [inputs, setinputs] = useState({});
 
   const fetchData = useCallback(async () => {
     try {
@@ -36,7 +37,7 @@ const OS_afm = ({ project }) => {
       Total_SOS.push(sos);
     });
   });
-  
+
   console.log(Total_SOS);
   return (
     <>
@@ -50,11 +51,9 @@ const OS_afm = ({ project }) => {
           </tr>
           <tr>
             <td> OS </td>
-            {
-              Total_SOS.map((t,i)=>(
-                <td key={i}>{t}</td>
-              ))
-            }
+            {Total_SOS.map((t, i) => (
+              <td key={i}>{t}</td>
+            ))}
           </tr>
         </React.Fragment>
 
@@ -101,7 +100,14 @@ const OS_afm = ({ project }) => {
                   if (data != null) {
                     return (
                       <td key={w._id}>
-                        <input placeholder={data.value || "-"} />
+                        <input
+                          onChange={(e) => handleChange(
+                            w.week_name,
+                            "After_Sales".data.value,
+                            e.target.value
+                          )}
+                          placeholder={data.value || "-"}
+                        />
                       </td>
                     );
                   }

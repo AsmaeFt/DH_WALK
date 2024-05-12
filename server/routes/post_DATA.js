@@ -18,6 +18,8 @@ route.post("/assembly_Others_Edits", dhwalk.editDataothers);
 
 route.post("/addOSAFM", oS_AfterM.addData);
 route.get("/GetOSAFM", oS_AfterM.getData);
+route.post("/edit-osAfm", oS_AfterM.editData);
+
 
 route.get("/getfiltredata",dhwalk.getFiltredData)
 

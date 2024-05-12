@@ -246,7 +246,6 @@ const Project = ({ data, sproject, family, updateData }) => {
                               handleChange(
                                 sproject,
                                 p.week_name,
-
                                 fam.name,
                                 "crews",
                                 e.target.value
