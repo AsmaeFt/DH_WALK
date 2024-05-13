@@ -73,6 +73,7 @@ const FinalAssembly = () => {
       <div className={c.header}>
         <h2>Final Assembly </h2>
       </div>
+      
       <div className={c.projects}>
         {pr.flatMap((p, i) => (
           <label

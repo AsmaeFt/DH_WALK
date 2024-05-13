@@ -43,7 +43,7 @@ const Dhwalk = () => {
             <Card
               Department="MPC"
               border="3px solid yellow"
-              navigate={() => navigate("/MPC")}
+              navigate={() => navigate("/Logistic")}
             />
           </div>
         </div>

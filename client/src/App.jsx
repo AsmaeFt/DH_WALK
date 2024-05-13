@@ -10,6 +10,8 @@ import axios from "axios";
 import NavBar from "./Components/layout/Navbar";
 import Dhwalk from "./pages/Dhwalk";
 import FinalAssembly from "./Components/FinalAssembl/FinalAssembly";
+import Quality from "./Components/Quality/Quality";
+import Logistic from "./Components/Logistic/Logistic";
 import Add_data from "./Components/ADD_data/FinalAssembl";
 import "./App.css";
 import { useCallback, useEffect, useState } from "react";
@@ -20,7 +22,7 @@ function App() {
   const fetch_ProjectData = useCallback(async () => {
     const res = await axios.get(`${api}/assembly_project`);
     dispatch(setData(res.data));
-  }, []);
+  }, [setData, dispatch]);
 
   useEffect(() => {
     fetch_ProjectData();
@@ -34,6 +36,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Dhwalk />} />
             <Route path="/FAM" element={<FinalAssembly />} />
+            <Route path="/Quality" element={<Quality />} />
+            <Route path="/Logistic" element={<Logistic />} />
             <Route path="/add_data" element={<Add_data />} />
             <Route path="*" element={<p>Nothing to show here ! </p>} />
           </Routes>

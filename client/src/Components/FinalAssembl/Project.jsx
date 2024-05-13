@@ -1,18 +1,16 @@
-import React, {
-  useState,
-  useCallback,
-  useEffect,
-  useSyncExternalStore,
-} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import c from "./FinalAssembly.module.css";
 import api from "../../services/api";
 import axios from "axios";
 // import { generateWeeks } from "../functions/utilis";
 
+
 const Project = ({ data, sproject, family, updateData }) => {
   const [loading, setLoading] = useState(true);
   const [inputs, setinputs] = useState({});
   const [othInp, setotheInp] = useState({});
+
+
 
   let Total_os = [];
   let Total_slop = [];
@@ -21,7 +19,10 @@ const Project = ({ data, sproject, family, updateData }) => {
   let DH_required = [];
   let Gap = [];
   let SOS = [];
+
+  let containtion = [{ family: "", value: 0 }];
   // const weeks = generateWeeks();
+
   let prev = 0;
   data.flatMap((pr) => {
     pr.projectData.flatMap((p) => {
@@ -30,6 +31,7 @@ const Project = ({ data, sproject, family, updateData }) => {
         p.project_OS.Daily_Kaizen +
         p.project_OS.OS_Auditing +
         p.project_OS.OS_Auditing_Data_Reporting;
+
       Total_os.push(TotalOS);
 
       const totalSLOP =
@@ -61,6 +63,7 @@ const Project = ({ data, sproject, family, updateData }) => {
 
       let familyTotal = 0;
       let totalSos = 0;
+
       p.family.forEach((fam) => {
         if (fam != null) {
           const HC_Crew =
@@ -73,11 +76,12 @@ const Project = ({ data, sproject, family, updateData }) => {
           const totalF = HC_Crew * fam.crews + fam.SOS;
           familyTotal += totalF;
           totalSos += fam.SOS;
+          const totalContaintion = fam.crews * fam.Containment;
+          containtion.push(fam.name, totalContaintion);
         }
       });
-      
       SOS.push(totalSos);
-     
+
       if (familyTotal !== null) {
         totalProject.push(familyTotal);
       }
@@ -91,7 +95,7 @@ const Project = ({ data, sproject, family, updateData }) => {
     });
   });
 
-  
+  console.log(containtion);
   const handleChange = (projectName, week, family, attribute, value) => {
     setinputs({
       projectName: projectName,
@@ -118,6 +122,7 @@ const Project = ({ data, sproject, family, updateData }) => {
         }
       };
       fetchData();
+      
     }
   }, [inputs]);
   useEffect(() => {
