@@ -10,18 +10,14 @@ const Quality = () => {
   console.log(data);
 
   let containtion = {};
-  let total_conataintion = [];
-  const familie = ["HAB-K9", "PPL-K9", "PDB-K9"];
+  const families = ["HAB-K9", "PPL-K9", "PDB-K9"];
   
-
   data.map((d) => {
     d.weeks.map((w) => {
-      let total = 0;
       w.projectData.map((pr) => {
         pr.family.map((f) => {
-          if (f != null && familie.includes(f.name)) {
+          if (families.includes(f.name)) {
             const totalContaintion = f.crews * f.Containment;
-            total += totalContaintion;
             if (!containtion[f.name]) {
               containtion[f.name] = [];
             }
@@ -29,10 +25,11 @@ const Quality = () => {
           }
         });
       });
-      total_conataintion.push(total);
     });
   });
-  console.log(total_conataintion);
+  
+  console.log(containtion);
+
 
   return (
     <>
