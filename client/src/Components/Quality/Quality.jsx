@@ -9,27 +9,40 @@ const Quality = () => {
   const data = useSelector((s) => s.projectData.data);
   console.log(data);
 
-  let containtion = {};
-  const families = ["HAB-K9", "PPL-K9", "PDB-K9"];
-  
+  let containtion = [];
+  let Quality_Project_DH = [];
+
   data.map((d) => {
     d.weeks.map((w) => {
+      let Total = 0;
       w.projectData.map((pr) => {
-        pr.family.map((f) => {
-          if (families.includes(f.name)) {
+        if (pr.family.length < 4) {
+          pr.family.map((f) => {
             const totalContaintion = f.crews * f.Containment;
+            Total += totalContaintion;
             if (!containtion[f.name]) {
               containtion[f.name] = [];
             }
             containtion[f.name].push(totalContaintion);
+          });
+        } else {
+          const totalContaintion = pr.family.reduce(
+            (acc, f) => acc + f.crews * f.Containment,
+            0
+          );
+          Total += totalContaintion;
+
+          if (!containtion[pr.projectName]) {
+            containtion[pr.projectName] = [];
           }
-        });
+          containtion[pr.projectName].push(totalContaintion);
+        }
       });
+      Quality_Project_DH.push(Total);
     });
   });
-  
-  console.log(containtion);
 
+  console.log(Quality_Project_DH);
 
   return (
     <>
@@ -53,31 +66,18 @@ const Quality = () => {
             <React.Fragment>
               <tr className={c.total}>
                 <td>Quality Project DH</td>
-                {weeks.map((w, i) => (
-                  <td key={i}>-</td>
+                {Quality_Project_DH.map((t, i) => (
+                  <td key={i}>{t}</td>
                 ))}
               </tr>
-              <tr>
-                <td> K9 PPL Containment</td>
-              </tr>
-              <tr>
-                <td> K9 HAB Containment</td>
-              </tr>
-              <tr>
-                <td> K9 PDB Containment</td>
-              </tr>
-              <tr>
-                <td> K9 Batch Containment</td>
-              </tr>
-              <tr>
-                <td> K9 B78 Containment</td>
-              </tr>
-              <tr>
-                <td> R8 Containment</td>
-              </tr>
-              <tr>
-                <td> X74 Containment</td>
-              </tr>
+              {Object.entries(containtion).map(([name, value], i) => (
+                <tr key={i}>
+                  <td>{name}</td>
+                  {value.map((v, j) => (
+                    <td key={j}>{v}</td>
+                  ))}
+                </tr>
+              ))}
             </React.Fragment>
 
             <React.Fragment>
