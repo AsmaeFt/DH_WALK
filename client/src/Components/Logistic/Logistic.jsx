@@ -23,6 +23,59 @@ const Logistic = () => {
   }, [FetchData]);
   console.log(data);
 
+  let DH_REQUIRED = [];
+  let Total_DH = [];
+  let Quality_SPL = [];
+  let Total_Actual_DH = [];
+  let prev = 0;
+
+  let Gap = [];
+  data.map((y) => {
+    y.weeks.map((w) => {
+      const Logistic_Dh =
+        w.Logistic_DH.KSK_Printing_Orders +
+        w.Logistic_DH.Sequencing +
+        w.Logistic_DH.Reception_Warehouse +
+        w.Logistic_DH.RM_DR +
+        w.Logistic_DH.FG_Warehouse +
+        w.Logistic_DH.FG_DR;
+      Total_DH.push(Logistic_Dh);
+
+      const Spl =
+        w.Logistic_SPL.Pregnant_women_out_of_the_plant +
+        w.Logistic_SPL.Maternity +
+        w.Logistic_SPL.Breastfeeding_leave +
+        w.Logistic_SPL.LTI_Long_term_weaknesses_LWD +
+        w.Logistic_SPL.Physical_incapacity_NMA;
+      Quality_SPL.push(Spl);
+
+      let dh_required = 0;
+      dh_required = Logistic_Dh + Spl;
+      DH_REQUIRED.push(dh_required);
+      let ActualDh;
+      if (w.week_name === `${new Date().getFullYear()}-W01`) {
+        ActualDh =
+          w.Logistic_actual_Dh.Last_dh -
+          w.Logistic_actual_Dh.Attrition -
+          w.Logistic_actual_Dh.Transfer +
+          w.Logistic_actual_Dh.Hiring;
+        console.log(w.Logistic_DH.Last_dh);
+      } else {
+        ActualDh =
+          prev -
+          w.Logistic_actual_Dh.Attrition -
+          w.Logistic_actual_Dh.Transfer +
+          w.Logistic_actual_Dh.Hiring;
+      }
+
+      prev = ActualDh;
+      Total_Actual_DH.push(ActualDh);
+      let gap = 0;
+      gap = ActualDh - dh_required;
+      Gap.push(gap);
+    });
+  });
+  console.log(Total_Actual_DH);
   return (
     <>
       <div className={c.header}>
@@ -36,8 +89,8 @@ const Logistic = () => {
             <React.Fragment>
               <tr>
                 <td>MPC DH Required</td>
-                {weeks.map((w, i) => (
-                  <td key={i}>-</td>
+                {DH_REQUIRED.map((p, i) => (
+                  <td key={i}>{p}</td>
                 ))}
               </tr>
             </React.Fragment>
@@ -45,8 +98,8 @@ const Logistic = () => {
             <React.Fragment>
               <tr className={c.total}>
                 <td>MPC DH</td>
-                {weeks.map((w, i) => (
-                  <td key={i}>-</td>
+                {Total_DH.map((t, i) => (
+                  <td key={i}>{t}</td>
                 ))}
               </tr>
               <tr>
@@ -54,12 +107,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_DH.OPS;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -68,12 +120,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_DH.KSK_Printing_Orders;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -82,11 +133,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_DH.Sequencing;
-                    return <td key={w._id}>
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -95,12 +146,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_DH.Reception_Warehouse;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -109,12 +159,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_DH.RM_DR;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -123,12 +172,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_DH.FG_Warehouse;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -137,12 +185,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_DH.FG_DR;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -151,8 +198,8 @@ const Logistic = () => {
             <React.Fragment>
               <tr className={c.total}>
                 <td>Quality Special list out of the plant</td>
-                {weeks.map((w, i) => (
-                  <td key={i}>-</td>
+                {Quality_SPL.map((s, i) => (
+                  <td key={i}>{s}</td>
                 ))}
               </tr>
               <tr>
@@ -160,12 +207,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_SPL.Pregnant_women_out_of_the_plant;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -174,12 +220,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_SPL.Maternity;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -188,12 +233,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_SPL.Breastfeeding_leave;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -202,12 +246,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_SPL.LTI_Long_term_weaknesses_LWD;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -216,12 +259,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_SPL.Physical_incapacity_NMA;
-                    return <td key={w._id}>
-                    
-                      <input
-                      placeholder={data}
-                      />
-                      </td>;
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
+                      </td>
+                    );
                   })
                 )}
               </tr>
@@ -230,8 +272,8 @@ const Logistic = () => {
             <React.Fragment>
               <tr className={c.total}>
                 <td>Quality Actual DH</td>
-                {weeks.map((w, i) => (
-                  <td key={i}>-</td>
+                {Total_Actual_DH.map((a, i) => (
+                  <td key={i}>{a || "-"}</td>
                 ))}
               </tr>
               <tr>
@@ -239,11 +281,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_actual_Dh.Attrition;
-                    return <td key={w._id}>
-                      <input
-                      placeholder={data}
-                      />
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
                       </td>
+                    );
                   })
                 )}
               </tr>
@@ -252,11 +294,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_actual_Dh.Transfer;
-                    return <td key={w._id}>
-                      <input
-                      placeholder={data}
-                      />
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
                       </td>
+                    );
                   })
                 )}
               </tr>
@@ -265,11 +307,11 @@ const Logistic = () => {
                 {data.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Logistic_actual_Dh.Hiring;
-                    return <td key={w._id}>
-                      <input
-                      placeholder={data}
-                      />
+                    return (
+                      <td key={w._id}>
+                        <input placeholder={data} />
                       </td>
+                    );
                   })
                 )}
               </tr>
@@ -277,10 +319,13 @@ const Logistic = () => {
 
             <tr className={c.total}>
               <td>Gap</td>
-              {weeks.map((w, i) => (
-                <td key={i}>-</td>
-              ))}
+              {
+                Gap.map((g,i)=>(
+                  <td key={i}>{g}</td>
+                ))
+              }
             </tr>
+            
           </tbody>
         </table>
       </div>

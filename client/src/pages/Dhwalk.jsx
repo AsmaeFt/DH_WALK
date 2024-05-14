@@ -8,7 +8,6 @@ const Dhwalk = () => {
   return (
     <>
       <Overlay />
-
       <div className={c.cardContainer}>
         <div className={c.titelHeader}>
           <span className={c.dot}>. </span> DH walk
@@ -32,18 +31,20 @@ const Dhwalk = () => {
               navigate={() => navigate("/Quality")}
             />
           </div>
-          <div className={`${c["card-wrapper"]} ${c["fade-up"]}`}>
-            <Card
-              Department="Cutting"
-              border="3px solid gray"
-              navigate={() => navigate("/Cutting")}
-            />
-          </div>
+
           <div className={`${c["card-wrapper"]} ${c["fade-up"]}`}>
             <Card
               Department="MPC"
               border="3px solid yellow"
               navigate={() => navigate("/Logistic")}
+            />
+          </div>
+
+          <div className={`${c["card-wrapper"]} ${c["fade-up"]}`}>
+            <Card
+              Department="Cutting"
+              border="3px solid gray"
+              navigate={() => navigate("/Cutting")}
             />
           </div>
         </div>
