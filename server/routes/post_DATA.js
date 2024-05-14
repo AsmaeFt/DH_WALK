@@ -4,6 +4,8 @@ const project = require("../controller/project");
 const dhwalk = require("../controller/dhwalk");
 const oS_AfterM = require("../controller/afm");
 const quality = require("../controller/qualiy");
+const logistic = require("../controller/logistic")
+
 const route = express.Router();
 
 route.post("/add_project", project.addProject);
@@ -23,5 +25,8 @@ route.get("/getfiltredata", dhwalk.getFiltredData);
 
 route.post("/add_quality", quality.addData);
 route.get("/get_Quality", quality.getQuality_Data);
+
+route.post("/add_Logistic", logistic.addData);
+route.get("/get_Logistic", logistic.GetData);
 
 module.exports = route;
