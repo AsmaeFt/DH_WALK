@@ -1,13 +1,10 @@
 const { generateWeeks } = require("../functions/utilis");
-const year = require("../models/OS_aftermarket");
+
 const OS_AFM = require("../models/OS_aftermarket");
 const creaError = require("../utilitis/globalError");
 
-const projects = require("../controller/dhwalk");
-
 exports.getData = async (req, res, next) => {
   try {
-    const projectdata = projects;
     const data = await OS_AFM.find({});
     res.status(201).json(data);
   } catch (err) {
@@ -42,6 +39,7 @@ exports.addData = async (req, res, next) => {
       await new OS_AFM(newYearData).save();
       res.status(201).json("Data added to all weeks successfully!");
     }
+    
   } catch (err) {
     next(err);
   }
@@ -49,7 +47,7 @@ exports.addData = async (req, res, next) => {
 
 exports.editData = async (req, res, next) => {
   try {
-    const { week, attribute, project_name , value } = req.body;
+    const { week, attribute, project_name, value } = req.body;
     res.status(201).json(req.body);
   } catch (err) {
     next(err);

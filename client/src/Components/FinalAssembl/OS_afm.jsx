@@ -7,7 +7,7 @@ import axios from "axios";
 
 const OS_afm = ({ project }) => {
   const projectData = useSelector((s) => s.projectData.data);
-  
+
   const weeksandmonths = generateWeeks();
   const [osdata, setosdata] = useState([]);
   const [inputs, setinputs] = useState({});
@@ -24,7 +24,6 @@ const OS_afm = ({ project }) => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
 
   const handleChange = (week, attribute, project_name, value) => {
     setinputs({
@@ -59,7 +58,6 @@ const OS_afm = ({ project }) => {
 
   osdata.map((y) => {
     y.weeks.map((w) => {
-      
       let Total_after_sales = 0;
       w.After_Sales.map((af) => {
         Total_after_sales += af.value;
@@ -97,18 +95,15 @@ const OS_afm = ({ project }) => {
     });
   });
 
-
   return (
     <>
       <tbody>
         <React.Fragment>
           <tr>
             <td>Proto & After Sales DH Required</td>
-           {
-            Total_DH_Required.map((dh,i)=>(
+            {Total_DH_Required.map((dh, i) => (
               <td key={i}>{dh}</td>
-            ))
-           }
+            ))}
           </tr>
           <tr>
             <td> OS </td>
