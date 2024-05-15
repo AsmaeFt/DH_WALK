@@ -1,6 +1,6 @@
 const { Error } = require("mongoose");
 const { generateWeeks } = require("../functions/utilis");
-const dhwalk = require("../models/DHwalk");
+const dhwalk = require("../models/Final_Assembly");
 const creaError = require("../utilitis/globalError");
 
 exports.getDhwalk = async (req, res, next) => {
@@ -29,17 +29,16 @@ exports.addProjectData = async (req, res, next) => {
 
       if (projectExists) {
         return res.status(409).json({ message: "Project already exists" });
-      } 
-      else {
+      } else {
         data.weeks.forEach((w) => w.projectData.push(projectData));
         await data.save();
         res.status(201).json("Project data added to all weeks successfully!");
       }
-    } 
-    else 
+    } else 
     {
       const generatedWeeks = generateWeeks();
       const newWeeksData = generatedWeeks.map((genWeek) => {
+
         const weekData = weeks.find((week) => week.week_name === genWeek.week);
         return {
           week_name: new Date().getFullYear() + "-" + genWeek.week,
@@ -50,7 +49,7 @@ exports.addProjectData = async (req, res, next) => {
       await new dhwalk(newYearData).save();
       res.status(201).json("Data added to all weeks successfully!");
     }
-    console.log(projectData);
+    
   } catch (err) {
     next(err);
   }
@@ -120,7 +119,6 @@ exports.editDataFamily = async (req, res, next) => {
         },
       };
     });
-
     await dhwalk.bulkWrite(updates);
 
     const data = await dhwalk.aggregate([
@@ -155,7 +153,9 @@ exports.editDataFamily = async (req, res, next) => {
 exports.editDataothers = async (req, res, next) => {
   try {
     const { projectName, week, path, value } = req.body;
+
     const updatePath = `weeks.$[weekIdx].projectData.$[projIdx].${path}`;
+
     const updateResult = await dhwalk.findOneAndUpdate(
       {
         "weeks.week_name": week,
@@ -252,5 +252,3 @@ exports.getFiltredData = async (req, res, next) => {
     next(err);
   }
 };
-
-

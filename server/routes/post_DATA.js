@@ -4,9 +4,14 @@ const project = require("../controller/project");
 const dhwalk = require("../controller/dhwalk");
 const oS_AfterM = require("../controller/afm");
 const quality = require("../controller/qualiy");
-const logistic = require("../controller/logistic")
+const logistic = require("../controller/logistic");
+
+const Final_Assembly = require("../controller/final_assembly");
 
 const route = express.Router();
+
+route.post("/Add_FA_DATA", Final_Assembly.Add_Data);
+route.post("/Modify_FA_DATA", Final_Assembly.Modify);
 
 route.post("/add_project", project.addProject);
 route.get("/Get_project", project.GetProject);

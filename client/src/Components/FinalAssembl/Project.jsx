@@ -95,7 +95,7 @@ const Project = ({ data, sproject, family, updateData }) => {
     });
   });
 
-  console.log(containtion);
+  
   const handleChange = (projectName, week, family, attribute, value) => {
     setinputs({
       projectName: projectName,
@@ -110,7 +110,7 @@ const Project = ({ data, sproject, family, updateData }) => {
       const fetchData = async () => {
         try {
           const response = await axios.post(
-            `${api}/assembly_Family_Edit`,
+            `${api}/Modify_FA_DATA`,
             inputs
           );
 
@@ -143,7 +143,7 @@ const Project = ({ data, sproject, family, updateData }) => {
       const fetchData = async () => {
         try {
           const response = await axios.post(
-            `${api}/assembly_Others_Edits`,
+            `${api}/Modify_FA_DATA`,
             othInp
           );
 
@@ -160,6 +160,8 @@ const Project = ({ data, sproject, family, updateData }) => {
   useEffect(() => {
     inputOthChange();
   }, [inputOthChange]);
+
+  console.log(inputs);
 
   return (
     <>

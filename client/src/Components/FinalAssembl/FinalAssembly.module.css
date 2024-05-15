@@ -20,7 +20,19 @@
     overflow: auto;
     box-shadow: 2px 1px 4px #1a1a1a;
     border-radius: 4px;
+    animation: fadeUp 0.3s ease-in-out
 }
+@keyframes fadeUp {
+  0%{
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100%{
+    opacity: 1;
+    transform:translateY(0);
+  }
+}
+
 .table table{
     width: 100%;
     border-collapse: collapse;
