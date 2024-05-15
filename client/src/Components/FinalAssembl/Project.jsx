@@ -105,6 +105,7 @@ const Project = ({ data, sproject, family, updateData }) => {
       value: value,
     });
   };
+
   const inputChange = useCallback(async () => {
     if (inputs.value !== undefined) {
       const fetchData = async () => {
@@ -160,8 +161,6 @@ const Project = ({ data, sproject, family, updateData }) => {
   useEffect(() => {
     inputOthChange();
   }, [inputOthChange]);
-
-  console.log(inputs);
 
   return (
     <>
@@ -488,7 +487,7 @@ const Project = ({ data, sproject, family, updateData }) => {
         <React.Fragment>
           <tr className={c.total}>
             <td>
-              <span style={{ color: "black" }}>{sproject}</span> OS
+              <span style={{ color: "orangered" }}>{sproject}</span> OS
             </td>
             {Total_os.map((t, i) => (
               <td key={i}>{t}</td>
@@ -578,7 +577,7 @@ const Project = ({ data, sproject, family, updateData }) => {
 
         <React.Fragment>
           <tr className={c.total}>
-            <td>{sproject} SLOP </td>
+            <td><span style={{ color: "orangered" }}>{sproject}</span> SLOP </td>
             {Total_slop.map((t, i) => (
               <td key={i}>{t}</td>
             ))}
@@ -693,7 +692,7 @@ const Project = ({ data, sproject, family, updateData }) => {
 
         <React.Fragment>
           <tr className={c.total}>
-            <td>{sproject} Actual DH</td>
+            <td> <span style={{ color: "orangered" }}>{sproject}</span> Actual DH</td>
             {ActualDh.map((a, i) => (
               <td key={i}>{a}</td>
             ))}

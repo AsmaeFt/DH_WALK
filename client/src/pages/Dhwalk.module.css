@@ -23,8 +23,8 @@
   
   .card-wrapper {
     position: relative;
-    width: 24rem;
-    height: 29rem;
+    width: 20rem;
+    height: 27rem;
     margin: 1rem;
     box-sizing: border-box;
     overflow: hidden;
@@ -88,4 +88,7 @@
   }
   .fade-up:nth-child(4){
     animation: fadeUp 1.3s ease-in-out;
+  }
+  .fade-up:nth-child(5){
+    animation: fadeUp 1.5s ease-in-out;
   }

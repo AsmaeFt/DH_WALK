@@ -1,41 +1,41 @@
-.projects{
+.projects {
   margin: 2rem 0 2rem 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
-.projects label{
-    width: 17%;
-    background-color: rgb(56 56 56);
-    padding: 0.8rem;
-    text-align: center;
-    border-radius: 0.6em;
-    border-top: 2px solid orangered;
-    cursor: pointer;
+.projects label {
+  width: 17%;
+  background-color: rgb(56 56 56);
+  padding: 0.8rem;
+  text-align: center;
+  border-radius: 0.6em;
+  border-top: 2px solid orangered;
+  cursor: pointer;
 }
-.table{
-    margin-top: 1rem;
-    height: 80vh;
-    overflow: auto;
-    box-shadow: 2px 1px 4px #1a1a1a;
-    border-radius: 4px;
-    animation: fadeUp 0.3s ease-in-out
+.table {
+  margin-top: 1rem;
+  height: 80vh;
+  overflow: auto;
+  box-shadow: 2px 1px 4px #1a1a1a;
+  border-radius: 4px;
+  animation: fadeUp 0.3s ease-in-out;
 }
 @keyframes fadeUp {
-  0%{
+  0% {
     opacity: 0;
     transform: translateY(40px);
   }
-  100%{
+  100% {
     opacity: 1;
-    transform:translateY(0);
+    transform: translateY(0);
   }
 }
 
-.table table{
-    width: 100%;
-    border-collapse: collapse;
+.table table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .table table thead {
@@ -43,48 +43,66 @@
   top: 0;
   z-index: 1;
 }
-.table table tr td:nth-child(1){
-  background-color: #006b6342;
+.table table tr td:nth-child(1) {
+  background-color: #0e3137;
   position: sticky;
   top: 0;
   left: 0;
 }
-.table table thead tr{
-    background-color: #4E7C88;
-    position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
+
+.table table thead tr {
+  background-color: #4e7c88;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
 }
-.table table thead tr:nth-child(2){
+.table table thead tr:nth-child(2) {
   background-color: rgb(122, 122, 122);
   position: sticky;
   top: 0;
   z-index: 1;
 }
-.table table thead tr:nth-child(3){
+.table table thead tr:nth-child(3) {
   background-color: rgb(97, 109, 180);
   position: sticky;
   top: 0;
   z-index: 1;
 }
-.table table tr .container{
+.table table tr .container {
   background-color: grey;
 }
-.table table th , td {
-    padding: 0.5rem;
-    font-size: 0.7rem;
-    text-align: center;
+.table table th,
+td {
+  padding: 0.5rem;
+  font-size: 0.7rem;
+  text-align: center;
 }
-.table table tr td input{
+.table table tr td input {
   text-align: center;
   width: 2rem;
   border: none;
 }
-.table table input::placeholder{
+.table table input::placeholder {
   color: white;
 }
 .total {
   background-color: orangered;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: black;
+}
+::-webkit-scrollbar-thumb {
+  background: orangered;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

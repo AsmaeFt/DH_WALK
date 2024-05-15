@@ -47,6 +47,15 @@ const Dhwalk = () => {
               navigate={() => navigate("/Cutting")}
             />
           </div>
+
+          <div className={`${c["card-wrapper"]} ${c["fade-up"]}`}>
+            <Card
+              Department="DH_Walk"
+              border="3px solid gray"
+              navigate={() => navigate("/Dh_walk")}
+            />
+          </div>
+
         </div>
       </div>
     </>
