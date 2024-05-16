@@ -1,42 +1,21 @@
-import { Suspense } from "react";
-import store from "./store";
-import { projectActions } from "./store/ProjectdataSlice";
-import { dataActions } from "./store/DataSlice";
-
-import { useDispatch } from "react-redux";
-
-import { Route, Routes } from "react-router-dom";
-//Import Components
-import Loading from "./Components/UI/Loading";
-
-import api from "./services/api";
+import React, { useState, useCallback, useEffect } from "react";
+import c from "../FinalAssembl/FinalAssembly.module.css";
+import TableHeader from "../UI/TableHeader";
 import axios from "axios";
-import NavBar from "./Components/layout/Navbar";
-import Dhwalk from "./pages/Dhwalk";
-import FinalAssembly from "./Components/FinalAssembl/FinalAssembly";
-import Quality from "./Components/Quality/Quality";
-import MPC from "./Components/Logistic/Logistic";
-import DH_WALK from "./Components/DH_WALK/DH_WALK";
+import api from "../../services/api";
+import Loading from "../UI/Loading";
 
-import Add_data from "./Components/ADD_data/FinalAssembl";
-import "./App.css";
-import { useCallback, useEffect, useState } from "react";
-
-function App() {
-  const [ProjectData, setProjectData] = useState([]);
+const DH_WALK = () => {
+  const [projectData, setProjectData] = useState([]);
   const [AFM, setAFM] = useState([]);
   const [Logistic, setLogistic] = useState([]);
-
-  const dispatch = useDispatch();
-  const { setData } = projectActions;
-  const { setDhwalk } = dataActions;
+  const [Qualit, setQuality] = useState([]);
 
   //Project Data
   const fetch_ProjectData = useCallback(async () => {
     const res = await axios.get(`${api}/assembly_project`);
     setProjectData(res.data);
-    dispatch(setData(res.data));
-  }, [setData, dispatch]);
+  }, []);
   useEffect(() => {
     fetch_ProjectData();
   }, [fetch_ProjectData]);
@@ -68,11 +47,25 @@ function App() {
     Fetch_LogisticData();
   }, [Fetch_LogisticData]);
 
-  let DH_WALK_DATA = [];
+  //Quality Data
+  const fetchData = useCallback(async () => {
+    try {
+      const res = await axios.get(`${api}/get_quality`);
+      setQuality(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  //calculations
+
+  let Total_Projects = {};
   let Total_SOS = [];
-  let TotalProject = {};
-  ProjectData.map((y) => {
+  projectData.map((y) => {
     y.weeks.map((w) => {
       let sos = 0;
       w.projectData.map((p) => {
@@ -108,30 +101,22 @@ function App() {
         let Total_pr = 0;
         Total_pr = TotalOS + totalSLOP + familyTotal;
 
-        if (!TotalProject[p.projectName]) {
-          TotalProject[p.projectName] = [];
+        if (!Total_Projects[p.projectName]) {
+          Total_Projects[p.projectName] = [];
         }
-        TotalProject[p.projectName].push(Math.floor(Total_pr));
+        Total_Projects[p.projectName].push(Math.floor(Total_pr));
       });
       Total_SOS.push(sos);
     });
-    DH_WALK_DATA.push(TotalProject);
   });
-
-  let total_AF = [];
-  let total_SPL = [];
+console.log(Total_Projects);
   let Total_AFM_Required = [];
-  let total_ActualDh = [];
-  let prev = 0;
-  let Gap = [];
-
   AFM.map((y) => {
     y.weeks.map((w) => {
       let Total_after_sales = 0;
       w.After_Sales.map((af) => {
         Total_after_sales += af.value;
       });
-      total_AF.push(Total_after_sales);
 
       const After_Sales_spl =
         w.After_Sales_spl.Pregnant_women_out_of_the_plant +
@@ -139,37 +124,13 @@ function App() {
         w.After_Sales_spl.Breastfeeding_leave +
         w.After_Sales_spl.LTI_Long_term_weaknesses_LWD +
         w.After_Sales_spl.Physical_incapacity_NMA;
-      total_SPL.push(After_Sales_spl);
 
       let DHrequired;
       Total_SOS.forEach((t) => {
         DHrequired = Total_after_sales + After_Sales_spl + t;
       });
       Total_AFM_Required.push(DHrequired);
-
-      let actualDH;
-      if (w.week_name === `${new Date().getFullYear()}-W01`) {
-        actualDH =
-          w.After_Sales_ActualDH.last_HC -
-          w.After_Sales_ActualDH.Attrition -
-          w.After_Sales.Transfer +
-          w.After_Sales.Hiring;
-        prev = actualDH;
-      } else {
-        actualDH =
-          prev -
-          w.After_Sales_ActualDH.Attrition -
-          w.After_Sales.Transfer +
-          w.After_Sales.Hiring;
-        prev = actualDH;
-      }
-      total_ActualDh.push(actualDH);
-
-      let gap = 0;
-      gap = actualDH - DHrequired;
-      Gap.push(gap);
     });
-    DH_WALK_DATA.push(Total_AFM_Required);
   });
 
   let Logistic_DH_REQUIRED = [];
@@ -194,29 +155,49 @@ function App() {
       dh_required = Logistic_Dh + Spl;
       Logistic_DH_REQUIRED.push(dh_required);
     });
-    DH_WALK_DATA.push(Logistic_DH_REQUIRED);
   });
 
-  setDhwalk(DH_WALK_DATA);
+  let Total_AFM = [];
+
+
 
   return (
     <>
-      <NavBar />
-      <div className="app-container">
-        <div className="content">
-          <Routes>
-            <Route path="/" element={<Dhwalk />} />
-            <Route path="/FAM" element={<FinalAssembly />} />
-            <Route path="/Quality" element={<Quality />} />
-            <Route path="/Logistic" element={<MPC />} />
-            <Route path="/DH_WALK" element={<DH_WALK />} />
-            <Route path="/add_data" element={<Add_data />} />
-            <Route path="/Loading" element={<Loading />} />
-            <Route path="*" element={<p>Nothing to show here ! </p>} />
-          </Routes>
-        </div>
+      <div className="header">
+        <h2>DH_WALK {new Date().getFullYear()}</h2>
+      </div>
+      <div className={c.table}>
+        <table>
+          <TableHeader />
+          <tbody>
+            <React.Fragment>
+              {Object.entries(Total_Projects).map(([n, val], i) => (
+                <tr key={i}>
+                  <td>{n}</td>
+                  {val.map((v, j) => (
+                    <td key={j}>{v}</td>
+                  ))}
+                </tr>
+              ))}
+
+              <tr>
+                <td>After Market</td>
+                {Total_AFM_Required.map((a, i) => (
+                  <td key={i}>{a}</td>
+                ))}
+              </tr>
+
+              <tr>
+                <td>MPC</td>
+                {Logistic_DH_REQUIRED.map((l, i) => (
+                  <td key={i}>{l}</td>
+                ))}
+              </tr>
+            </React.Fragment>
+          </tbody>
+        </table>
       </div>
     </>
   );
-}
-export default App;
+};
+export default DH_WALK;

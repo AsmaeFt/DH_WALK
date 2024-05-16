@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import c from "../FinalAssembl/FinalAssembly.module.css";
 import TableHeader from "../UI/TableHeader";
-import { generateWeeks } from "../functions/utilis";
-import { useSelector } from "react-redux";
+/* import { generateWeeks } from "../functions/utilis";
+import { useSelector } from "react-redux"; */
 import axios from "axios";
 import api from "../../services/api";
 
@@ -10,6 +10,7 @@ const Quality = () => {
 
 
   const[projectData , setProjectData]=useState([])
+  
   const fetch_ProjectData = useCallback(async () => {
     const res = await axios.get(`${api}/assembly_project`);
     setProjectData(res.data);
