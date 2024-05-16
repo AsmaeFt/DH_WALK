@@ -35,7 +35,6 @@ const OS_afm = ({ project }) => {
   };
 
   let Total_SOS = [];
-
   projectData.map((y) => {
     y.weeks.map((w) => {
       let sos = 0;
@@ -51,7 +50,6 @@ const OS_afm = ({ project }) => {
   let total_AF = [];
   let total_SPL = [];
   let Total_DH_Required = [];
-
   let total_ActualDh = [];
   let prev = 0;
   let Gap = [];
@@ -72,26 +70,35 @@ const OS_afm = ({ project }) => {
         w.After_Sales_spl.Physical_incapacity_NMA;
       total_SPL.push(After_Sales_spl);
 
-      let DHrequired = 0;
-      DHrequired += Total_after_sales + After_Sales_spl;
+      let DHrequired ;
+      Total_SOS.forEach((t) => {
+        DHrequired = Total_after_sales + After_Sales_spl + t;
+      });
       Total_DH_Required.push(DHrequired);
 
-      let actualDH;
+      let actualDH ;
       if (w.week_name === `${new Date().getFullYear()}-W01`) {
         actualDH =
           w.After_Sales_ActualDH.last_HC -
           w.After_Sales_ActualDH.Attrition -
           w.After_Sales.Transfer +
           w.After_Sales.Hiring;
+          prev = actualDH;
       } else {
         actualDH =
           prev -
           w.After_Sales_ActualDH.Attrition -
           w.After_Sales.Transfer +
           w.After_Sales.Hiring;
+          prev = actualDH;
       }
-      prev = actualDH;
       total_ActualDh.push(actualDH);
+
+      let gap = 0;
+      console.log(actualDH);
+      gap =  actualDH - DHrequired;
+      Gap.push(gap);
+
     });
   });
 
@@ -136,10 +143,10 @@ const OS_afm = ({ project }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr>
+          <tr  className={c.total}>
             <td>After Sales</td>
             {total_AF.map((af, i) => (
-              <td style={{ backgroundColor: "black" }} key={i}>
+              <td  key={i}>
                 {af}
               </td>
             ))}
@@ -175,10 +182,10 @@ const OS_afm = ({ project }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr>
+          <tr  className={c.total}>
             <td>AS Special list out of the plant</td>
             {total_SPL.map((spl, i) => (
-              <td style={{ backgroundColor: "black" }} key={i}>
+              <td  key={i}>
                 {spl}
               </td>
             ))}
@@ -252,10 +259,10 @@ const OS_afm = ({ project }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr>
+          <tr  className={c.total}>
             <td>After Sales Actual DH</td>
             {weeksandmonths.flatMap((w, i) => (
-              <td style={{ backgroundColor: "black" }} key={w.week}>
+              <td key={w.week}>
                 42
               </td>
             ))}
@@ -300,12 +307,10 @@ const OS_afm = ({ project }) => {
             )}
           </tr>
         </React.Fragment>
-        <tr>
+        <tr className={c.total}>
           <td>Gap</td>
-          {weeksandmonths.flatMap((w, i) => (
-            <td style={{ backgroundColor: "black" }} key={w.week}>
-              -
-            </td>
+          {Gap.map((g, i) => (
+            <td key={i}>{g}</td>
           ))}
         </tr>
       </tbody>

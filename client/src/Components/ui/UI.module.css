@@ -1,0 +1,11 @@
+.Loading{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.Loading p {
+    font-size: 3rem;
+    color: rgb(192, 59, 59);
+}

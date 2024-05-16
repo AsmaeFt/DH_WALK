@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 
 import { Route, Routes } from "react-router-dom";
 //Import Components
+import Loading from "./Components/UI/Loading";
+
 import api from "./services/api";
 import axios from "axios";
 import NavBar from "./Components/layout/Navbar";
@@ -41,6 +43,7 @@ function App() {
             <Route path="/Logistic" element={<Logistic />} />
             <Route path="/Dh_walk" element={<Dh_walk />} />
             <Route path="/add_data" element={<Add_data />} />
+            <Route path="/Loading" element={<Loading/>}/>
             <Route path="*" element={<p>Nothing to show here ! </p>} />
           </Routes>
         </div>

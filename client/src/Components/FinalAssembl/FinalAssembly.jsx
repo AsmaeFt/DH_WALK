@@ -5,10 +5,12 @@ import TableHeader from "../UI/TableHeader";
 import Project from "./Project";
 import OS_afm from "./OS_afm";
 import axios from "axios";
+import Loading from "../UI/Loading";
 
 const FinalAssembly = () => {
   const [pr, setpr] = useState([]);
   const [data, setdata] = useState([]);
+  const [loading, setloading] = useState(true);
   const [sproj, setsproj] = useState("K9 KSK");
   const [family, setfamily] = useState([]);
   const [currentView, setCurrentView] = useState("Project");
@@ -33,6 +35,7 @@ const FinalAssembly = () => {
     const res = await axios.get(`${api}/getfiltredata?projectName=K9 KSK`);
     const data = res.data;
     setdata(data);
+    setloading(false)
   }, []);
   useEffect(() => {
     fetchInitialData();
@@ -73,7 +76,7 @@ const FinalAssembly = () => {
       <div className={c.header}>
         <h2>Final Assembly </h2>
       </div>
-      
+
       <div className={c.projects}>
         {pr.flatMap((p, i) => (
           <label
@@ -89,13 +92,16 @@ const FinalAssembly = () => {
         <label onClick={() => setCurrentView("AFM")}>OS - AFM</label>
       </div>
 
+      {loading ? ( 
+      <Loading />
+    ) : (
       <div className={c.table}>
         <table>
           <TableHeader />
-          {renderview()}
-          
+          {renderview()} 
         </table>
       </div>
+    )}
     </>
   );
 };

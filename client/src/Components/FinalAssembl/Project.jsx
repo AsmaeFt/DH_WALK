@@ -3,14 +3,11 @@ import c from "./FinalAssembly.module.css";
 import api from "../../services/api";
 import axios from "axios";
 // import { generateWeeks } from "../functions/utilis";
-
+/* import Loading from "../UI/Loading"; */
 
 const Project = ({ data, sproject, family, updateData }) => {
-  const [loading, setLoading] = useState(true);
   const [inputs, setinputs] = useState({});
   const [othInp, setotheInp] = useState({});
-
-
 
   let Total_os = [];
   let Total_slop = [];
@@ -22,16 +19,14 @@ const Project = ({ data, sproject, family, updateData }) => {
 
   let containtion = [{ family: "", value: 0 }];
   // const weeks = generateWeeks();
-
   let prev = 0;
-  data.flatMap((pr) => {
-    pr.projectData.flatMap((p) => {
+  data.map((pr) => {
+    pr.projectData.map((p) => {
       const TotalOS =
         p.project_OS.Digitalization +
         p.project_OS.Daily_Kaizen +
         p.project_OS.OS_Auditing +
         p.project_OS.OS_Auditing_Data_Reporting;
-
       Total_os.push(TotalOS);
 
       const totalSLOP =
@@ -81,11 +76,9 @@ const Project = ({ data, sproject, family, updateData }) => {
         }
       });
       SOS.push(totalSos);
-
       if (familyTotal !== null) {
         totalProject.push(familyTotal);
       }
-
       let DHRequired = 0;
       DHRequired = TotalOS + totalSLOP + familyTotal;
       DH_required.push(DHRequired);
@@ -95,7 +88,6 @@ const Project = ({ data, sproject, family, updateData }) => {
     });
   });
 
-  
   const handleChange = (projectName, week, family, attribute, value) => {
     setinputs({
       projectName: projectName,
@@ -110,12 +102,8 @@ const Project = ({ data, sproject, family, updateData }) => {
     if (inputs.value !== undefined) {
       const fetchData = async () => {
         try {
-          const response = await axios.post(
-            `${api}/Modify_FA_DATA`,
-            inputs
-          );
+          const response = await axios.post(`${api}/Modify_FA_DATA`, inputs);
 
-          setLoading(false);
           updateData(response.data);
           console.log("API Response:", response.data);
         } catch (error) {
@@ -123,7 +111,6 @@ const Project = ({ data, sproject, family, updateData }) => {
         }
       };
       fetchData();
-      
     }
   }, [inputs]);
   useEffect(() => {
@@ -143,12 +130,7 @@ const Project = ({ data, sproject, family, updateData }) => {
     if (othInp.value !== undefined) {
       const fetchData = async () => {
         try {
-          const response = await axios.post(
-            `${api}/Modify_FA_DATA`,
-            othInp
-          );
-
-          setLoading(false);
+          const response = await axios.post(`${api}/Modify_FA_DATA`, othInp);
           updateData(response.data);
           console.log("API Response:", response.data);
         } catch (error) {
@@ -158,6 +140,7 @@ const Project = ({ data, sproject, family, updateData }) => {
       fetchData();
     }
   }, [othInp]);
+
   useEffect(() => {
     inputOthChange();
   }, [inputOthChange]);
@@ -166,7 +149,6 @@ const Project = ({ data, sproject, family, updateData }) => {
     <>
       <tbody>
         <React.Fragment>
-          {/* header */}
           <tr>
             <td>
               <span style={{ color: "orangered" }}>{sproject}</span> DH Required
@@ -577,7 +559,9 @@ const Project = ({ data, sproject, family, updateData }) => {
 
         <React.Fragment>
           <tr className={c.total}>
-            <td><span style={{ color: "orangered" }}>{sproject}</span> SLOP </td>
+            <td>
+              <span style={{ color: "orangered" }}>{sproject}</span> SLOP{" "}
+            </td>
             {Total_slop.map((t, i) => (
               <td key={i}>{t}</td>
             ))}
@@ -692,7 +676,10 @@ const Project = ({ data, sproject, family, updateData }) => {
 
         <React.Fragment>
           <tr className={c.total}>
-            <td> <span style={{ color: "orangered" }}>{sproject}</span> Actual DH</td>
+            <td>
+              {" "}
+              <span style={{ color: "orangered" }}>{sproject}</span> Actual DH
+            </td>
             {ActualDh.map((a, i) => (
               <td key={i}>{a}</td>
             ))}
@@ -760,6 +747,7 @@ const Project = ({ data, sproject, family, updateData }) => {
             )}
           </tr>
         </React.Fragment>
+
         <tr className={c.total}>
           <td>Gap </td>
           {Gap.flatMap((g, i) => (
