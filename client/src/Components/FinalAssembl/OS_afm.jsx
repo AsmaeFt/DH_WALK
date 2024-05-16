@@ -7,7 +7,15 @@ import axios from "axios";
 
 const OS_afm = ({ project }) => {
   
-  const projectData = useSelector((s) => s.projectData.data);
+  const [projectData, setProjectData] = useState([]);
+  
+  const fetch_ProjectData = useCallback(async () => {
+    const res = await axios.get(`${api}/assembly_project`);
+    setProjectData(res.data);
+  }, []);
+  useEffect(() => {
+    fetch_ProjectData();
+  }, [fetch_ProjectData]);
 
   const weeksandmonths = generateWeeks();
   const [osdata, setosdata] = useState([]);
@@ -34,7 +42,6 @@ const OS_afm = ({ project }) => {
       value: value,
     });
   };
-
   let Total_SOS = [];
   projectData.map((y) => {
     y.weeks.map((w) => {
@@ -71,35 +78,34 @@ const OS_afm = ({ project }) => {
         w.After_Sales_spl.Physical_incapacity_NMA;
       total_SPL.push(After_Sales_spl);
 
-      let DHrequired ;
+      let DHrequired;
       Total_SOS.forEach((t) => {
         DHrequired = Total_after_sales + After_Sales_spl + t;
       });
       Total_DH_Required.push(DHrequired);
 
-      let actualDH ;
+      let actualDH;
       if (w.week_name === `${new Date().getFullYear()}-W01`) {
         actualDH =
           w.After_Sales_ActualDH.last_HC -
           w.After_Sales_ActualDH.Attrition -
           w.After_Sales.Transfer +
           w.After_Sales.Hiring;
-          prev = actualDH;
+        prev = actualDH;
       } else {
         actualDH =
           prev -
           w.After_Sales_ActualDH.Attrition -
           w.After_Sales.Transfer +
           w.After_Sales.Hiring;
-          prev = actualDH;
+        prev = actualDH;
       }
       total_ActualDh.push(actualDH);
 
       let gap = 0;
       console.log(actualDH);
-      gap =  actualDH - DHrequired;
+      gap = actualDH - DHrequired;
       Gap.push(gap);
-
     });
   });
 
@@ -144,12 +150,10 @@ const OS_afm = ({ project }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr  className={c.total}>
+          <tr className={c.total}>
             <td>After Sales</td>
             {total_AF.map((af, i) => (
-              <td  key={i}>
-                {af}
-              </td>
+              <td key={i}>{af}</td>
             ))}
           </tr>
 
@@ -183,12 +187,10 @@ const OS_afm = ({ project }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr  className={c.total}>
+          <tr className={c.total}>
             <td>AS Special list out of the plant</td>
             {total_SPL.map((spl, i) => (
-              <td  key={i}>
-                {spl}
-              </td>
+              <td key={i}>{spl}</td>
             ))}
           </tr>
           <tr>
@@ -260,12 +262,10 @@ const OS_afm = ({ project }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr  className={c.total}>
+          <tr className={c.total}>
             <td>After Sales Actual DH</td>
             {weeksandmonths.flatMap((w, i) => (
-              <td key={w.week}>
-                42
-              </td>
+              <td key={w.week}>42</td>
             ))}
           </tr>
           <tr>

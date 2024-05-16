@@ -7,15 +7,24 @@ import axios from "axios";
 import api from "../../services/api";
 
 const Quality = () => {
-  const weeks = generateWeeks();
-  const data = useSelector((s) => s.projectData.data);
+
+
+  const[projectData , setProjectData]=useState([])
+  const fetch_ProjectData = useCallback(async () => {
+    const res = await axios.get(`${api}/assembly_project`);
+    setProjectData(res.data);
+  }, []);
+  useEffect(() => {
+    fetch_ProjectData();
+  }, [fetch_ProjectData]);
+
   const [Quality, setQuality] = useState([]);
   const [inputs, setinputs] = useState({});
 
   let containtion = [];
 
   let Quality_Project_DH = [];
-  data.map((d) => {
+  projectData.map((d) => {
     d.weeks.map((w) => {
       let Total = 0;
       w.projectData.map((pr) => {
