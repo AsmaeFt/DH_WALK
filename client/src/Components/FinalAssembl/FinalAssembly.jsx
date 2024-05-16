@@ -17,7 +17,6 @@ const FinalAssembly = () => {
 
   const projects = useCallback(async () => {
     const res = await axios.get(`${api}/Get_project`);
-
     const prj = res.data.flatMap((p) => p.name);
     setpr(prj);
 

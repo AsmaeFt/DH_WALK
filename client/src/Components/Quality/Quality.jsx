@@ -13,8 +13,8 @@ const Quality = () => {
   const [inputs, setinputs] = useState({});
 
   let containtion = [];
-  let Quality_Project_DH = [];
 
+  let Quality_Project_DH = [];
   data.map((d) => {
     d.weeks.map((w) => {
       let Total = 0;
@@ -67,6 +67,7 @@ const Quality = () => {
 
   Quality.map((y) => {
     y.weeks.map((w) => {
+
       const Total_Quality_Others =
         w.Quality_Other_DH.Supper_Control +
         w.Quality_Other_DH.Fire_Wall +
@@ -112,7 +113,7 @@ const Quality = () => {
       Gap.push(gap);
     });
   });
-  console.log(Quality_Others);
+
 
   return (
     <>

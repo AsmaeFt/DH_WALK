@@ -12,7 +12,9 @@ const Project = ({ data, sproject, family, updateData }) => {
   let Total_os = [];
   let Total_slop = [];
   let ActualDh = [];
+
   let totalProject = [];
+  
   let DH_required = [];
   let Gap = [];
   let SOS = [];
@@ -22,6 +24,7 @@ const Project = ({ data, sproject, family, updateData }) => {
   let prev = 0;
   data.map((pr) => {
     pr.projectData.map((p) => {
+      
       const TotalOS =
         p.project_OS.Digitalization +
         p.project_OS.Daily_Kaizen +
@@ -144,7 +147,7 @@ const Project = ({ data, sproject, family, updateData }) => {
   useEffect(() => {
     inputOthChange();
   }, [inputOthChange]);
-
+console.log(inputs);
   return (
     <>
       <tbody>

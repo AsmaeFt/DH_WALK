@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TableHeader from "../UI/TableHeader";
 import { generateWeeks } from "../functions/utilis";
 import c from "../FinalAssembl/FinalAssembly.module.css";
-
+import api from "../../services/api";
+import axios from "axios";
 import { useSelector } from "react-redux";
 
-const Dh_Walk = () => {
+const Dh_Walk = ({ data }) => {
+
   const gweeks = generateWeeks();
-
-  const projectData = useSelector((s) => s.projectData.data);
-
+  const total_Projects = data[0];
+  const total_AFM = data[1];
   
+  console.log(total_Projects);
   return (
     <>
       <div>
@@ -30,51 +32,29 @@ const Dh_Walk = () => {
             </React.Fragment>
 
             <React.Fragment>
+              {Object.entries(total_Projects).map(([pr, val], i) => (
+                <tr key={i}>
+                  <td>{pr}</td>
+                  {val.map((v, i) => (
+                    <td key={i}>{v}</td>
+                  ))}
+                </tr>
+              ))}
               <tr>
-                <td>K9 KSK</td>
-                {gweeks.map((g, i) => (
-                  <td key={i}>-</td>
-                ))}
+                <td>After M</td>
+                {
+                  total_AFM.map((t,i)=>(
+                    <td key={i}>{t}</td>
+                  ))
+                }
               </tr>
-              <tr>
-                <td>K9 Batch</td>
-                {gweeks.map((g, i) => (
-                  <td key={i}>-</td>
-                ))}
-              </tr>
-              <tr>
-                <td>R8</td>
-                {gweeks.map((g, i) => (
-                  <td key={i}>-</td>
-                ))}
-              </tr>
-              <tr>
-                <td>X74</td>
-                {gweeks.map((g, i) => (
-                  <td key={i}>-</td>
-                ))}
-              </tr>
-
-              <tr>
-                <td>Quality Other DH</td>
-                {gweeks.map((g, i) => (
-                  <td key={i}>-</td>
-                ))}
-              </tr>
-              <tr>
-                <td>MPC DH</td>
-                {gweeks.map((g, i) => (
-                  <td key={i}>-</td>
-                ))}
-              </tr>
+              
             </React.Fragment>
 
             <React.Fragment>
               <tr className={c.total}>
                 <td>OS</td>
-                {gweeks.map((g, i) => (
-                  <td key={i}>-</td>
-                ))}
+                
               </tr>
               <tr>
                 <td>Digitalization</td>

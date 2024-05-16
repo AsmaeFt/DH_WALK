@@ -7,6 +7,7 @@ export const ProjectDataSlice = createSlice({
   },
   reducers: {
     setData(state, action) {
+      console.log("modifying...");
       console.log("Previous state:", state.data);
       state.data = action.payload;
       console.log("New state:", state.data);
@@ -15,4 +16,3 @@ export const ProjectDataSlice = createSlice({
 });
 export const projectActions = ProjectDataSlice.actions;
 export default ProjectDataSlice.reducer;
-
