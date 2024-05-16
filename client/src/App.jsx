@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import store from "./store";
 import { projectActions } from "./store/ProjectdataSlice";
+import { dataActions } from "./store/DataSlice";
+
 import { useDispatch } from "react-redux";
 
 import { Route, Routes } from "react-router-dom";
@@ -13,7 +15,7 @@ import NavBar from "./Components/layout/Navbar";
 import Dhwalk from "./pages/Dhwalk";
 import FinalAssembly from "./Components/FinalAssembl/FinalAssembly";
 import Quality from "./Components/Quality/Quality";
-import Logistic from "./Components/Logistic/Logistic";
+import MPC from "./Components/Logistic/Logistic";
 import Dh_walk from "./Components/DH_Walk/Dh_Walk";
 import Add_data from "./Components/ADD_data/FinalAssembl";
 import "./App.css";
@@ -22,11 +24,13 @@ import { useCallback, useEffect, useState } from "react";
 function App() {
   const [ProjectData, setProjectData] = useState([]);
   const [AFM, setAFM] = useState([]);
+  const [Logistic, setLogistic] = useState([]);
 
   const dispatch = useDispatch();
   const { setData } = projectActions;
+  const { setDhwalk } = dataActions;
 
-  //Project Data 
+  //Project Data
   const fetch_ProjectData = useCallback(async () => {
     const res = await axios.get(`${api}/assembly_project`);
     setProjectData(res.data);
@@ -36,7 +40,7 @@ function App() {
     fetch_ProjectData();
   }, [fetch_ProjectData]);
 
-  //Afm Data 
+  //Afm Data
   const fetch_AFMDATA = useCallback(async () => {
     try {
       const res = await axios.get(`${api}/GetOSAFM`);
@@ -45,13 +49,26 @@ function App() {
       console.error(err);
     }
   }, []);
-
   useEffect(() => {
     fetch_AFMDATA();
   }, [fetch_AFMDATA]);
-  
+
+  //Logistic Data
+  const Fetch_LogisticData = useCallback(async () => {
+    try {
+      const res = await axios.get(`${api}/get_Logistic`);
+      setLogistic(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    Fetch_LogisticData();
+  }, [Fetch_LogisticData]);
+
   let DH_WALK_DATA = [];
-  
+
   let Total_SOS = [];
   let TotalProject = {};
   ProjectData.map((y) => {
@@ -94,8 +111,6 @@ function App() {
           TotalProject[p.projectName] = [];
         }
         TotalProject[p.projectName].push(Math.floor(Total_pr));
-
-       
       });
       Total_SOS.push(sos);
     });
@@ -125,39 +140,63 @@ function App() {
         w.After_Sales_spl.Physical_incapacity_NMA;
       total_SPL.push(After_Sales_spl);
 
-      let DHrequired ;
+      let DHrequired;
       Total_SOS.forEach((t) => {
         DHrequired = Total_after_sales + After_Sales_spl + t;
       });
       Total_AFM_Required.push(DHrequired);
 
-      let actualDH ;
+      let actualDH;
       if (w.week_name === `${new Date().getFullYear()}-W01`) {
         actualDH =
           w.After_Sales_ActualDH.last_HC -
           w.After_Sales_ActualDH.Attrition -
           w.After_Sales.Transfer +
           w.After_Sales.Hiring;
-          prev = actualDH;
+        prev = actualDH;
       } else {
         actualDH =
           prev -
           w.After_Sales_ActualDH.Attrition -
           w.After_Sales.Transfer +
           w.After_Sales.Hiring;
-          prev = actualDH;
+        prev = actualDH;
       }
       total_ActualDh.push(actualDH);
 
       let gap = 0;
-      gap =  actualDH - DHrequired;
+      gap = actualDH - DHrequired;
       Gap.push(gap);
-
     });
-    DH_WALK_DATA.push(Total_AFM_Required)
+    DH_WALK_DATA.push(Total_AFM_Required);
   });
 
- 
+  let Logistic_DH_REQUIRED = [];
+  Logistic.map((y) => {
+    y.weeks.map((w) => {
+      const Logistic_Dh =
+        w.Logistic_DH.KSK_Printing_Orders +
+        w.Logistic_DH.Sequencing +
+        w.Logistic_DH.Reception_Warehouse +
+        w.Logistic_DH.RM_DR +
+        w.Logistic_DH.FG_Warehouse +
+        w.Logistic_DH.FG_DR;
+
+      const Spl =
+        w.Logistic_SPL.Pregnant_women_out_of_the_plant +
+        w.Logistic_SPL.Maternity +
+        w.Logistic_SPL.Breastfeeding_leave +
+        w.Logistic_SPL.LTI_Long_term_weaknesses_LWD +
+        w.Logistic_SPL.Physical_incapacity_NMA;
+
+      let dh_required = 0;
+      dh_required = Logistic_Dh + Spl;
+      Logistic_DH_REQUIRED.push(dh_required);
+    });
+    DH_WALK_DATA.push(Logistic_DH_REQUIRED);
+  });
+
+  setDhwalk(DH_WALK_DATA);
 
   return (
     <>
@@ -168,8 +207,8 @@ function App() {
             <Route path="/" element={<Dhwalk />} />
             <Route path="/FAM" element={<FinalAssembly />} />
             <Route path="/Quality" element={<Quality />} />
-            <Route path="/Logistic" element={<Logistic />} />
-            <Route path="/Dh_walk" element={<Dh_walk data={DH_WALK_DATA}/>} />
+            <Route path="/Logistic" element={<MPC />} />
+            <Route path="/Dh_walk" element={<Dh_walk data={DH_WALK_DATA} />} />
             <Route path="/add_data" element={<Add_data />} />
             <Route path="/Loading" element={<Loading />} />
             <Route path="*" element={<p>Nothing to show here ! </p>} />

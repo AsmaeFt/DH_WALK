@@ -7,12 +7,13 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 const Dh_Walk = ({ data }) => {
-
+  const dhWalkData = useSelector((state) => state.data);
+  console.log(dhWalkData);
   const gweeks = generateWeeks();
   const total_Projects = data[0];
   const total_AFM = data[1];
-  
-  console.log(total_Projects);
+  const total_Logistic = data[2];
+
   return (
     <>
       <div>
@@ -42,19 +43,24 @@ const Dh_Walk = ({ data }) => {
               ))}
               <tr>
                 <td>After M</td>
-                {
-                  total_AFM.map((t,i)=>(
-                    <td key={i}>{t}</td>
-                  ))
-                }
+                {total_AFM.map((t, i) => (
+                  <td key={i}>{t}</td>
+                ))}
               </tr>
-              
+              <tr>
+                <td>MPC</td>
+                {total_Logistic.map((t, i) => (
+                  <td key={i}>{t}</td>
+                ))}
+              </tr>
             </React.Fragment>
 
             <React.Fragment>
               <tr className={c.total}>
                 <td>OS</td>
-                
+                {gweeks.map((g, i) => (
+                  <td key={i}>-</td>
+                ))}
               </tr>
               <tr>
                 <td>Digitalization</td>
@@ -141,6 +147,7 @@ const Dh_Walk = ({ data }) => {
                 ))}
               </tr>
             </React.Fragment>
+
             <tr className={c.total}>
               <td>FA GAP </td>
               {gweeks.map((g, i) => (
