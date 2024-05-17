@@ -4,6 +4,7 @@ import TableHeader from "../UI/TableHeader";
 import axios from "axios";
 import api from "../../services/api";
 import Loading from "../UI/Loading";
+import { act } from "react";
 
 const DH_WALK = () => {
   const [projectData, setProjectData] = useState([]);
@@ -11,57 +12,21 @@ const DH_WALK = () => {
   const [Logistic, setLogistic] = useState([]);
   const [Quality, setQuality] = useState([]);
 
-  //Project Data
-  const fetch_ProjectData = useCallback(async () => {
-    const res = await axios.get(`${api}/assembly_project`);
-    setProjectData(res.data);
-  }, []);
-  useEffect(() => {
-    fetch_ProjectData();
-  }, [fetch_ProjectData]);
-
-  //Afm Data
-  const fetch_AFMDATA = useCallback(async () => {
+  const fetchData = useCallback(async (endpoint, setter) => {
     try {
-      const res = await axios.get(`${api}/GetOSAFM`);
-      setAFM(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-  useEffect(() => {
-    fetch_AFMDATA();
-  }, [fetch_AFMDATA]);
-
-  //Logistic Data
-  const Fetch_LogisticData = useCallback(async () => {
-    try {
-      const res = await axios.get(`${api}/get_Logistic`);
-      setLogistic(res.data);
+      const res = await axios.get(`${api}${endpoint}`);
+      setter(res.data);
     } catch (err) {
       console.error(err);
     }
   }, []);
 
   useEffect(() => {
-    Fetch_LogisticData();
-  }, [Fetch_LogisticData]);
-
-  //Quality Data
-  const fetchQuality_Data = useCallback(async () => {
-    try {
-      const res = await axios.get(`${api}/get_quality`);
-      setQuality(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchQuality_Data();
-  }, [fetchQuality_Data]);
-
-  //calculations
+    fetchData("/assembly_project", setProjectData);
+    fetchData("/GetOSAFM", setAFM);
+    fetchData("/get_Logistic", setLogistic);
+    fetchData("/get_quality", setQuality);
+  }, [fetchData]);
 
   let Total_Projects = {};
   let Total_SOS = [];
@@ -71,7 +36,6 @@ const DH_WALK = () => {
   let Total_OS_Daily_Kaizen = [];
   let Total_OS_Data_Reporting = [];
   const Total_OS = [];
-
   let Total_PW = [];
   let Total_Mat = [];
   let Total_BF = [];
@@ -79,6 +43,10 @@ const DH_WALK = () => {
   let Total_PY = [];
   let Total_Projects_SPL = [];
   let last_Project_HC = [];
+
+  let Total_pro_Attrition = [];
+  let Total_pro_Transfet = [];
+  let Total_pro_Hiring = [];
 
   projectData.map((y) => {
     let Total_lasHc = 0;
@@ -96,6 +64,10 @@ const DH_WALK = () => {
       let LI = 0;
       let PY = 0;
       let SPL = 0;
+
+      let Attrition = 0;
+      let Transfer = 0;
+      let Hiring = 0;
 
       w.projectData.map((p) => {
         const TotalOS =
@@ -149,6 +121,10 @@ const DH_WALK = () => {
         }
         Total_Projects[p.projectName].push(Math.floor(Total_pr));
 
+        Attrition += p.project_actual_DH.Attrition;
+        Transfer += p.project_actual_DH.Transfer;
+        Hiring += p.project_actual_DH.Hiring;
+
         if (w.week_name === `${new Date().getFullYear()}-W01`) {
           Total_lasHc += p.project_actual_DH.last_HC;
         }
@@ -165,17 +141,28 @@ const DH_WALK = () => {
       Total_LI.push(LI);
       Total_PY.push(PY);
       Total_Projects_SPL.push(SPL);
+
+      Total_pro_Attrition.push(Attrition);
+      Total_pro_Transfet.push(Transfer);
+      Total_pro_Hiring.push(Hiring);
     });
     last_Project_HC.push(Total_lasHc);
   });
- 
+
   let Total_AFM_Required = [];
   let last_Pr_AFM_HC = [];
+  let Total_afm_Attrition = [];
+  let Total_afm_Transfert = [];
+  let Total_afm_Hiring = [];
 
   AFM.map((y) => {
     let Total_lasHc = 0;
     y.weeks.map((w) => {
       let Total_after_sales = 0;
+      let Attrition = 0;
+      let Transfer = 0;
+      let Hiring = 0;
+
       w.After_Sales.map((af) => {
         Total_after_sales += af.value;
       });
@@ -192,6 +179,10 @@ const DH_WALK = () => {
         DHrequired = Total_after_sales + After_Sales_spl + t;
       });
 
+      Total_afm_Attrition.push(w.After_Sales_ActualDH.Attrition);
+      Total_afm_Transfert.push(w.After_Sales_ActualDH.Transfer);
+      Total_afm_Hiring.push(w.After_Sales_ActualDH.Hiring);
+
       if (w.week_name === `${new Date().getFullYear()}-W01`) {
         last_Project_HC.forEach((h) => {
           Total_lasHc += w.After_Sales_ActualDH.last_HC + h;
@@ -202,7 +193,6 @@ const DH_WALK = () => {
     last_Pr_AFM_HC.push(Total_lasHc);
   });
 
-
   let Logistic_DH_REQUIRED = [];
   let SPL_LOgistic = [];
   let TOTAL_pro_log_pw = [];
@@ -211,10 +201,17 @@ const DH_WALK = () => {
   let TOTAL_pro_log_LI = [];
   let TOTAL_pro_log_PY = [];
   let last_Pr_Log_HC = [];
+  let Total_Log_Attrition = [];
+  let Total_Log_Transfert = [];
+  let Total_Log_Hiring = [];
 
   Logistic.map((y) => {
     let Total_lasHc = 0;
     y.weeks.map((w) => {
+      let Attrition = 0;
+      let Transfer = 0;
+      let Hiring = 0;
+
       const Logistic_Dh =
         w.Logistic_DH.KSK_Printing_Orders +
         w.Logistic_DH.Sequencing +
@@ -265,6 +262,10 @@ const DH_WALK = () => {
       dh_required = Logistic_Dh + Spl;
       Logistic_DH_REQUIRED.push(dh_required);
 
+      Total_Log_Attrition.push(w.Logistic_actual_Dh.Attrition);
+      Total_Log_Transfert.push(w.Logistic_actual_Dh.Transfer);
+      Total_Log_Hiring.push(w.Logistic_actual_Dh.Hiring);
+
       if (w.week_name === `${new Date().getFullYear()}-W01`) {
         last_Pr_AFM_HC.forEach((h) => {
           Total_lasHc += w.Logistic_actual_Dh.Last_dh + h;
@@ -274,7 +275,6 @@ const DH_WALK = () => {
     last_Pr_Log_HC.push(Total_lasHc);
   });
 
-
   let Quality_Others = [];
   let Total_Q_SPL = [];
   let Final_pw = [];
@@ -283,9 +283,17 @@ const DH_WALK = () => {
   let Final_li = [];
   let Final_py = [];
   let Last_Hc_Quality = [];
+  let Total_Qual_Attrition = [];
+  let Total_Qual_Transfert = [];
+  let Total_Qual_Hiring = [];
+
   Quality.map((y) => {
     let total_hc = 0;
     y.weeks.map((w) => {
+      let Attrition = 0;
+      let Transfer = 0;
+      let Hiring = 0;
+
       const Total_Quality_Others =
         w.Quality_Other_DH.Supper_Control +
         w.Quality_Other_DH.Fire_Wall +
@@ -341,6 +349,11 @@ const DH_WALK = () => {
           t + w.Quality_Special_list_out_of_the_plant.Physical_incapacity_NMA;
       });
       Final_py.push(total_py);
+
+      Total_Qual_Attrition.push(w.Quality_Actual_DH.Attrition);
+      Total_Qual_Transfert.push(w.Quality_Actual_DH.Transfer);
+      Total_Qual_Hiring.push(w.Quality_Actual_DH.Hiring);
+
       if (w.week_name === `${new Date().getFullYear()}-W01`) {
         last_Pr_Log_HC.forEach((v) => {
           total_hc += v + w.Quality_Actual_DH.Last_dh;
@@ -350,10 +363,7 @@ const DH_WALK = () => {
     Last_Hc_Quality.push(total_hc);
   });
 
-  console.log(Last_Hc_Quality);
-  
   let Total_AFM = [];
-
   for (let i = 0; i < Total_of_all_Projects.length; i++) {
     let weekToltal =
       Total_of_all_Projects[i] +
@@ -367,6 +377,60 @@ const DH_WALK = () => {
     const toatl_spl = Total_Projects_SPL[i] + Total_Q_SPL[i] + SPL_LOgistic[i];
     Total_Special_List.push(toatl_spl);
   }
+
+  let Total_atrition = [];
+  for (let i = 0; i < Total_pro_Attrition.length; i++) {
+    const total =
+      Total_pro_Attrition[i] +
+      Total_afm_Attrition[i] +
+      Total_Log_Attrition[i] +
+      Total_Qual_Attrition[i];
+    Total_atrition.push(total);
+  }
+  let Total_transfert = [];
+  for (let i = 0; i < Total_pro_Transfet.length; i++) {
+    const total =
+      Total_pro_Transfet[i] +
+      Total_afm_Transfert[i] +
+      Total_Log_Transfert[i] +
+      Total_Qual_Transfert[i];
+    Total_transfert.push(total);
+  }
+
+  let Total_Hiring = [];
+  for (let i = 0; i < Total_pro_Hiring.length; i++) {
+    const total =
+      Total_pro_Hiring[i] +
+      Total_afm_Hiring[i] +
+      Total_Log_Hiring[i] +
+      Total_Qual_Hiring[i];
+    Total_Hiring.push(total);
+  }
+
+  let Total_Actual_DH = [];
+  let prev = 0;
+  projectData.map((y) => {
+    y.weeks.map((w) => {
+      let actualDh;
+      for (let i = 0; i < Total_atrition.length; i++) {
+        if (w.week_name === `${new Date().getFullYear()}-W01`) {
+          actualDh =
+            Last_Hc_Quality[0] -
+            Total_atrition[0] -
+            Total_transfert[0] +
+            Total_Hiring[0];
+            console.log(actualDh);
+        } else {
+          actualDh =
+            prev - Total_atrition[i] - Total_transfert[i] + Total_Hiring[i];
+          
+        }
+      }
+      prev = actualDh;
+      Total_Actual_DH.push(actualDh);
+    });
+  });
+ 
 
   return (
     <>
@@ -477,6 +541,33 @@ const DH_WALK = () => {
                 <td>Physical incapacity & NMA</td>
                 {Final_py.map((m, i) => (
                   <td key={i}>{m}</td>
+                ))}
+              </tr>
+            </React.Fragment>
+
+            <React.Fragment>
+              <tr className={c.total}>
+                <td>FA Actual DH</td>
+                 {Total_Actual_DH.map((a, i) => (
+                  <td key={i}>{a}</td>
+                ))} 
+              </tr>
+              <tr>
+                <td>Attrition</td>
+                {Total_atrition.map((a, i) => (
+                  <td key={i}>{a}</td>
+                ))}
+              </tr>
+              <tr>
+                <td> Transfer</td>
+                {Total_transfert.map((a, i) => (
+                  <td key={i}>{a}</td>
+                ))}
+              </tr>
+              <tr>
+                <td>Hiring</td>
+                {Total_Hiring.map((a, i) => (
+                  <td key={i}>{a}</td>
                 ))}
               </tr>
             </React.Fragment>
