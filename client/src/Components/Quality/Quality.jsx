@@ -7,10 +7,8 @@ import axios from "axios";
 import api from "../../services/api";
 
 const Quality = () => {
+  const [projectData, setProjectData] = useState([]);
 
-
-  const[projectData , setProjectData]=useState([])
-  
   const fetch_ProjectData = useCallback(async () => {
     const res = await axios.get(`${api}/assembly_project`);
     setProjectData(res.data);
@@ -25,6 +23,7 @@ const Quality = () => {
   let containtion = [];
 
   let Quality_Project_DH = [];
+
   projectData.map((d) => {
     d.weeks.map((w) => {
       let Total = 0;
@@ -77,7 +76,6 @@ const Quality = () => {
 
   Quality.map((y) => {
     y.weeks.map((w) => {
-
       const Total_Quality_Others =
         w.Quality_Other_DH.Supper_Control +
         w.Quality_Other_DH.Fire_Wall +
@@ -98,7 +96,10 @@ const Quality = () => {
       Total_Q_SPL.push(SPL);
 
       let DH_REquired = 0;
-      DH_REquired = Total_Quality_Others + SPL;
+      Quality_Project_DH.forEach((t)=>{
+
+        DH_REquired = Total_Quality_Others + SPL + t;
+      })
       Total_DH_Required.push(DH_REquired);
 
       let actualDh;
@@ -123,7 +124,6 @@ const Quality = () => {
       Gap.push(gap);
     });
   });
-
 
   return (
     <>
@@ -411,11 +411,9 @@ const Quality = () => {
 
             <tr className={c.total}>
               <td>Gap</td>
-              {
-                Gap.map((g,i)=>(
-                  <td key={i}>{g}</td>
-                ))
-              }
+              {Gap.map((g, i) => (
+                <td key={i}>{g}</td>
+              ))}
             </tr>
           </tbody>
         </table>
