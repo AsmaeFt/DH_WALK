@@ -24,14 +24,16 @@ route.post("/assembly_Others_Edits", dhwalk.editDataothers);
 
 route.post("/addOSAFM", oS_AfterM.addData);
 route.get("/GetOSAFM", oS_AfterM.getData);
-route.post("/edit-osAfm", oS_AfterM.editData);
+route.post("/edit-osAfm", oS_AfterM.Modify);
 
 route.get("/getfiltredata", dhwalk.getFiltredData);
 
 route.post("/add_quality", quality.addData);
 route.get("/get_Quality", quality.getQuality_Data);
+route.post("/Modify_Quality", quality.Modify);
 
 route.post("/add_Logistic", logistic.addData);
 route.get("/get_Logistic", logistic.GetData);
+route.post("/Modify_Logistic", logistic.Modify);
 
 module.exports = route;

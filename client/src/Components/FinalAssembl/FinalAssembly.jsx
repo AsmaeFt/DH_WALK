@@ -14,6 +14,7 @@ const FinalAssembly = () => {
   const [sproj, setsproj] = useState("K9 KSK");
   const [family, setfamily] = useState([]);
   const [currentView, setCurrentView] = useState("Project");
+  const [activeLabel, setactiveLabel] = useState("K9 KSK");
 
   const projects = useCallback(async () => {
     const res = await axios.get(`${api}/Get_project`);
@@ -34,7 +35,7 @@ const FinalAssembly = () => {
     const res = await axios.get(`${api}/getfiltredata?projectName=K9 KSK`);
     const data = res.data;
     setdata(data);
-    setloading(false)
+    setloading(false);
   }, []);
   useEffect(() => {
     fetchInitialData();
@@ -46,6 +47,8 @@ const FinalAssembly = () => {
       const data = res.data;
       setdata(data);
       setsproj(p);
+      setloading(false);
+      setactiveLabel(p)
     } catch (err) {
       console.error(err);
     }
@@ -78,7 +81,7 @@ const FinalAssembly = () => {
 
       <div className={c.projects}>
         {pr.flatMap((p, i) => (
-          <label
+          <label  className={activeLabel === p ? c.active_label : ""}
             key={i}
             onClick={() => {
               filterdata(p);
@@ -88,19 +91,23 @@ const FinalAssembly = () => {
             {p}
           </label>
         ))}
-        <label onClick={() => setCurrentView("AFM")}>OS - AFM</label>
+        <label className={activeLabel === "OS" ? c.active_label : ""}
+         onClick={() => {setCurrentView("AFM"),setactiveLabel("OS")}}
+         >OS - AFM</label>
       </div>
 
-      {loading ? ( 
-      <Loading />
-    ) : (
-      <div className={c.table}>
-        <table>
-          <TableHeader />
-          {renderview()} 
-        </table>
-      </div>
-    )}
+      {loading ? (
+        <div className={c.loading}>
+          <Loading />
+        </div>
+      ) : (
+        <div className={c.table}>
+          <table>
+            <TableHeader />
+            {renderview()}
+          </table>
+        </div>
+      )}
     </>
   );
 };

@@ -51,3 +51,47 @@ exports.addData = async (req, res, next) => {
       next(err);
     }
   };
+
+exports.Modify = async (req, res, next) => {
+  try {
+    const { week, path, value } = req.body;
+    const GetPath = path.split(".")[0];
+    if (GetPath != "Logistic_actual_Dh") {
+      const updatedData = await Logistic.findOneAndUpdate(
+        { "weeks.week_name": week },
+        { $set: { [`weeks.$.${path}`]: value } },
+        { new: true }
+      );
+      if (!updatedData) {
+        return res.status(404).json({ error: `Week '${week}' not found` });
+      }
+      const weekIndex = updatedData.weeks.findIndex(
+        (w) => w.week_name === week
+      );
+      const subsequentWeeks = updatedData.weeks.slice(weekIndex + 1);
+      const updateOperations = subsequentWeeks.map((w) => ({
+        updateOne: {
+          filter: { "weeks.week_name": w.week_name },
+          update: { $set: { [`weeks.$.${path}`]: value } },
+        },
+      }));
+      if (updateOperations.length > 0) {
+        await Logistic.bulkWrite(updateOperations);
+      }
+    } else {
+      const updatedData = await Logistic.findOneAndUpdate(
+        { "weeks.week_name": week },
+        { $set: { [`weeks.$.${path}`]: value } },
+        { new: true }
+      );
+      if (!updatedData) {
+        return res.status(404).json({ error: `Week '${week}' not found` });
+      }
+    }
+
+    const data = await Logistic.find({});
+    res.status(201).json(data);
+  } catch (err) {
+    next(err);
+  }
+};

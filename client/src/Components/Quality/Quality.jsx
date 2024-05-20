@@ -21,7 +21,6 @@ const Quality = () => {
   const [inputs, setinputs] = useState({});
 
   let containtion = [];
-
   let Quality_Project_DH = [];
 
   projectData.map((d) => {
@@ -96,10 +95,9 @@ const Quality = () => {
       Total_Q_SPL.push(SPL);
 
       let DH_REquired = 0;
-      Quality_Project_DH.forEach((t)=>{
-
+      Quality_Project_DH.forEach((t) => {
         DH_REquired = Total_Quality_Others + SPL + t;
-      })
+      });
       Total_DH_Required.push(DH_REquired);
 
       let actualDh;
@@ -124,6 +122,33 @@ const Quality = () => {
       Gap.push(gap);
     });
   });
+
+  const handleChange = (week, path, value) => {
+    setinputs({
+      week: week,
+      path: path,
+      value: value,
+    });
+  };
+
+  const inputOthChange = useCallback(async () => {
+    if (inputs.value !== undefined) {
+      const fetchData = async () => {
+        try {
+          const res = await axios.post(`${api}/Modify_Quality`, inputs);
+          setQuality(res.data);
+          console.log("API Response:", res.data);
+        } catch (error) {
+          console.error("Error posting data:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [inputs]);
+
+  useEffect(() => {
+    inputOthChange();
+  }, [inputOthChange]);
 
   return (
     <>
@@ -174,10 +199,18 @@ const Quality = () => {
                 {Quality.map((y) =>
                   y.weeks.map((w) => {
                     const data = w.Quality_Other_DH.Supper_Control;
-
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Other_DH.Supper_Control",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -191,7 +224,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Other_DH.Fire_Wall",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -205,7 +247,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Other_DH.Validation",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -220,7 +271,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Other_DH.FTQ_Data_Recording",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -234,7 +294,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Other_DH.RM_Sorting_FG_Wearhouse",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -248,7 +317,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Other_DH.Containment_Back_up",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -262,7 +340,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Other_DH.Excess",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -287,7 +374,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Special_list_out_of_the_plant.Pregnant_women_out_of_the_plant",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -302,7 +398,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Special_list_out_of_the_plant.Maternity",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -318,7 +423,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Special_list_out_of_the_plant.Breastfeeding_leave",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -334,7 +448,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Special_list_out_of_the_plant.LTI_Long_term_weaknesses_LWD",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -350,7 +473,16 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Special_list_out_of_the_plant.Physical_incapacity_NMA",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -373,7 +505,15 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input placeholder={data || "-"}
+                                                  onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Actual_DH.Attrition",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -387,7 +527,15 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input placeholder={data || "-"}
+                                                  onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Actual_DH.Transfer",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })
@@ -401,7 +549,15 @@ const Quality = () => {
 
                     return (
                       <td key={w._id}>
-                        <input placeholder={data || "-"} />
+                        <input placeholder={data || "-"} 
+                                                  onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "Quality_Actual_DH.Hiring",
+                              e.target.value
+                            )
+                          }
+                        />
                       </td>
                     );
                   })

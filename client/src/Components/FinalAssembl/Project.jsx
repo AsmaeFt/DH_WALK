@@ -147,7 +147,7 @@ const Project = ({ data, sproject, family, updateData }) => {
   useEffect(() => {
     inputOthChange();
   }, [inputOthChange]);
-console.log(inputs);
+
   return (
     <>
       <tbody>

@@ -4,7 +4,7 @@ import TableHeader from "../UI/TableHeader";
 import axios from "axios";
 import api from "../../services/api";
 import Loading from "../UI/Loading";
-import { act } from "react";
+import { generateWeeks } from "../functions/utilis";
 
 const DH_WALK = () => {
   const [projectData, setProjectData] = useState([]);
@@ -409,28 +409,30 @@ const DH_WALK = () => {
 
   let Total_Actual_DH = [];
   let prev = 0;
+  let i = 1;
   projectData.map((y) => {
     y.weeks.map((w) => {
       let actualDh;
-      for (let i = 0; i < Total_atrition.length; i++) {
-        if (w.week_name === `${new Date().getFullYear()}-W01`) {
-          actualDh =
-            Last_Hc_Quality[0] -
-            Total_atrition[0] -
-            Total_transfert[0] +
-            Total_Hiring[0];
-            console.log(actualDh);
-        } else {
-          actualDh =
-            prev - Total_atrition[i] - Total_transfert[i] + Total_Hiring[i];
-          
-        }
+
+      if (w.week_name === `${new Date().getFullYear()}-W01`) {
+        actualDh =
+          Last_Hc_Quality[0] -
+          Total_atrition[0] -
+          Total_transfert[0] +
+          Total_Hiring[0];
+        prev = actualDh;
+        Total_Actual_DH.push(actualDh);
+      } else {
+        actualDh =
+          prev - Total_atrition[i] - Total_transfert[i] + Total_Hiring[i];
+        prev = actualDh;
+        i++;
+        Total_Actual_DH.push(actualDh);
       }
-      prev = actualDh;
-      Total_Actual_DH.push(actualDh);
     });
   });
- 
+
+
 
   return (
     <>
@@ -444,7 +446,7 @@ const DH_WALK = () => {
             <tr className={c.total}>
               <td>FA Dh required </td>
               {Total_AFM.map((t, i) => (
-                <td key={i}>{t}</td>
+                <td key={i}>{Math.floor(t)}</td>
               ))}
             </tr>
 
@@ -548,9 +550,9 @@ const DH_WALK = () => {
             <React.Fragment>
               <tr className={c.total}>
                 <td>FA Actual DH</td>
-                 {Total_Actual_DH.map((a, i) => (
-                  <td key={i}>{a}</td>
-                ))} 
+                {Total_Actual_DH.map((a, i) => (
+                  <td key={i}>{Math.floor(a)}</td>
+                ))}
               </tr>
               <tr>
                 <td>Attrition</td>

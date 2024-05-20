@@ -174,6 +174,7 @@ exports.editDataothers = async (req, res, next) => {
 
     const weekIndex = updateResult.weeks.findIndex((w) => w.week_name === week);
     const subsequentWeeks = updateResult.weeks.slice(weekIndex + 1);
+    
     const updates = subsequentWeeks.map((w) => {
       const projectIndx = w.projectData.findIndex(
         (p) => p.projectName === projectName

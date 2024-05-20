@@ -6,9 +6,8 @@ import api from "../../services/api";
 import axios from "axios";
 
 const OS_afm = ({ project }) => {
-  
   const [projectData, setProjectData] = useState([]);
-  
+
   const fetch_ProjectData = useCallback(async () => {
     const res = await axios.get(`${api}/assembly_project`);
     setProjectData(res.data);
@@ -34,14 +33,6 @@ const OS_afm = ({ project }) => {
     fetchData();
   }, [fetchData]);
 
-  const handleChange = (week, attribute, project_name, value) => {
-    setinputs({
-      week: week,
-      attribute: attribute,
-      project_name: project_name,
-      value: value,
-    });
-  };
   let Total_SOS = [];
   projectData.map((y) => {
     y.weeks.map((w) => {
@@ -89,25 +80,53 @@ const OS_afm = ({ project }) => {
         actualDH =
           w.After_Sales_ActualDH.last_HC -
           w.After_Sales_ActualDH.Attrition -
-          w.After_Sales.Transfer +
-          w.After_Sales.Hiring;
+          w.After_Sales_ActualDH.Transfer +
+          w.After_Sales_ActualDH.Hiring;
         prev = actualDH;
       } else {
         actualDH =
           prev -
           w.After_Sales_ActualDH.Attrition -
-          w.After_Sales.Transfer +
-          w.After_Sales.Hiring;
+          w.After_Sales_ActualDH.Transfer +
+          w.After_Sales_ActualDH.Hiring;
         prev = actualDH;
       }
       total_ActualDh.push(actualDH);
 
-      let gap = 0;
-      console.log(actualDH);
+      let gap =0;
       gap = actualDH - DHrequired;
-      Gap.push(gap);
+      Gap.push(Math.floor(gap));
+     
     });
   });
+
+  const handleChange = (week, path, value, projectName) => {
+    setinputs({
+      week: week,
+      path: path,
+      value: value,
+      projectName: projectName,
+    });
+  };
+
+  const inputOthChange = useCallback(async () => {
+    if (inputs.value !== undefined) {
+      const fetchData = async () => {
+        try {
+          const res = await axios.post(`${api}/edit-osAfm`, inputs);
+          setosdata(res.data);
+          console.log("API Response:", res.data);
+        } catch (error) {
+          console.error("Error posting data:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [inputs]);
+
+  useEffect(() => {
+    inputOthChange();
+  }, [inputOthChange]);
 
   return (
     <>
@@ -170,9 +189,9 @@ const OS_afm = ({ project }) => {
                           onChange={(e) =>
                             handleChange(
                               w.week_name,
-                              "After_Sales",
-                              pr,
-                              e.target.value
+                              "After_Sales.project_name",
+                              e.target.value,
+                              pr
                             )
                           }
                           placeholder={data.value || "-"}
@@ -200,7 +219,16 @@ const OS_afm = ({ project }) => {
                 const data = w.After_Sales_spl.Pregnant_women_out_of_the_plant;
                 return (
                   <td key={w._id}>
-                    <input placeholder={data || "-"} />
+                    <input
+                      placeholder={data || "-"}
+                      onChange={(e) =>
+                        handleChange(
+                          w.week_name,
+                          "After_Sales_spl.Pregnant_women_out_of_the_plant",
+                          e.target.value
+                        )
+                      }
+                    />
                   </td>
                 );
               })
@@ -213,7 +241,16 @@ const OS_afm = ({ project }) => {
                 const data = w.After_Sales_spl.Maternity;
                 return (
                   <td key={w._id}>
-                    <input placeholder={data || "-"} />
+                    <input
+                      placeholder={data || "-"}
+                      onChange={(e) =>
+                        handleChange(
+                          w.week_name,
+                          "After_Sales_spl.Maternity",
+                          e.target.value
+                        )
+                      }
+                    />
                   </td>
                 );
               })
@@ -227,7 +264,16 @@ const OS_afm = ({ project }) => {
                 const data = w.After_Sales_spl.Breastfeeding_leave;
                 return (
                   <td key={w._id}>
-                    <input placeholder={data || "-"} />
+                    <input
+                      placeholder={data || "-"}
+                      onChange={(e) =>
+                        handleChange(
+                          w.week_name,
+                          "After_Sales_spl.Breastfeeding_leave",
+                          e.target.value
+                        )
+                      }
+                    />
                   </td>
                 );
               })
@@ -240,7 +286,16 @@ const OS_afm = ({ project }) => {
                 const data = w.After_Sales_spl.LTI_Long_term_weaknesses_LWD;
                 return (
                   <td key={w._id}>
-                    <input placeholder={data || "-"} />
+                    <input
+                      placeholder={data || "-"}
+                      onChange={(e) =>
+                        handleChange(
+                          w.week_name,
+                          "After_Sales_spl.LTI_Long_term_weaknesses_LWD",
+                          e.target.value
+                        )
+                      }
+                    />
                   </td>
                 );
               })
@@ -253,7 +308,16 @@ const OS_afm = ({ project }) => {
                 const data = w.After_Sales_spl.Physical_incapacity_NMA;
                 return (
                   <td key={w._id}>
-                    <input placeholder={data || "-"} />
+                    <input
+                      placeholder={data || "-"}
+                      onChange={(e) =>
+                        handleChange(
+                          w.week_name,
+                          "After_Sales_spl.Physical_incapacity_NMA",
+                          e.target.value
+                        )
+                      }
+                    />
                   </td>
                 );
               })
@@ -264,7 +328,7 @@ const OS_afm = ({ project }) => {
         <React.Fragment>
           <tr className={c.total}>
             <td>After Sales Actual DH</td>
-            {weeksandmonths.flatMap((w, i) => (
+            {weeksandmonths.flatMap((w) => (
               <td key={w.week}>42</td>
             ))}
           </tr>
@@ -275,7 +339,16 @@ const OS_afm = ({ project }) => {
                 const data = w.After_Sales_ActualDH.Attrition;
                 return (
                   <td key={w._id}>
-                    <input placeholder={data || "-"} />
+                    <input
+                      placeholder={data || "-"}
+                      onChange={(e) =>
+                        handleChange(
+                          w.week_name,
+                          "After_Sales_ActualDH.Attrition",
+                          e.target.value
+                        )
+                      }
+                    />
                   </td>
                 );
               })
@@ -288,7 +361,16 @@ const OS_afm = ({ project }) => {
                 const data = w.After_Sales_ActualDH.Transfer;
                 return (
                   <td key={w._id}>
-                    <input placeholder={data || "-"} />
+                    <input
+                      placeholder={data || "-"}
+                      onChange={(e) =>
+                        handleChange(
+                          w.week_name,
+                          "After_Sales_ActualDH.Transfer",
+                          e.target.value
+                        )
+                      }
+                    />
                   </td>
                 );
               })
@@ -301,7 +383,16 @@ const OS_afm = ({ project }) => {
                 const data = w.After_Sales_ActualDH.Hiring;
                 return (
                   <td key={w._id}>
-                    <input placeholder={data || "-"} />
+                    <input
+                      placeholder={data || "-"}
+                      onChange={(e) =>
+                        handleChange(
+                          w.week_name,
+                          "After_Sales_ActualDH.Hiring",
+                          e.target.value
+                        )
+                      }
+                    />
                   </td>
                 );
               })

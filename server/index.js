@@ -2,10 +2,11 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyparser=require('body-parser')
+const dotenv = require('dotenv');
+dotenv.config();
+
 
 const  data= require('./routes/post_DATA')
-
-
 const app = express();
 
 //MidleWare
