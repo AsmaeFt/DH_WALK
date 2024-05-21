@@ -1,3 +1,15 @@
+
+.header{
+  display: flex;
+  justify-content: space-between;
+}
+.Summary{
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.Summary:hover{
+  color: orangered;
+}
 .projects {
   margin: 2rem 0 2rem 0;
   width: 100%;
@@ -128,4 +140,19 @@ td {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.chartContainer{
+  width: 100%;
+}
+.chartContainer div:nth-child(1){
+  max-height: 30rem;
+
+}
+.chartContainer div:nth-child(2) {
+  display: flex;
+  justify-content: space-between;
+}
+.chartContainer div:nth-child(2) div{
+  width: 50%;
+  max-height: 300px;
 }

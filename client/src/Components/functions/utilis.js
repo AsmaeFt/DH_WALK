@@ -9,6 +9,23 @@ export const getWeek = (date) => {
   return Math.ceil((daysFromFirstDay + date.getDay() + 1) / 7);
 };
 
+// export const generateWeeks = () => {
+//   const currentYear = new Date().getFullYear();
+//   const startDate = new Date(`${currentYear}-01-01`); // Start from January 1st
+//   const weeksInYear = getISOWeeks(currentYear); // Get the number of ISO weeks in the year
+//   const weeks = [];
+//   for (let i = 0; i < weeksInYear; i++) {
+//     const currentDate = new Date(startDate.getTime());
+//     currentDate.setDate(startDate.getDate() + i * 7); // Move to the next week
+//     const month = currentDate.toLocaleString("default", { month: "short" }); // Get short month name
+//     const firstWeekDate = `${currentDate.getDate()}/${currentDate.getMonth() + 1}`;
+//     const lastWeekDate = ; // Format date as 'day/month'
+//     const week = `W${String(i + 1).padStart(2, "0")}`; // Format week number with leading zero
+//     weeks.push({ month, firstWeekDate, lastWeekDate, week });
+//   }
+//   return weeks;
+// };
+
 export const generateWeeks = () => {
   const currentYear = new Date().getFullYear();
   const startDate = new Date(`${currentYear}-01-01`); // Start from January 1st
@@ -18,9 +35,18 @@ export const generateWeeks = () => {
     const currentDate = new Date(startDate.getTime());
     currentDate.setDate(startDate.getDate() + i * 7); // Move to the next week
     const month = currentDate.toLocaleString("default", { month: "short" }); // Get short month name
-    const date = `${currentDate.getDate()}/${currentDate.getMonth() + 1}`; // Format date as 'day/month'
+    const firstWeekDate = `${currentDate.getDate()}/${currentDate.getMonth() + 1}`;
+    
+    const lastWeekDateObj = new Date(currentDate.getTime());
+    lastWeekDateObj.setDate(currentDate.getDate() + 6); // Add 6 days to get the last date of the week
+    const lastWeekDate = `${lastWeekDateObj.getDate()}/${lastWeekDateObj.getMonth() + 1}`;
+    
+    const weekMonth = lastWeekDateObj.getMonth() !== currentDate.getMonth() 
+      ? lastWeekDateObj.toLocaleString("default", { month: "short" }) 
+      : month; // Update month if lastWeekDate is in the next month
+    
     const week = `W${String(i + 1).padStart(2, "0")}`; // Format week number with leading zero
-    weeks.push({ month, date, week });
+    weeks.push({ month: weekMonth, firstWeekDate, lastWeekDate, week });
   }
   return weeks;
 };
@@ -53,3 +79,9 @@ export const getCurrentWeek = () => {
     now.getFullYear() + "-W" + String(correctedWeekNumber).padStart(2, "0")
   );
 };
+
+export const GetWeeks =(date)=>{
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+  return `${date.getFullYear()}-W${Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)}`;
+}
