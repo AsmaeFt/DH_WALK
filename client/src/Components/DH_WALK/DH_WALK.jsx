@@ -3,10 +3,9 @@ import c from "../FinalAssembl/FinalAssembly.module.css";
 import TableHeader from "../UI/TableHeader";
 import axios from "axios";
 import api from "../../services/api";
-import Loading from "../UI/Loading";
+import Loadings from "../UI/Loading";
 import { generateWeeks } from "../functions/utilis";
 import { Calculate_Average } from "../hooks/Average";
-import Chart from "../charts/Chart";
 
 const DH_WALK = () => {
   const [projectData, setProjectData] = useState([]);
@@ -15,11 +14,13 @@ const DH_WALK = () => {
   const [Quality, setQuality] = useState([]);
   const [Cutting, setCutting] = useState([]);
   const [view, setView] = useState("table");
+  const [loading, setloading] = useState(true);
 
   const fetchData = useCallback(async (endpoint, setter) => {
     try {
       const res = await axios.get(`${api}${endpoint}`);
       setter(res.data);
+      setloading(false);
     } catch (err) {
       console.error(err);
     }
@@ -364,10 +365,25 @@ const DH_WALK = () => {
   let prevLP = 0;
   let Gap_LP = [];
   let Total_Plant_Last_Hc = 0;
+  let Cutting_LP_Attrition = [];
+  let Cutting_LP_Transfert = [];
+  let Cutting_LP_Hiring = [];
+
+  let Total_Cutting_Attrition = [];
+  let Total_Cutting_Transfert = [];
+  let Total_Cutting_Hiring = [];
+
+  let Total_LP_Attrition = [];
+  let Total_LP_Transfert = [];
+  let Total_LP_Hiring = [];
+
   Cutting.map((y) => {
     y.weeks.map((w) => {
       if (w.week_name === `${new Date().getFullYear()}-W01`) {
-        Total_Plant_Last_Hc = w.Cutting_Actual_DH.Last_dh + w.LP_ActualDH.Last_dh+ Last_Hc_Quality[0];
+        Total_Plant_Last_Hc =
+          w.Cutting_Actual_DH.Last_dh +
+          w.LP_ActualDH.Last_dh +
+          Last_Hc_Quality[0];
       }
 
       //Cutting
@@ -447,10 +463,27 @@ const DH_WALK = () => {
       let gaplp = 0;
       gaplp = ActualDhLP - Lp_DH_Required;
       Gap_LP.push(gaplp);
+
+      const total_attri =
+        w.Cutting_Actual_DH.Attrition + w.LP_ActualDH.Attrition;
+
+      const total_trans = w.Cutting_Actual_DH.Transfer + w.LP_ActualDH.Transfer;
+
+      const total_hir = w.Cutting_Actual_DH.Hiring + w.LP_ActualDH.Hiring;
+
+      Total_Cutting_Attrition.push(w.Cutting_Actual_DH.Attrition);
+      Total_Cutting_Transfert.push(w.Cutting_Actual_DH.Transfer);
+      Total_Cutting_Hiring.push(w.Cutting_Actual_DH.Hiring);
+
+      Total_LP_Attrition.push(w.LP_ActualDH.Attrition);
+      Total_LP_Transfert.push(w.LP_ActualDH.Transfer);
+      Total_LP_Hiring.push(w.LP_ActualDH.Hiring);
+
+      Cutting_LP_Attrition.push(total_attri);
+      Cutting_LP_Transfert.push(total_trans);
+      Cutting_LP_Hiring.push(total_hir);
     });
   });
-  
-  console.log(Total_Plant_Last_Hc);
 
   let Total_AFM = [];
   for (let i = 0; i < Total_of_all_Projects.length; i++) {
@@ -532,9 +565,60 @@ const DH_WALK = () => {
   //calculate total plant
 
   let Total_Plant_Required = [];
+  let Total_plant_atrition = [];
+  let Total_plant_trans = [];
+  let Total_plant_hiring = [];
+
   for (let i = 0; i < Total_AFM.length; i++) {
     const total = Total_AFM[i] + Cutt_LP_DHrequired[i] + LP_Dh_Required[i];
     Total_Plant_Required.push(Math.floor(total));
+  }
+
+  for (let i = 0; i < Total_atrition.length; i++) {
+    const total = Cutting_LP_Attrition[i] + Total_atrition[i];
+    Total_plant_atrition.push(total);
+  }
+
+  for (let i = 0; i < Total_transfert.length; i++) {
+    const total = Cutting_LP_Transfert[i] + Total_transfert[i];
+    Total_plant_trans.push(total);
+  }
+
+  for (let i = 0; i < Total_Hiring.length; i++) {
+    const total = Cutting_LP_Hiring[i] + Total_Hiring[i];
+    Total_plant_hiring.push(total);
+  }
+
+  let plant_Actual_Dh = [];
+  let prevplant = 0;
+  let prevI = 1;
+
+  Cutting.map((y) => {
+    y.weeks.map((w) => {
+      let actualDH;
+      if (w.week_name === `${new Date().getFullYear()}-W01`) {
+        actualDH =
+          Total_Plant_Last_Hc -
+          Total_plant_atrition[0] -
+          Total_plant_trans[0] +
+          Total_plant_hiring[0];
+      } else {
+        actualDH =
+          prevplant -
+          Total_plant_atrition[prevI] -
+          Total_plant_trans[prevI] +
+          Total_plant_hiring[prevI];
+        prevI++;
+      }
+      prevplant = actualDH;
+      plant_Actual_Dh.push(actualDH);
+    });
+  });
+
+  let Gap_Plant = [];
+  for (let i = 0; i < Total_Plant_Required.length; i++) {
+    const gap = plant_Actual_Dh[i] - Total_Plant_Required[i];
+    Gap_Plant.push(gap);
   }
 
   //calculate Average
@@ -561,15 +645,48 @@ const DH_WALK = () => {
   const Hiring_AVG = Calculate_Average(Total_Hiring, weeks);
   const Gap_AVG = Calculate_Average(Gap, weeks);
 
+  //Plant Average
+  const Plant_Cutting_DH = Calculate_Average(Cutt_LP_DHrequired, weeks);
+  const Plant_Cutting_Actual_DH = Calculate_Average(Cutting_Actual_DH, weeks);
+
+  const Plant_LP_DH = Calculate_Average(LP_Dh_Required, weeks);
+  const Plant_LP_ActualDH = Calculate_Average(LP_Actual_DH, weeks);
+
+  const Plant_Cutting_Attrition = Calculate_Average(
+    Total_Cutting_Attrition,
+    weeks
+  );
+  const Plant_Cutting_Transfert = Calculate_Average(
+    Total_Cutting_Transfert,
+    weeks
+  );
+  const Plant_Cutting_Hiring = Calculate_Average(Total_Cutting_Hiring, weeks);
+
+  const Plant_LP_Attrition = Calculate_Average(Total_LP_Attrition, weeks);
+  const Plant_LP_Transfert = Calculate_Average(Total_LP_Transfert, weeks);
+  const Plant_LP_Hiring = Calculate_Average(Total_LP_Hiring, weeks);
+
+  const GapCutting = Calculate_Average(Gap_Cut, weeks);
+  const GapLP = Calculate_Average(Gap_LP, weeks);
+  const Plant_Required = Calculate_Average(Total_Plant_Required, weeks);
+  const Plant_Actual = Calculate_Average(plant_Actual_Dh, weeks);
+
+  const Plant_Attrition = Calculate_Average(Total_plant_atrition, weeks);
+  const Plant_Transfert = Calculate_Average(Total_plant_trans, weeks);
+  const Plant_Hiring = Calculate_Average(Total_plant_hiring, weeks);
+  const GAP_PLANT_Hiring = Calculate_Average(Gap_Plant, weeks);
+
   const renderView = () => {
     switch (view) {
       case "table":
         return (
           <>
-            <div className={c.table}>
+            
+            <div  className={c.table}>
               <table>
                 <TableHeader />
                 <tbody>
+                  <React.Fragment>
                   <tr className={c.total}>
                     <td>FA Dh required </td>
                     {Total_AFM.map((t, i) => (
@@ -700,19 +817,20 @@ const DH_WALK = () => {
                       ))}
                     </tr>
                   </React.Fragment>
+
                   <tr className={c.total}>
                     <td>FA Gap</td>
                     {Gap.map((g, i) => (
                       <td key={i}>{g}</td>
                     ))}
                   </tr>
-                </tbody>
-              </table>
-            </div>
+                  </React.Fragment>
 
-            <div className={c.table}>
-              <table>
-                <tbody>
+                  <React.Fragment>
+                    <h2>Cutting</h2>
+                  </React.Fragment>
+
+                  <React.Fragment>
                   <tr className={c.total}>
                     <td>Cutting DH Required</td>
                     {Cutt_LP_DHrequired.map((v, i) => (
@@ -762,13 +880,12 @@ const DH_WALK = () => {
                       ))}
                     </tr>
                   </React.Fragment>
-                </tbody>
-              </table>
-            </div>
+                  </React.Fragment>
 
-            <div className={c.table}>
-              <table>
-                <tbody>
+                  <React.Fragment>
+                    <h2>LP</h2>
+                  </React.Fragment>
+
                   <React.Fragment>
                     <tr className={c.total}>
                       <td>LP DH required </td>
@@ -817,13 +934,14 @@ const DH_WALK = () => {
                       ))}
                     </tr>
                   </React.Fragment>
-                </tbody>
-              </table>
-            </div>
 
-            <div className={c.table}>
-              <table>
-                <tbody>
+                  <React.Fragment>
+                    <h2>LP</h2>
+                  </React.Fragment>
+
+                  <React.Fragment>
+                    <h2>Total Plant GAP </h2>
+                  </React.Fragment>
                   <React.Fragment>
                     <tr className={c.total}>
                       <td>Total Plant Required</td>
@@ -831,10 +949,44 @@ const DH_WALK = () => {
                         <td key={i}>{v}</td>
                       ))}
                     </tr>
+                    <tr>
+                      <td>Total Plant DH Actual</td>
+                      {plant_Actual_Dh.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Attrition</td>
+                      {Total_plant_atrition.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Transfert</td>
+                      {Total_plant_trans.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Hiring</td>
+                      {Total_plant_hiring.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+                    <tr className={c.total}>
+                      <td> Total Plant Gap</td>
+                      {Gap_Plant.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
                   </React.Fragment>
+
                 </tbody>
               </table>
             </div>
+
+           
+
           </>
         );
       case "summary":
@@ -939,6 +1091,148 @@ const DH_WALK = () => {
                 </tbody>
               </table>
             </div>
+
+            <div className={c.table}>
+              <table>
+                
+                <tbody>
+                  <React.Fragment>
+                    <tr className={c.total}>
+                      <td>Cutting DH Required</td>
+                      {Object.entries(Plant_Cutting_DH).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr className={c.total}>
+                      <td>Cutting DH Actual</td>
+                      {Object.entries(Plant_Cutting_Actual_DH).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+
+                    <tr>
+                      <td>Attrition</td>
+                      {Object.entries(Plant_Cutting_Attrition).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Transfer</td>
+                      {Object.entries(Plant_Cutting_Transfert).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Hiring</td>
+                      {Object.entries(Plant_Cutting_Hiring).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr className={c.total}>
+                      <td>Cutting Gap </td>
+
+                      {Object.entries(GapCutting).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
+                </tbody>
+              </table>
+            </div>
+
+            <div className={c.table}>
+              <table>
+                <tbody>
+                  <React.Fragment>
+                    <tr className={c.total}>
+                      <td>LP DH Required</td>
+                      {Object.entries(Plant_LP_DH).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr className={c.total}>
+                      <td>LP DH Actual</td>
+                      {Object.entries(Plant_LP_ActualDH).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Attrition</td>
+                      {Object.entries(Plant_LP_Attrition).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Transfer</td>
+                      {Object.entries(Plant_LP_Transfert).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Hiring</td>
+                      {Object.entries(Plant_LP_Hiring).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+
+                    <tr className={c.total}>
+                      <td>Gap LP </td>
+                      {Object.entries(GapLP).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
+                </tbody>
+              </table>
+            </div>
+
+            <div className={c.table}>
+              <table>
+                <tbody>
+                  <React.Fragment>
+                    <tr className={c.total}>
+                      <td>Total Plant Required</td>
+                      {Object.entries(Plant_Required).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr className={c.total}>
+                      <td>Total Plant DH Actual</td>
+                      {Object.entries(Plant_Actual).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+
+                    <tr>
+                      <td>Attrition</td>
+                      {Object.entries(Plant_Attrition).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Transfer</td>
+                      {Object.entries(Plant_Transfert).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Hiring</td>
+                      {Object.entries(Plant_Hiring).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
+                  <tr className={c.total}>
+                    <td>Total Plant GAP </td>
+                    
+                    {Object.entries(GAP_PLANT_Hiring).map((v, i) => (
+                        <td key={i}>{v[1]}</td>
+                      ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
           </>
         );
     }
@@ -964,7 +1258,8 @@ const DH_WALK = () => {
           Summary DH Walk
         </h2>
       </div>
-      {renderView()}
+
+      {loading ? <Loadings /> : renderView()}
     </>
   );
 };
