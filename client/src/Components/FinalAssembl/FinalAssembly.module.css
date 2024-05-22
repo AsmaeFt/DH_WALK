@@ -37,6 +37,7 @@
 }
 .table {
   margin-top: 1rem;
+  max-height: 85vh;
   overflow: auto;
   box-shadow: 2px 1px 4px #1a1a1a;
   border-radius: 4px;

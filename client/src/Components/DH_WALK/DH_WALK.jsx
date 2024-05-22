@@ -681,209 +681,210 @@ const DH_WALK = () => {
       case "table":
         return (
           <>
-            
-            <div  className={c.table}>
+            <div className={c.table}>
               <table>
                 <TableHeader />
                 <tbody>
                   <React.Fragment>
-                  <tr className={c.total}>
-                    <td>FA Dh required </td>
-                    {Total_AFM.map((t, i) => (
-                      <td key={i}>{Math.floor(t)}</td>
-                    ))}
-                  </tr>
+                    <tr className={c.total}>
+                      <td>FA Dh required </td>
+                      {Total_AFM.map((t, i) => (
+                        <td key={i}>{Math.floor(t)}</td>
+                      ))}
+                    </tr>
 
-                  <React.Fragment>
-                    {Object.entries(Total_Projects).map(([n, val], i) => (
-                      <tr key={i}>
-                        <td>{n}</td>
-                        {val.map((v, j) => (
-                          <td key={j}>{v}</td>
+                    <React.Fragment>
+                      {Object.entries(Total_Projects).map(([n, val], i) => (
+                        <tr key={i}>
+                          <td>{n}</td>
+                          {val.map((v, j) => (
+                            <td key={j}>{v}</td>
+                          ))}
+                        </tr>
+                      ))}
+
+                      <tr>
+                        <td>After Market</td>
+                        {Total_AFM_Required.map((a, i) => (
+                          <td key={i}>{a}</td>
                         ))}
                       </tr>
-                    ))}
 
-                    <tr>
-                      <td>After Market</td>
-                      {Total_AFM_Required.map((a, i) => (
-                        <td key={i}>{a}</td>
-                      ))}
-                    </tr>
+                      <tr>
+                        <td>MPC</td>
+                        {Logistic_DH_REQUIRED.map((l, i) => (
+                          <td key={i}>{l}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Quality Others </td>
+                        {Quality_Others.map((q, i) => (
+                          <td key={i}>{q}</td>
+                        ))}
+                      </tr>
+                    </React.Fragment>
 
-                    <tr>
-                      <td>MPC</td>
-                      {Logistic_DH_REQUIRED.map((l, i) => (
-                        <td key={i}>{l}</td>
+                    <React.Fragment>
+                      <tr className={c.total}>
+                        <td>OS</td>
+                        {Total_OS.map((o, i) => (
+                          <td key={i}>{o}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Digitalization</td>
+                        {Total_OS_Digitalisation.map((o, i) => (
+                          <td key={i}>{o}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Daily Kaizen</td>
+                        {Total_OS_Daily_Kaizen.map((k, i) => (
+                          <td key={i}>{k}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>OS Data Reporting</td>
+                        {Total_OS_Data_Reporting.map((r, i) => (
+                          <td key={i}>{r}</td>
+                        ))}
+                      </tr>
+                    </React.Fragment>
+
+                    <React.Fragment>
+                      <tr className={c.total}>
+                        <td>FA special List</td>
+                        {Total_Special_List.map((sp, i) => (
+                          <td key={i}>{sp}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Pregnant Women</td>
+                        {Final_pw.map((w, i) => (
+                          <td key={i}>{w}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Maternity</td>
+                        {Final_ma.map((m, i) => (
+                          <td key={i}>{m}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Breastfeeding leave</td>
+                        {Final_BF.map((m, i) => (
+                          <td key={i}>{m}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>LTI: Long term weaknesses, LWD,</td>
+                        {Final_li.map((m, i) => (
+                          <td key={i}>{m}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Physical incapacity & NMA</td>
+                        {Final_py.map((m, i) => (
+                          <td key={i}>{m}</td>
+                        ))}
+                      </tr>
+                    </React.Fragment>
+
+                    <React.Fragment>
+                      <tr className={c.total}>
+                        <td>FA Actual DH</td>
+                        {Total_Actual_DH.map((a, i) => (
+                          <td key={i}>{Math.floor(a)}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Attrition</td>
+                        {Total_atrition.map((a, i) => (
+                          <td key={i}>{a}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td> Transfer</td>
+                        {Total_transfert.map((a, i) => (
+                          <td key={i}>{a}</td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td>Hiring</td>
+                        {Total_Hiring.map((a, i) => (
+                          <td key={i}>{a}</td>
+                        ))}
+                      </tr>
+                    </React.Fragment>
+
+                    <tr className={c.total}>
+                      <td>FA Gap</td>
+                      {Gap.map((g, i) => (
+                        <td key={i}>{g}</td>
                       ))}
                     </tr>
-                    <tr>
-                      <td>Quality Others </td>
-                      {Quality_Others.map((q, i) => (
-                        <td key={i}>{q}</td>
-                      ))}
-                    </tr>
+                  </React.Fragment>
+
+                  <React.Fragment>
+                    <h3>Cutting</h3>
                   </React.Fragment>
 
                   <React.Fragment>
                     <tr className={c.total}>
-                      <td>OS</td>
-                      {Total_OS.map((o, i) => (
-                        <td key={i}>{o}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Digitalization</td>
-                      {Total_OS_Digitalisation.map((o, i) => (
-                        <td key={i}>{o}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Daily Kaizen</td>
-                      {Total_OS_Daily_Kaizen.map((k, i) => (
-                        <td key={i}>{k}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>OS Data Reporting</td>
-                      {Total_OS_Data_Reporting.map((r, i) => (
-                        <td key={i}>{r}</td>
-                      ))}
-                    </tr>
-                  </React.Fragment>
-
-                  <React.Fragment>
-                    <tr className={c.total}>
-                      <td>FA special List</td>
-                      {Total_Special_List.map((sp, i) => (
-                        <td key={i}>{sp}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Pregnant Women</td>
-                      {Final_pw.map((w, i) => (
-                        <td key={i}>{w}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Maternity</td>
-                      {Final_ma.map((m, i) => (
-                        <td key={i}>{m}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Breastfeeding leave</td>
-                      {Final_BF.map((m, i) => (
-                        <td key={i}>{m}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>LTI: Long term weaknesses, LWD,</td>
-                      {Final_li.map((m, i) => (
-                        <td key={i}>{m}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Physical incapacity & NMA</td>
-                      {Final_py.map((m, i) => (
-                        <td key={i}>{m}</td>
-                      ))}
-                    </tr>
-                  </React.Fragment>
-
-                  <React.Fragment>
-                    <tr className={c.total}>
-                      <td>FA Actual DH</td>
-                      {Total_Actual_DH.map((a, i) => (
-                        <td key={i}>{Math.floor(a)}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Attrition</td>
-                      {Total_atrition.map((a, i) => (
-                        <td key={i}>{a}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td> Transfer</td>
-                      {Total_transfert.map((a, i) => (
-                        <td key={i}>{a}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Hiring</td>
-                      {Total_Hiring.map((a, i) => (
-                        <td key={i}>{a}</td>
-                      ))}
-                    </tr>
-                  </React.Fragment>
-
-                  <tr className={c.total}>
-                    <td>FA Gap</td>
-                    {Gap.map((g, i) => (
-                      <td key={i}>{g}</td>
-                    ))}
-                  </tr>
-                  </React.Fragment>
-
-                  <React.Fragment>
-                    <h2>Cutting</h2>
-                  </React.Fragment>
-
-                  <React.Fragment>
-                  <tr className={c.total}>
-                    <td>Cutting DH Required</td>
-                    {Cutt_LP_DHrequired.map((v, i) => (
-                      <td key={i}>{v}</td>
-                    ))}
-                  </tr>
-                  <React.Fragment>
-                    <tr className={c.total}>
-                      <td>Cutting Actual DH</td>
-                      {Cutting_Actual_DH.map((v, i) => (
+                      <td>Cutting DH Required</td>
+                      {Cutt_LP_DHrequired.map((v, i) => (
                         <td key={i}>{v}</td>
                       ))}
                     </tr>
+                    <React.Fragment>
+                      <tr className={c.total}>
+                        <td>Cutting Actual DH</td>
+                        {Cutting_Actual_DH.map((v, i) => (
+                          <td key={i}>{v}</td>
+                        ))}
+                      </tr>
 
-                    <tr>
-                      <td>Attrition</td>
-                      {Cutting.map((y) =>
-                        y.weeks.map((w) => {
-                          const data = w.Cutting_Actual_DH.Attrition;
-                          return <td key={w._id}>{data}</td>;
-                        })
-                      )}
-                    </tr>
+                      <tr>
+                        <td>Attrition</td>
+                        {Cutting.map((y) =>
+                          y.weeks.map((w) => {
+                            const data = w.Cutting_Actual_DH.Attrition;
+                            return <td key={w._id}>{data}</td>;
+                          })
+                        )}
+                      </tr>
 
-                    <tr>
-                      <td>Transfer</td>
-                      {Cutting.map((y) =>
-                        y.weeks.map((w) => {
-                          const data = w.Cutting_Actual_DH.Transfer;
-                          return <td key={w._id}>{data}</td>;
-                        })
-                      )}
-                    </tr>
-                    <tr>
-                      <td>Hiring</td>
-                      {Cutting.map((y) =>
-                        y.weeks.map((w) => {
-                          const data = w.Cutting_Actual_DH.Hiring;
-                          return <td key={w._id}>{data}</td>;
-                        })
-                      )}
-                    </tr>
-                    <tr className={c.total}>
-                      <td>Cutting Gap </td>
-                      {Gap_Cut.map((v, i) => (
-                        <td key={i}>{v}</td>
-                      ))}
-                    </tr>
-                  </React.Fragment>
+                      <tr>
+                        <td>Transfer</td>
+                        {Cutting.map((y) =>
+                          y.weeks.map((w) => {
+                            const data = w.Cutting_Actual_DH.Transfer;
+                            return <td key={w._id}>{data}</td>;
+                          })
+                        )}
+                      </tr>
+                      <tr>
+                        <td>Hiring</td>
+                        {Cutting.map((y) =>
+                          y.weeks.map((w) => {
+                            const data = w.Cutting_Actual_DH.Hiring;
+                            return <td key={w._id}>{data}</td>;
+                          })
+                        )}
+                      </tr>
+                      <tr className={c.total}>
+                        <td>Cutting Gap </td>
+                        {Gap_Cut.map((v, i) => (
+                          <td key={i}>{v}</td>
+                        ))}
+                      </tr>
+                    </React.Fragment>
                   </React.Fragment>
 
                   <React.Fragment>
-                    <h2>LP</h2>
+                    <div>
+                      <h3>LP</h3>
+                    </div>
                   </React.Fragment>
 
                   <React.Fragment>
@@ -936,11 +937,9 @@ const DH_WALK = () => {
                   </React.Fragment>
 
                   <React.Fragment>
-                    <h2>LP</h2>
-                  </React.Fragment>
-
-                  <React.Fragment>
-                    <h2>Total Plant GAP </h2>
+                    <div>
+                      <h3> Plant GAP </h3>
+                    </div>
                   </React.Fragment>
                   <React.Fragment>
                     <tr className={c.total}>
@@ -980,13 +979,9 @@ const DH_WALK = () => {
                       ))}
                     </tr>
                   </React.Fragment>
-
                 </tbody>
               </table>
             </div>
-
-           
-
           </>
         );
       case "summary":
@@ -1094,7 +1089,6 @@ const DH_WALK = () => {
 
             <div className={c.table}>
               <table>
-                
                 <tbody>
                   <React.Fragment>
                     <tr className={c.total}>
@@ -1224,15 +1218,14 @@ const DH_WALK = () => {
                   </React.Fragment>
                   <tr className={c.total}>
                     <td>Total Plant GAP </td>
-                    
+
                     {Object.entries(GAP_PLANT_Hiring).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
+                      <td key={i}>{v[1]}</td>
+                    ))}
                   </tr>
                 </tbody>
               </table>
             </div>
-
           </>
         );
     }
