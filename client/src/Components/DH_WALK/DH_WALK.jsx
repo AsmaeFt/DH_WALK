@@ -13,6 +13,7 @@ const DH_WALK = () => {
   const [AFM, setAFM] = useState([]);
   const [Logistic, setLogistic] = useState([]);
   const [Quality, setQuality] = useState([]);
+  const [Cutting, setCutting] = useState([]);
   const [view, setView] = useState("table");
 
   const fetchData = useCallback(async (endpoint, setter) => {
@@ -29,6 +30,7 @@ const DH_WALK = () => {
     fetchData("/GetOSAFM", setAFM);
     fetchData("/get_Logistic", setLogistic);
     fetchData("/get_quality", setQuality);
+    fetchData("/get_Cutting", setCutting);
   }, [fetchData]);
 
   let Total_Projects = {};
@@ -351,6 +353,105 @@ const DH_WALK = () => {
     });
     Last_Hc_Quality.push(total_hc);
   });
+
+  let Cutt_LP_DHrequired = [];
+  let Cutting_Actual_DH = [];
+  let prevCutting = 0;
+  let Gap_Cut = [];
+
+  let LP_Dh_Required = [];
+  let LP_Actual_DH = [];
+  let prevLP = 0;
+  let Gap_LP = [];
+  let Total_Plant_Last_Hc = 0;
+  Cutting.map((y) => {
+    y.weeks.map((w) => {
+      if (w.week_name === `${new Date().getFullYear()}-W01`) {
+        Total_Plant_Last_Hc = w.Cutting_Actual_DH.Last_dh + w.LP_ActualDH.Last_dh+ Last_Hc_Quality[0];
+      }
+
+      //Cutting
+      let Machins_Calculs = w.Cutting_DH_Required.Machines_FT_s_Projection / 5;
+      let polyvalents = Machins_Calculs > 24 ? 24 : Machins_Calculs;
+
+      const Dh_Required =
+        w.Cutting_DH_Required.Machines_FT_s_Projection +
+        polyvalents +
+        w.Cutting_DH_Required.Contention +
+        w.Cutting_DH_Required.Absenteeism +
+        w.Cutting_DH_Required.Training +
+        w.Cutting_DH_Required.Big_Brother +
+        w.Cutting_DH_Required.Long_Term_Illness +
+        w.Cutting_DH_Required.Attrition_Backup +
+        w.Cutting_DH_Required.SOS +
+        w.Cutting_DH_Required.D_C_Pre_set_up_Reception_delivery +
+        w.Cutting_DH_Required.Rework_pagode_Scrap_stock_aken;
+      Cutt_LP_DHrequired.push(Dh_Required);
+
+      let ActualDh;
+      if (w.week_name === `${new Date().getFullYear()}-W01`) {
+        ActualDh =
+          w.Cutting_Actual_DH.Last_dh -
+          w.Cutting_Actual_DH.Attrition -
+          w.Cutting_Actual_DH.Transfer +
+          w.Cutting_Actual_DH.Hiring;
+      } else {
+        ActualDh =
+          prevCutting -
+          w.Cutting_Actual_DH.Attrition -
+          w.Cutting_Actual_DH.Transfer +
+          w.Cutting_Actual_DH.Hiring;
+      }
+
+      prevCutting = ActualDh;
+      Cutting_Actual_DH.push(ActualDh);
+      let Gap_Cutting = 0;
+      Gap_Cutting = ActualDh - Dh_Required;
+      Gap_Cut.push(Gap_Cutting);
+
+      //Lp
+
+      const Lp_DH_Required =
+        w.LP_DH_Required.LP_HD +
+        w.LP_DH_Required.Polyvalents +
+        w.LP_DH_Required.Contention +
+        w.LP_DH_Required.Absenteeism +
+        w.LP_DH_Required.Long_Term_Illness +
+        w.LP_DH_Required.Training +
+        w.LP_DH_Required.Attrition_Backup +
+        w.LP_DH_Required.SOS +
+        w.LP_DH_Required.Prototypes +
+        w.LP_DH_Required.DR +
+        w.LP_DH_Required.LP_Support_Internal_DR_Die_centre +
+        w.LP_DH_Required.Rework;
+      LP_Dh_Required.push(Lp_DH_Required);
+
+      let ActualDhLP;
+      if (w.week_name === `${new Date().getFullYear()}-W01`) {
+        ActualDhLP =
+          w.LP_ActualDH.Last_dh -
+          w.LP_ActualDH.Attrition -
+          w.LP_ActualDH.Transfer +
+          w.LP_ActualDH.Hiring;
+      } else {
+        ActualDhLP =
+          prevLP -
+          w.LP_ActualDH.Attrition -
+          w.LP_ActualDH.Transfer +
+          w.LP_ActualDH.Hiring;
+      }
+
+      prevLP = ActualDhLP;
+      LP_Actual_DH.push(ActualDhLP);
+
+      let gaplp = 0;
+      gaplp = ActualDhLP - Lp_DH_Required;
+      Gap_LP.push(gaplp);
+    });
+  });
+  
+  console.log(Total_Plant_Last_Hc);
+
   let Total_AFM = [];
   for (let i = 0; i < Total_of_all_Projects.length; i++) {
     let weekToltal =
@@ -428,6 +529,14 @@ const DH_WALK = () => {
     Gap.push(Math.floor(gap));
   }
 
+  //calculate total plant
+
+  let Total_Plant_Required = [];
+  for (let i = 0; i < Total_AFM.length; i++) {
+    const total = Total_AFM[i] + Cutt_LP_DHrequired[i] + LP_Dh_Required[i];
+    Total_Plant_Required.push(Math.floor(total));
+  }
+
   //calculate Average
   const weeks = generateWeeks();
   const months = new Set(weeks.map((week) => week.month));
@@ -445,159 +554,288 @@ const DH_WALK = () => {
     return { n, average };
   });
   const OS_AVG = Calculate_Average(Total_OS, weeks);
-  const Special_ListAVG = Calculate_Average(Total_Special_List,weeks)
+  const Special_ListAVG = Calculate_Average(Total_Special_List, weeks);
   const ActualDh_AVG = Calculate_Average(Total_Actual_DH, weeks);
   const Attrition_AVG = Calculate_Average(Total_atrition, weeks);
   const Transfert_AVG = Calculate_Average(Total_transfert, weeks);
   const Hiring_AVG = Calculate_Average(Total_Hiring, weeks);
   const Gap_AVG = Calculate_Average(Gap, weeks);
+
   const renderView = () => {
     switch (view) {
       case "table":
         return (
-          <div className={c.table}>
-            <table>
-              <TableHeader />
-              <tbody>
-                <tr className={c.total}>
-                  <td>FA Dh required </td>
-                  {Total_AFM.map((t, i) => (
-                    <td key={i}>{Math.floor(t)}</td>
-                  ))}
-                </tr>
+          <>
+            <div className={c.table}>
+              <table>
+                <TableHeader />
+                <tbody>
+                  <tr className={c.total}>
+                    <td>FA Dh required </td>
+                    {Total_AFM.map((t, i) => (
+                      <td key={i}>{Math.floor(t)}</td>
+                    ))}
+                  </tr>
 
-                <React.Fragment>
-                  {Object.entries(Total_Projects).map(([n, val], i) => (
-                    <tr key={i}>
-                      <td>{n}</td>
-                      {val.map((v, j) => (
-                        <td key={j}>{v}</td>
+                  <React.Fragment>
+                    {Object.entries(Total_Projects).map(([n, val], i) => (
+                      <tr key={i}>
+                        <td>{n}</td>
+                        {val.map((v, j) => (
+                          <td key={j}>{v}</td>
+                        ))}
+                      </tr>
+                    ))}
+
+                    <tr>
+                      <td>After Market</td>
+                      {Total_AFM_Required.map((a, i) => (
+                        <td key={i}>{a}</td>
                       ))}
                     </tr>
-                  ))}
 
-                  <tr>
-                    <td>After Market</td>
-                    {Total_AFM_Required.map((a, i) => (
-                      <td key={i}>{a}</td>
-                    ))}
-                  </tr>
+                    <tr>
+                      <td>MPC</td>
+                      {Logistic_DH_REQUIRED.map((l, i) => (
+                        <td key={i}>{l}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Quality Others </td>
+                      {Quality_Others.map((q, i) => (
+                        <td key={i}>{q}</td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
 
-                  <tr>
-                    <td>MPC</td>
-                    {Logistic_DH_REQUIRED.map((l, i) => (
-                      <td key={i}>{l}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td>Quality Others </td>
-                    {Quality_Others.map((q, i) => (
-                      <td key={i}>{q}</td>
-                    ))}
-                  </tr>
-                </React.Fragment>
+                  <React.Fragment>
+                    <tr className={c.total}>
+                      <td>OS</td>
+                      {Total_OS.map((o, i) => (
+                        <td key={i}>{o}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Digitalization</td>
+                      {Total_OS_Digitalisation.map((o, i) => (
+                        <td key={i}>{o}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Daily Kaizen</td>
+                      {Total_OS_Daily_Kaizen.map((k, i) => (
+                        <td key={i}>{k}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>OS Data Reporting</td>
+                      {Total_OS_Data_Reporting.map((r, i) => (
+                        <td key={i}>{r}</td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
 
-                <React.Fragment>
+                  <React.Fragment>
+                    <tr className={c.total}>
+                      <td>FA special List</td>
+                      {Total_Special_List.map((sp, i) => (
+                        <td key={i}>{sp}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Pregnant Women</td>
+                      {Final_pw.map((w, i) => (
+                        <td key={i}>{w}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Maternity</td>
+                      {Final_ma.map((m, i) => (
+                        <td key={i}>{m}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Breastfeeding leave</td>
+                      {Final_BF.map((m, i) => (
+                        <td key={i}>{m}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>LTI: Long term weaknesses, LWD,</td>
+                      {Final_li.map((m, i) => (
+                        <td key={i}>{m}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Physical incapacity & NMA</td>
+                      {Final_py.map((m, i) => (
+                        <td key={i}>{m}</td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
+
+                  <React.Fragment>
+                    <tr className={c.total}>
+                      <td>FA Actual DH</td>
+                      {Total_Actual_DH.map((a, i) => (
+                        <td key={i}>{Math.floor(a)}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Attrition</td>
+                      {Total_atrition.map((a, i) => (
+                        <td key={i}>{a}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td> Transfer</td>
+                      {Total_transfert.map((a, i) => (
+                        <td key={i}>{a}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Hiring</td>
+                      {Total_Hiring.map((a, i) => (
+                        <td key={i}>{a}</td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
                   <tr className={c.total}>
-                    <td>OS</td>
-                    {Total_OS.map((o, i) => (
-                      <td key={i}>{o}</td>
+                    <td>FA Gap</td>
+                    {Gap.map((g, i) => (
+                      <td key={i}>{g}</td>
                     ))}
                   </tr>
-                  <tr>
-                    <td>Digitalization</td>
-                    {Total_OS_Digitalisation.map((o, i) => (
-                      <td key={i}>{o}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td>Daily Kaizen</td>
-                    {Total_OS_Daily_Kaizen.map((k, i) => (
-                      <td key={i}>{k}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td>OS Data Reporting</td>
-                    {Total_OS_Data_Reporting.map((r, i) => (
-                      <td key={i}>{r}</td>
-                    ))}
-                  </tr>
-                </React.Fragment>
+                </tbody>
+              </table>
+            </div>
 
-                <React.Fragment>
+            <div className={c.table}>
+              <table>
+                <tbody>
                   <tr className={c.total}>
-                    <td>FA special List</td>
-                    {Total_Special_List.map((sp, i) => (
-                      <td key={i}>{sp}</td>
+                    <td>Cutting DH Required</td>
+                    {Cutt_LP_DHrequired.map((v, i) => (
+                      <td key={i}>{v}</td>
                     ))}
                   </tr>
-                  <tr>
-                    <td>Pregnant Women</td>
-                    {Final_pw.map((w, i) => (
-                      <td key={i}>{w}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td>Maternity</td>
-                    {Final_ma.map((m, i) => (
-                      <td key={i}>{m}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td>Breastfeeding leave</td>
-                    {Final_BF.map((m, i) => (
-                      <td key={i}>{m}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td>LTI: Long term weaknesses, LWD,</td>
-                    {Final_li.map((m, i) => (
-                      <td key={i}>{m}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td>Physical incapacity & NMA</td>
-                    {Final_py.map((m, i) => (
-                      <td key={i}>{m}</td>
-                    ))}
-                  </tr>
-                </React.Fragment>
+                  <React.Fragment>
+                    <tr className={c.total}>
+                      <td>Cutting Actual DH</td>
+                      {Cutting_Actual_DH.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
 
-                <React.Fragment>
-                  <tr className={c.total}>
-                    <td>FA Actual DH</td>
-                    {Total_Actual_DH.map((a, i) => (
-                      <td key={i}>{Math.floor(a)}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td>Attrition</td>
-                    {Total_atrition.map((a, i) => (
-                      <td key={i}>{a}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td> Transfer</td>
-                    {Total_transfert.map((a, i) => (
-                      <td key={i}>{a}</td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td>Hiring</td>
-                    {Total_Hiring.map((a, i) => (
-                      <td key={i}>{a}</td>
-                    ))}
-                  </tr>
-                </React.Fragment>
-                <tr className={c.total}>
-                  <td>Gap</td>
-                  {Gap.map((g, i) => (
-                    <td key={i}>{g}</td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                    <tr>
+                      <td>Attrition</td>
+                      {Cutting.map((y) =>
+                        y.weeks.map((w) => {
+                          const data = w.Cutting_Actual_DH.Attrition;
+                          return <td key={w._id}>{data}</td>;
+                        })
+                      )}
+                    </tr>
+
+                    <tr>
+                      <td>Transfer</td>
+                      {Cutting.map((y) =>
+                        y.weeks.map((w) => {
+                          const data = w.Cutting_Actual_DH.Transfer;
+                          return <td key={w._id}>{data}</td>;
+                        })
+                      )}
+                    </tr>
+                    <tr>
+                      <td>Hiring</td>
+                      {Cutting.map((y) =>
+                        y.weeks.map((w) => {
+                          const data = w.Cutting_Actual_DH.Hiring;
+                          return <td key={w._id}>{data}</td>;
+                        })
+                      )}
+                    </tr>
+                    <tr className={c.total}>
+                      <td>Cutting Gap </td>
+                      {Gap_Cut.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
+                </tbody>
+              </table>
+            </div>
+
+            <div className={c.table}>
+              <table>
+                <tbody>
+                  <React.Fragment>
+                    <tr className={c.total}>
+                      <td>LP DH required </td>
+                      {LP_Dh_Required.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+                    <tr className={c.total}>
+                      <td>LP DH actual</td>
+                      {LP_Actual_DH.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+
+                    <tr>
+                      <td>Attrition</td>
+                      {Cutting.map((y) =>
+                        y.weeks.map((w) => {
+                          const data = w.LP_ActualDH.Attrition;
+                          return <td key={w._id}>{data}</td>;
+                        })
+                      )}
+                    </tr>
+                    <tr>
+                      <td>Transfer</td>
+                      {Cutting.map((y) =>
+                        y.weeks.map((w) => {
+                          const data = w.LP_ActualDH.Transfer;
+                          return <td key={w._id}>{data}</td>;
+                        })
+                      )}
+                    </tr>
+                    <tr>
+                      <td>Hiring</td>
+                      {Cutting.map((y) =>
+                        y.weeks.map((w) => {
+                          const data = w.LP_ActualDH.Hiring;
+                          return <td key={w._id}>{data}</td>;
+                        })
+                      )}
+                    </tr>
+                    <tr className={c.total}>
+                      <td>LP Gap</td>
+                      {Gap_LP.map((g, i) => (
+                        <td key={i}>{g}</td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
+                </tbody>
+              </table>
+            </div>
+
+            <div className={c.table}>
+              <table>
+                <tbody>
+                  <React.Fragment>
+                    <tr className={c.total}>
+                      <td>Total Plant Required</td>
+                      {Total_Plant_Required.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
+                </tbody>
+              </table>
+            </div>
+          </>
         );
       case "summary":
         return (
@@ -679,18 +917,15 @@ const DH_WALK = () => {
                   <React.Fragment>
                     <tr className={c.total}>
                       <td>OS</td>
-                      {Object.entries(OS_AVG).map((n,i)=>(
+                      {Object.entries(OS_AVG).map((n, i) => (
                         <td key={i}>{n[1]}</td>
-                      ))
-                      }
+                      ))}
                     </tr>
                     <tr>
                       <td>FA special List </td>
-                      {
-                        Object.entries(Special_ListAVG).map((b,i)=>(
-                          <td key={i}>{b[1]}</td>
-                        ))
-                      }
+                      {Object.entries(Special_ListAVG).map((b, i) => (
+                        <td key={i}>{b[1]}</td>
+                      ))}
                     </tr>
                   </React.Fragment>
                   <React.Fragment>

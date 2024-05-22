@@ -5,6 +5,7 @@ const dhwalk = require("../controller/dhwalk");
 const oS_AfterM = require("../controller/afm");
 const quality = require("../controller/qualiy");
 const logistic = require("../controller/logistic");
+const Cutting = require("../controller/Cutting");
 
 const Final_Assembly = require("../controller/final_assembly");
 
@@ -35,5 +36,9 @@ route.post("/Modify_Quality", quality.Modify);
 route.post("/add_Logistic", logistic.addData);
 route.get("/get_Logistic", logistic.GetData);
 route.post("/Modify_Logistic", logistic.Modify);
+
+route.post("/add_Cutting", Cutting.addData);
+route.get("/get_Cutting", Cutting.GetData);
+/* route.post("/Modify_Cutting", logistic.Modify); */
 
 module.exports = route;

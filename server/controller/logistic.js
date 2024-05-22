@@ -41,8 +41,6 @@ exports.addData = async (req, res, next) => {
               : Logistic_actual_Dh,
           };
         });
-  
-        console.log(newWeeksData);
         const newYearData = { year, weeks: newWeeksData };
         await new Logistic(newYearData).save();
         res.status(201).json("Data added to all weeks successfully!");
