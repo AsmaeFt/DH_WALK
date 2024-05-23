@@ -1,16 +1,12 @@
-
-
-
 export const Calculate_Average = (dataList, weeks) => {
   let monthlyData = {};
   dataList.map((val, i) => {
-   
     const { month } = weeks[i];
-    
+
     if (!monthlyData[month]) {
-        monthlyData[month] = { total: 0, count: 0 };
-      }
-    
+      monthlyData[month] = { total: 0, count: 0 };
+    }
+
     monthlyData[month].total += val;
     monthlyData[month].count++;
   });
@@ -22,3 +18,8 @@ export const Calculate_Average = (dataList, weeks) => {
   }
   return averagePerMonth;
 };
+
+export const toogle = (prev, at) => ({
+  ...prev,
+  [at]: !prev[at],
+});

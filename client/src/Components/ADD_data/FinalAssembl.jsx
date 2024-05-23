@@ -9,6 +9,8 @@ import Select from "react-select";
 
 
 const Data = () => {
+  const [step, setStep] = useState(1);
+  const navigate = useNavigate();
   const [listProject, setlistProject] = useState({});
   const [selectedProject, setselectedProject] = useState("K9 KSK");
 
@@ -58,16 +60,15 @@ const Data = () => {
     ],
   });
 
-  const [month, setmonth] = useState("");
-  const [week, setweek] = useState("");
-
   const [familyInputs, setFamilyInputs] = useState([]);
+
   const [projectOS, setProjectOS] = useState({
     Digitalization: 0,
     Daily_Kaizen: 0,
     OS_Auditing: 0,
     OS_Auditing_Data_Reporting:0,
   });
+
   const [projectSpecialList, setProjectSpecialList] = useState({
     Pregnant_women_out_of_the_plant: 0,
     Maternity: 0,
@@ -75,23 +76,24 @@ const Data = () => {
     LTI_Long_term_weaknesses_LWD: 0,
     Physical_incapacity_NMA: 0,
   });
+
   const [projectActualDH, setProjectActualDH] = useState({
     Attrition: 0,
     Transfer: 0,
     Hiring: 0,
     last_HC: 0,
   });
-  const [step, setStep] = useState(1);
-  const navigate = useNavigate();
+
+ 
 
   const fetchData = useCallback(async () => {
     try {
       const projects = await axios.get(
         `${api}/Get_project`
       );
-      //get all project
+     
       const projectNames = await projects.data.flatMap((p) => p.name);
-      //get data for selectlist
+     
       const p = projectNames.map((p) => ({
         value: p,
         label: p,
@@ -126,6 +128,7 @@ const Data = () => {
     fetchData();
   }, [fetchData]);
 
+
   const handleInputChange = (e, index, field) => {
     const { value } = e.target;
     setFamilyInputs((prev) =>
@@ -138,6 +141,7 @@ const Data = () => {
   const prev = () => {
     setStep(step - 1);
   };
+
   const submit = () => {
     if (step !== 5) {
       setStep(step + 1);
@@ -177,14 +181,7 @@ const Data = () => {
     setter((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  const isFirstWeekOfYear = useCallback(() => {
-    const curentYEAR = new Date().getFullYear();
-    return week === `${curentYEAR}-W01` && month === `${curentYEAR}-01`;
-  }, [week, month]);
 
-  useEffect(() => {
-    isFirstWeekOfYear();
-  }, [week, month, isFirstWeekOfYear]);
 
   const handleChangeselect = (e) => {
     setselectedProject(e.value);
@@ -195,6 +192,7 @@ const Data = () => {
     <div className="data_container">
       <div className="form_container">
         <div className="form">
+
           <div className="form_header">
             <img src={date} alt="date" />
             <label>
@@ -217,6 +215,7 @@ const Data = () => {
           <div className="form_content">
             <div className="div_inputs">
               <div className="inputs_">
+                
                 {step === 1 &&
                   familyInputs.map((family, index) => (
                     <form key={index}>
@@ -277,6 +276,7 @@ const Data = () => {
                       />
                     </form>
                   ))}
+
                 {step === 2 && (
                   <form>
                     <label>K9 KSK OS</label>
@@ -508,6 +508,7 @@ const Data = () => {
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>

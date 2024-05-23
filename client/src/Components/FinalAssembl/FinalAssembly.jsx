@@ -6,6 +6,7 @@ import Project from "./Project";
 import OS_afm from "./OS_afm";
 import axios from "axios";
 import Loading from "../UI/Loading";
+import AddData from "../ImportData/FinalAssembly";
 
 const FinalAssembly = () => {
   const [pr, setpr] = useState([]);
@@ -48,7 +49,7 @@ const FinalAssembly = () => {
       setdata(data);
       setsproj(p);
       setloading(false);
-      setactiveLabel(p)
+      setactiveLabel(p);
     } catch (err) {
       console.error(err);
     }
@@ -77,11 +78,13 @@ const FinalAssembly = () => {
     <>
       <div className={c.header}>
         <h2>Final Assembly </h2>
+        <span> Add Data {" > "} </span>
       </div>
 
       <div className={c.projects}>
         {pr.flatMap((p, i) => (
-          <label  className={activeLabel === p ? c.active_label : ""}
+          <label
+            className={activeLabel === p ? c.active_label : ""}
             key={i}
             onClick={() => {
               filterdata(p);
@@ -91,9 +94,14 @@ const FinalAssembly = () => {
             {p}
           </label>
         ))}
-        <label className={activeLabel === "OS" ? c.active_label : ""}
-         onClick={() => {setCurrentView("AFM"),setactiveLabel("OS")}}
-         >OS - AFM</label>
+        <label
+          className={activeLabel === "OS" ? c.active_label : ""}
+          onClick={() => {
+            setCurrentView("AFM"), setactiveLabel("OS");
+          }}
+        >
+          OS - AFM
+        </label>
       </div>
 
       {loading ? (

@@ -1061,6 +1061,7 @@ const DH_WALK = () => {
                       ))}
                     </tr>
                   </React.Fragment>
+
                   <React.Fragment>
                     <tr className={c.total}>
                       <td>OS</td>
@@ -1075,6 +1076,7 @@ const DH_WALK = () => {
                       ))}
                     </tr>
                   </React.Fragment>
+
                   <React.Fragment>
                     <tr className={c.total}>
                       <td>Gap</td>
@@ -1083,6 +1085,7 @@ const DH_WALK = () => {
                       ))}
                     </tr>
                   </React.Fragment>
+                  
                 </tbody>
               </table>
             </div>
