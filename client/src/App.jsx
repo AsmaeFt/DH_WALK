@@ -1,4 +1,3 @@
-
 import { Route, Routes } from "react-router-dom";
 //Import Components
 import Loading from "./Components/UI/Loading";
@@ -9,13 +8,12 @@ import Quality from "./Components/Quality/Quality";
 import MPC from "./Components/Logistic/Logistic";
 import Cutting from "./Components/Cutting/Cutting";
 import DH_WALK from "./Components/DH_WALK/DH_WALK";
+import AddData from "./Components/ImportData/FinalAssembly";
 
 import Add_data from "./Components/ADD_data/FinalAssembl";
 import "./App.css";
 
-
 function App() {
-
   return (
     <>
       <NavBar />
@@ -30,6 +28,7 @@ function App() {
             <Route path="/DH_WALK" element={<DH_WALK />} />
             <Route path="/add_data" element={<Add_data />} />
             <Route path="/Loading" element={<Loading />} />
+            <Route path="/FA_DATA" element={<AddData />} />
             <Route path="*" element={<p>Nothing to show here ! </p>} />
           </Routes>
         </div>

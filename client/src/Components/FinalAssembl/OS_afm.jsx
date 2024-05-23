@@ -2,11 +2,14 @@ import { useSelector } from "react-redux";
 import React, { useCallback, useState, useEffect } from "react";
 import { generateWeeks } from "../functions/utilis";
 import c from "./FinalAssembly.module.css";
+import { toogle } from "../hooks/Average";
+import { FaCaretDown } from "react-icons/fa";
 import api from "../../services/api";
 import axios from "axios";
 
 const OS_afm = ({ project }) => {
   const [projectData, setProjectData] = useState([]);
+  const [Toogle, setToogle] = useState({});
 
   const fetch_ProjectData = useCallback(async () => {
     const res = await axios.get(`${api}/assembly_project`);
@@ -93,10 +96,9 @@ const OS_afm = ({ project }) => {
       }
       total_ActualDh.push(actualDH);
 
-      let gap =0;
+      let gap = 0;
       gap = actualDH - DHrequired;
       Gap.push(Math.floor(gap));
-     
     });
   });
 
@@ -170,169 +172,196 @@ const OS_afm = ({ project }) => {
 
         <React.Fragment>
           <tr className={c.total}>
-            <td>After Sales</td>
+            <td>
+              <span onClick={() => setToogle((prev) => toogle(prev, "AFS"))}>
+                <FaCaretDown />
+              </span>
+              After Sales
+            </td>
             {total_AF.map((af, i) => (
               <td key={i}>{af}</td>
             ))}
           </tr>
-
-          {project.flatMap((pr, i) => (
-            <tr key={i}>
-              <td>{pr}</td>
-              {osdata.flatMap((y) =>
-                y.weeks.flatMap((w) => {
-                  const data = w.After_Sales.find((p) => p.project_name === pr);
-                  if (data != null) {
-                    return (
-                      <td key={w._id}>
-                        <input
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "After_Sales.project_name",
-                              e.target.value,
-                              pr
-                            )
-                          }
-                          placeholder={data.value || "-"}
-                        />
-                      </td>
-                    );
-                  }
-                })
-              )}
-            </tr>
-          ))}
+          {!Toogle["AFS"] && (
+            <React.Fragment>
+              {project.flatMap((pr, i) => (
+                <tr key={i}>
+                  <td>{pr}</td>
+                  {osdata.flatMap((y) =>
+                    y.weeks.flatMap((w) => {
+                      const data = w.After_Sales.find(
+                        (p) => p.project_name === pr
+                      );
+                      if (data != null) {
+                        return (
+                          <td key={w._id}>
+                            <input
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "After_Sales.project_name",
+                                  e.target.value,
+                                  pr
+                                )
+                              }
+                              placeholder={data.value || "-"}
+                            />
+                          </td>
+                        );
+                      }
+                    })
+                  )}
+                </tr>
+              ))}
+            </React.Fragment>
+          )}
         </React.Fragment>
 
         <React.Fragment>
           <tr className={c.total}>
-            <td>AS Special list out of the plant</td>
+            <td>
+              <span onClick={() => setToogle((prev) => toogle(prev, "SPL"))}>
+                <FaCaretDown />
+              </span>
+              AS Special list out of the plant
+            </td>
             {total_SPL.map((spl, i) => (
               <td key={i}>{spl}</td>
             ))}
           </tr>
-          <tr>
-            <td> Pregnant women out of the plant</td>
-            {osdata.flatMap((y) =>
-              y.weeks.flatMap((w) => {
-                const data = w.After_Sales_spl.Pregnant_women_out_of_the_plant;
-                return (
-                  <td key={w._id}>
-                    <input
-                      placeholder={data || "-"}
-                      onChange={(e) =>
-                        handleChange(
-                          w.week_name,
-                          "After_Sales_spl.Pregnant_women_out_of_the_plant",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                );
-              })
-            )}
-          </tr>
-          <tr>
-            <td>Maternity </td>
-            {osdata.flatMap((y) =>
-              y.weeks.flatMap((w) => {
-                const data = w.After_Sales_spl.Maternity;
-                return (
-                  <td key={w._id}>
-                    <input
-                      placeholder={data || "-"}
-                      onChange={(e) =>
-                        handleChange(
-                          w.week_name,
-                          "After_Sales_spl.Maternity",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                );
-              })
-            )}
-          </tr>
+          {!Toogle["SPL"] && (
+            <React.Fragment>
+              <tr>
+                <td> Pregnant women out of the plant</td>
+                {osdata.flatMap((y) =>
+                  y.weeks.flatMap((w) => {
+                    const data =
+                      w.After_Sales_spl.Pregnant_women_out_of_the_plant;
+                    return (
+                      <td key={w._id}>
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "After_Sales_spl.Pregnant_women_out_of_the_plant",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
+              <tr>
+                <td>Maternity </td>
+                {osdata.flatMap((y) =>
+                  y.weeks.flatMap((w) => {
+                    const data = w.After_Sales_spl.Maternity;
+                    return (
+                      <td key={w._id}>
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "After_Sales_spl.Maternity",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
 
-          <tr>
-            <td> Breastfeeding leave</td>
-            {osdata.flatMap((y) =>
-              y.weeks.flatMap((w) => {
-                const data = w.After_Sales_spl.Breastfeeding_leave;
-                return (
-                  <td key={w._id}>
-                    <input
-                      placeholder={data || "-"}
-                      onChange={(e) =>
-                        handleChange(
-                          w.week_name,
-                          "After_Sales_spl.Breastfeeding_leave",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                );
-              })
-            )}
-          </tr>
-          <tr>
-            <td>LTI: Long term weaknesses, LWD, </td>
-            {osdata.flatMap((y) =>
-              y.weeks.flatMap((w) => {
-                const data = w.After_Sales_spl.LTI_Long_term_weaknesses_LWD;
-                return (
-                  <td key={w._id}>
-                    <input
-                      placeholder={data || "-"}
-                      onChange={(e) =>
-                        handleChange(
-                          w.week_name,
-                          "After_Sales_spl.LTI_Long_term_weaknesses_LWD",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                );
-              })
-            )}
-          </tr>
-          <tr>
-            <td>Physical incapacity & NMA</td>
-            {osdata.flatMap((y) =>
-              y.weeks.flatMap((w) => {
-                const data = w.After_Sales_spl.Physical_incapacity_NMA;
-                return (
-                  <td key={w._id}>
-                    <input
-                      placeholder={data || "-"}
-                      onChange={(e) =>
-                        handleChange(
-                          w.week_name,
-                          "After_Sales_spl.Physical_incapacity_NMA",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                );
-              })
-            )}
-          </tr>
+              <tr>
+                <td> Breastfeeding leave</td>
+                {osdata.flatMap((y) =>
+                  y.weeks.flatMap((w) => {
+                    const data = w.After_Sales_spl.Breastfeeding_leave;
+                    return (
+                      <td key={w._id}>
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "After_Sales_spl.Breastfeeding_leave",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
+              <tr>
+                <td>LTI: Long term weaknesses, LWD, </td>
+                {osdata.flatMap((y) =>
+                  y.weeks.flatMap((w) => {
+                    const data = w.After_Sales_spl.LTI_Long_term_weaknesses_LWD;
+                    return (
+                      <td key={w._id}>
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "After_Sales_spl.LTI_Long_term_weaknesses_LWD",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
+              <tr>
+                <td>Physical incapacity & NMA</td>
+                {osdata.flatMap((y) =>
+                  y.weeks.flatMap((w) => {
+                    const data = w.After_Sales_spl.Physical_incapacity_NMA;
+                    return (
+                      <td key={w._id}>
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "After_Sales_spl.Physical_incapacity_NMA",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
+            </React.Fragment>
+          )}
         </React.Fragment>
 
         <React.Fragment>
           <tr className={c.total}>
-            <td>After Sales Actual DH</td>
+            <td>
+            <span onClick={() => setToogle((prev) => toogle(prev, "ACDH"))}>
+                <FaCaretDown />
+              </span>
+              After Sales Actual DH</td>
             {weeksandmonths.flatMap((w) => (
               <td key={w.week}>42</td>
             ))}
           </tr>
-          <tr>
+          {
+            !Toogle["ACDH"] && (
+              <React.Fragment>
+                          <tr>
             <td>Attrition</td>
             {osdata.flatMap((y) =>
               y.weeks.flatMap((w) => {
@@ -398,13 +427,19 @@ const OS_afm = ({ project }) => {
               })
             )}
           </tr>
+              </React.Fragment>
+            )
+          }
+
         </React.Fragment>
+
         <tr className={c.total}>
           <td>Gap</td>
           {Gap.map((g, i) => (
             <td key={i}>{g}</td>
           ))}
         </tr>
+        
       </tbody>
     </>
   );
