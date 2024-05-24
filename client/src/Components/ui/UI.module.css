@@ -1,17 +1,15 @@
-
-
 .lds_ripple,
 .lds_ripple div {
   box-sizing: border-box;
 }
 .lds_ripple {
- position: relative;
- display: flex;
- justify-content: center;
- align-items: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .lds_ripple div {
- position: absolute;
+  position: absolute;
   border: 4px solid currentColor;
   opacity: 1;
   border-radius: 50%;
@@ -49,4 +47,20 @@
     height: 80px;
     opacity: 0;
   }
+}
+.legend {
+  width: 100%;
+  
+}
+
+.legend span {
+  padding: 0px 37px;
+  margin:0px 9px;
+}
+.legend fieldset{
+  border: 1px dashed #5b5a5a;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  padding: 6px;
 }

@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import c from "../FinalAssembl/FinalAssembly.module.css";
 import TableHeader from "../UI/TableHeader";
-/* import { generateWeeks } from "../functions/utilis";
-import { useSelector } from "react-redux"; */
+import { FaCaretDown, FaCaretRight } from "react-icons/fa";
+import { toogle } from "../hooks/Average";
 import axios from "axios";
 import api from "../../services/api";
+import Legend from "../UI/Legend";
 
 const Quality = () => {
   const [projectData, setProjectData] = useState([]);
+  const [Toogle, setToogle] = useState({});
 
   const fetch_ProjectData = useCallback(async () => {
     const res = await axios.get(`${api}/assembly_project`);
@@ -150,425 +152,486 @@ const Quality = () => {
     inputOthChange();
   }, [inputOthChange]);
 
+  const toggling = (val) => {
+    return Toogle[val] ? <FaCaretDown /> : <FaCaretRight />;
+  };
+
+  const CheckTdVal = (list, i) => {
+    if (i === 0) return "white";
+    if (list[i] === list[i - 1]) return "white";
+    return list[i] > list[i - 1] ? "red" : "green";
+  };
+
   return (
     <>
       <div className={c.header}>
         <h2>Quality </h2>
       </div>
-      <br />
+      <Legend/>
       <div className={c.table}>
         <table>
           <TableHeader />
           <tbody>
             <React.Fragment>
-              <tr>
+              <tr className={c.total_dh_required}>
                 <td>Quality DH Required</td>
                 {Total_DH_Required.map((t, i) => (
-                  <td key={i}>{t}</td>
+                  <td
+                    key={i}
+                    style={{ color: CheckTdVal(Total_DH_Required, i) }}
+                  >
+                    {t}
+                  </td>
                 ))}
               </tr>
             </React.Fragment>
 
             <React.Fragment>
-              <tr className={c.total}>
-                <td>Quality Project DH</td>
+              <tr className={c.total_}>
+                <td>
+                  <span
+                    onClick={() => setToogle((prev) => toogle(prev, "QDH"))}
+                  >
+                    {toggling("QDH")}
+                  </span>
+                  Quality Project DH
+                </td>
                 {Quality_Project_DH.map((t, i) => (
                   <td key={i}>{t}</td>
                 ))}
               </tr>
-              {Object.entries(containtion).map(([name, value], i) => (
-                <tr key={i}>
-                  <td>{name}</td>
-                  {value.map((v, j) => (
-                    <td key={j}>{v}</td>
+              {Toogle["QDH"] && (
+                <React.Fragment>
+                  {Object.entries(containtion).map(([name, value], i) => (
+                    <tr key={i} className={c.Show_hidens}>
+                      <td>{name}</td>
+                      {value.map((v, j) => (
+                        <td key={j}>{v}</td>
+                      ))}
+                    </tr>
                   ))}
-                </tr>
-              ))}
+                </React.Fragment>
+              )}
             </React.Fragment>
 
             <React.Fragment>
-              <tr className={c.total}>
-                <td>Quality Other DH</td>
+              <tr className={c.total_}>
+                <td>
+                  <span
+                    onClick={() => setToogle((prev) => toogle(prev, "ODH"))}
+                  >
+                    {toggling("ODH")}
+                  </span>
+                  Quality Other DH
+                </td>
                 {Quality_Others.map((t, i) => (
-                  <td key={i}>{t}</td>
+                  <td key={i} style={{ color: CheckTdVal(t, i) }}>
+                    {t}
+                  </td>
                 ))}
               </tr>
-              <tr>
-                <td>Supper Control</td>
+              {Toogle["ODH"] && (
+                <React.Fragment>
+                  <tr className={c.Show_hidens}>
+                    <td>Supper Control</td>
 
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Quality_Other_DH.Supper_Control;
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Other_DH.Supper_Control",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Fire Wall</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Quality_Other_DH.Fire_Wall;
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Quality_Other_DH.Supper_Control;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Other_DH.Supper_Control",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td>Fire Wall</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Quality_Other_DH.Fire_Wall;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Other_DH.Fire_Wall",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Validation</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Quality_Other_DH.Validation;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Other_DH.Fire_Wall",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td>Validation</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Quality_Other_DH.Validation;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Other_DH.Validation",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Other_DH.Validation",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
 
-              <tr>
-                <td> FTQ Data Recording</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Quality_Other_DH.FTQ_Data_Recording;
+                  <tr className={c.Show_hidens}>
+                    <td> FTQ Data Recording</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Quality_Other_DH.FTQ_Data_Recording;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Other_DH.FTQ_Data_Recording",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td> RM Sorting & FG Wearhouse</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Quality_Other_DH.RM_Sorting_FG_Wearhouse;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Other_DH.FTQ_Data_Recording",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td> RM Sorting & FG Wearhouse</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Quality_Other_DH.RM_Sorting_FG_Wearhouse;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Other_DH.RM_Sorting_FG_Wearhouse",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td> Containment Back up</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Quality_Other_DH.Containment_Back_up;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Other_DH.RM_Sorting_FG_Wearhouse",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td> Containment Back up</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Quality_Other_DH.Containment_Back_up;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Other_DH.Containment_Back_up",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td> Excess</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Quality_Other_DH.Excess;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Other_DH.Containment_Back_up",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td> Excess</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Quality_Other_DH.Excess;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Other_DH.Excess",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Other_DH.Excess",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                </React.Fragment>
+              )}
             </React.Fragment>
 
             <React.Fragment>
-              <tr className={c.total}>
-                <td>Quality Special list out of the plant</td>
+              <tr className={c.total_}>
+                <td>
+                  <span
+                    onClick={() => setToogle((prev) => toogle(prev, "SPL"))}
+                  >
+                    {toggling("SPL")}
+                  </span>
+                  Quality Special list out of the plant
+                </td>
                 {Total_Q_SPL.map((t, i) => (
                   <td key={i}>{t}</td>
                 ))}
               </tr>
-              <tr>
-                <td>Pregnant women of the plant</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data =
-                      w.Quality_Special_list_out_of_the_plant
-                        .Pregnant_women_out_of_the_plant;
+              {Toogle["SPL"] && (
+                <React.Fragment>
+                  <tr className={c.Show_hidens}>
+                    <td>Pregnant women of the plant</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data =
+                          w.Quality_Special_list_out_of_the_plant
+                            .Pregnant_women_out_of_the_plant;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Special_list_out_of_the_plant.Pregnant_women_out_of_the_plant",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Maternity</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data =
-                      w.Quality_Special_list_out_of_the_plant.Maternity;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Special_list_out_of_the_plant.Pregnant_women_out_of_the_plant",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td>Maternity</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data =
+                          w.Quality_Special_list_out_of_the_plant.Maternity;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Special_list_out_of_the_plant.Maternity",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Breastfeeding leave</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data =
-                      w.Quality_Special_list_out_of_the_plant
-                        .Breastfeeding_leave;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Special_list_out_of_the_plant.Maternity",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td>Breastfeeding leave</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data =
+                          w.Quality_Special_list_out_of_the_plant
+                            .Breastfeeding_leave;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Special_list_out_of_the_plant.Breastfeeding_leave",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>LTI: Long term weaknesses, LWD,</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data =
-                      w.Quality_Special_list_out_of_the_plant
-                        .LTI_Long_term_weaknesses_LWD;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Special_list_out_of_the_plant.Breastfeeding_leave",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td>LTI: Long term weaknesses, LWD,</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data =
+                          w.Quality_Special_list_out_of_the_plant
+                            .LTI_Long_term_weaknesses_LWD;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Special_list_out_of_the_plant.LTI_Long_term_weaknesses_LWD",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Physical incapacity & NMA</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data =
-                      w.Quality_Special_list_out_of_the_plant
-                        .Physical_incapacity_NMA;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Special_list_out_of_the_plant.LTI_Long_term_weaknesses_LWD",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td>Physical incapacity & NMA</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data =
+                          w.Quality_Special_list_out_of_the_plant
+                            .Physical_incapacity_NMA;
 
-                    return (
-                      <td key={w._id}>
-                        <input
-                          placeholder={data || "-"}
-                          onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Special_list_out_of_the_plant.Physical_incapacity_NMA",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Special_list_out_of_the_plant.Physical_incapacity_NMA",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                </React.Fragment>
+              )}
             </React.Fragment>
 
             <React.Fragment>
-              <tr className={c.total}>
-                <td>Quality Actual DH</td>
+              <tr className={c.actualDh}>
+                <td>
+                <span onClick={() => setToogle((prev) => toogle(prev, "ACD"))}>
+                    {toggling("ACD")}
+                  </span>
+                  Quality Actual DH</td>
                 {Total_Actual_Dh.map((t, i) => (
                   <td key={i}>{t}</td>
                 ))}
               </tr>
-              <tr>
-                <td>Attrition</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Quality_Actual_DH.Attrition;
+              {Toogle["ACD"] && (
+                <React.Fragment>
+                  <tr className={c.Show_hidens}>
+                    <td>Attrition</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Quality_Actual_DH.Attrition;
 
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data || "-"}
-                                                  onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Actual_DH.Attrition",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Transfer</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Quality_Actual_DH.Transfer;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Actual_DH.Attrition",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td>Transfer</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Quality_Actual_DH.Transfer;
 
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data || "-"}
-                                                  onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Actual_DH.Transfer",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Hiring</td>
-                {Quality.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Quality_Actual_DH.Hiring;
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Actual_DH.Transfer",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr className={c.Show_hidens}>
+                    <td>Hiring</td>
+                    {Quality.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Quality_Actual_DH.Hiring;
 
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data || "-"} 
-                                                  onChange={(e) =>
-                            handleChange(
-                              w.week_name,
-                              "Quality_Actual_DH.Hiring",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
+                        return (
+                          <td key={w._id}>
+                            <input
+                              placeholder={data || "-"}
+                              onChange={(e) =>
+                                handleChange(
+                                  w.week_name,
+                                  "Quality_Actual_DH.Hiring",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                </React.Fragment>
+              )}
             </React.Fragment>
 
-            <tr className={c.total}>
+            <tr >
               <td>Gap</td>
               {Gap.map((g, i) => (
-                <td key={i}>{g}</td>
+                <td key={i} style={{ color: CheckTdVal(Gap, i) }}>{g}</td>
               ))}
             </tr>
           </tbody>

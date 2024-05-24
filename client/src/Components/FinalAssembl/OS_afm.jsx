@@ -1,11 +1,10 @@
-import { useSelector } from "react-redux";
 import React, { useCallback, useState, useEffect } from "react";
 import { generateWeeks } from "../functions/utilis";
 import c from "./FinalAssembly.module.css";
 import { toogle } from "../hooks/Average";
-import { FaCaretDown } from "react-icons/fa";
 import api from "../../services/api";
 import axios from "axios";
+import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 
 const OS_afm = ({ project }) => {
   const [projectData, setProjectData] = useState([]);
@@ -130,51 +129,70 @@ const OS_afm = ({ project }) => {
     inputOthChange();
   }, [inputOthChange]);
 
+  const toggling = (val) => {
+    return Toogle[val] ? <FaCaretDown /> : <FaCaretRight />;
+  };
+
+  const CheckTdVal = (list, i) => {
+    if (i === 0) return "white";
+    if (list[i] === list[i - 1]) return "white";
+    return list[i] > list[i - 1] ? "red" : "green";
+  };
+
   return (
     <>
       <tbody>
         <React.Fragment>
-          <tr>
+          <tr className={c.total_dh_required}>
             <td>Proto & After Sales DH Required</td>
             {Total_DH_Required.map((dh, i) => (
-              <td key={i}>{dh}</td>
+              <td key={i} style={{ color: CheckTdVal(Total_DH_Required, i) }}>
+                {dh}
+              </td>
             ))}
           </tr>
-          <tr>
-            <td> OS </td>
+        </React.Fragment>
+
+        <React.Fragment>
+          <tr className={c.total_}>
+            <td>
+              <span onClick={() => setToogle((prev) => toogle(prev, "OS"))}>
+                {toggling("OS")}
+              </span>
+              OS
+            </td>
             {Total_SOS.map((t, i) => (
               <td key={i}>{t}</td>
             ))}
           </tr>
+
+          {Toogle["OS"] &&
+            project.flatMap((pr, i) => (
+              <tr key={i} className={c.Show_hidens}>
+                <td>{pr}</td>
+                {projectData.flatMap((d) =>
+                  d.weeks.flatMap((w, ii) => {
+                    let total = 0;
+                    const project = w.projectData.find(
+                      (p) => p.projectName === pr
+                    );
+                    if (project) {
+                      total = project.family.reduce((acc, f) => acc + f.SOS, 0);
+                      return <td key={`${i}-${ii}`}>{total || "-"}</td>;
+                    } else {
+                      return <td key={`${i}-${ii}`}>-</td>;
+                    }
+                  })
+                )}
+              </tr>
+            ))}
         </React.Fragment>
 
         <React.Fragment>
-          {project.flatMap((pr, i) => (
-            <tr key={i} className={c.total}>
-              <td>{pr}</td>
-              {projectData.flatMap((d) =>
-                d.weeks.flatMap((w, ii) => {
-                  let total = 0;
-                  const project = w.projectData.find(
-                    (p) => p.projectName === pr
-                  );
-                  if (project) {
-                    total = project.family.reduce((acc, f) => acc + f.SOS, 0);
-                    return <td key={`${i}-${ii}`}>{total || "-"}</td>;
-                  } else {
-                    return <td key={`${i}-${ii}`}>-</td>;
-                  }
-                })
-              )}
-            </tr>
-          ))}
-        </React.Fragment>
-
-        <React.Fragment>
-          <tr className={c.total}>
+          <tr className={c.total_}>
             <td>
               <span onClick={() => setToogle((prev) => toogle(prev, "AFS"))}>
-                <FaCaretDown />
+                {toggling("AFS")}
               </span>
               After Sales
             </td>
@@ -182,10 +200,10 @@ const OS_afm = ({ project }) => {
               <td key={i}>{af}</td>
             ))}
           </tr>
-          {!Toogle["AFS"] && (
+          {Toogle["AFS"] && (
             <React.Fragment>
               {project.flatMap((pr, i) => (
-                <tr key={i}>
+                <tr key={i} className={c.Show_hidens} >
                   <td>{pr}</td>
                   {osdata.flatMap((y) =>
                     y.weeks.flatMap((w) => {
@@ -218,10 +236,10 @@ const OS_afm = ({ project }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr className={c.total}>
+          <tr className={c.total_}>
             <td>
-              <span onClick={() => setToogle((prev) => toogle(prev, "SPL"))}>
-                <FaCaretDown />
+            <span onClick={() => setToogle((prev) => toogle(prev, "SPL"))}>
+                {toggling("SPL")}
               </span>
               AS Special list out of the plant
             </td>
@@ -229,9 +247,9 @@ const OS_afm = ({ project }) => {
               <td key={i}>{spl}</td>
             ))}
           </tr>
-          {!Toogle["SPL"] && (
+          {Toogle["SPL"] && (
             <React.Fragment>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td> Pregnant women out of the plant</td>
                 {osdata.flatMap((y) =>
                   y.weeks.flatMap((w) => {
@@ -254,7 +272,7 @@ const OS_afm = ({ project }) => {
                   })
                 )}
               </tr>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>Maternity </td>
                 {osdata.flatMap((y) =>
                   y.weeks.flatMap((w) => {
@@ -277,7 +295,7 @@ const OS_afm = ({ project }) => {
                 )}
               </tr>
 
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td> Breastfeeding leave</td>
                 {osdata.flatMap((y) =>
                   y.weeks.flatMap((w) => {
@@ -299,7 +317,7 @@ const OS_afm = ({ project }) => {
                   })
                 )}
               </tr>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>LTI: Long term weaknesses, LWD, </td>
                 {osdata.flatMap((y) =>
                   y.weeks.flatMap((w) => {
@@ -321,7 +339,7 @@ const OS_afm = ({ project }) => {
                   })
                 )}
               </tr>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>Physical incapacity & NMA</td>
                 {osdata.flatMap((y) =>
                   y.weeks.flatMap((w) => {
@@ -348,98 +366,95 @@ const OS_afm = ({ project }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr className={c.total}>
+          <tr className={c.actualDh}>
             <td>
             <span onClick={() => setToogle((prev) => toogle(prev, "ACDH"))}>
-                <FaCaretDown />
+                {toggling("ACDH")}
               </span>
-              After Sales Actual DH</td>
+              After Sales Actual DH
+            </td>
             {weeksandmonths.flatMap((w) => (
               <td key={w.week}>42</td>
             ))}
           </tr>
-          {
-            !Toogle["ACDH"] && (
-              <React.Fragment>
-                          <tr>
-            <td>Attrition</td>
-            {osdata.flatMap((y) =>
-              y.weeks.flatMap((w) => {
-                const data = w.After_Sales_ActualDH.Attrition;
-                return (
-                  <td key={w._id}>
-                    <input
-                      placeholder={data || "-"}
-                      onChange={(e) =>
-                        handleChange(
-                          w.week_name,
-                          "After_Sales_ActualDH.Attrition",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                );
-              })
-            )}
-          </tr>
-          <tr>
-            <td>Transfer</td>
-            {osdata.flatMap((y) =>
-              y.weeks.flatMap((w) => {
-                const data = w.After_Sales_ActualDH.Transfer;
-                return (
-                  <td key={w._id}>
-                    <input
-                      placeholder={data || "-"}
-                      onChange={(e) =>
-                        handleChange(
-                          w.week_name,
-                          "After_Sales_ActualDH.Transfer",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                );
-              })
-            )}
-          </tr>
-          <tr>
-            <td>Hiring</td>
-            {osdata.flatMap((y) =>
-              y.weeks.flatMap((w) => {
-                const data = w.After_Sales_ActualDH.Hiring;
-                return (
-                  <td key={w._id}>
-                    <input
-                      placeholder={data || "-"}
-                      onChange={(e) =>
-                        handleChange(
-                          w.week_name,
-                          "After_Sales_ActualDH.Hiring",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                );
-              })
-            )}
-          </tr>
-              </React.Fragment>
-            )
-          }
-
+          {Toogle["ACDH"] && (
+            <React.Fragment>
+              <tr className={c.Show_hidens}>
+                <td>Attrition</td>
+                {osdata.flatMap((y) =>
+                  y.weeks.flatMap((w) => {
+                    const data = w.After_Sales_ActualDH.Attrition;
+                    return (
+                      <td key={w._id}>
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "After_Sales_ActualDH.Attrition",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
+              <tr className={c.Show_hidens}>
+                <td>Transfer</td>
+                {osdata.flatMap((y) =>
+                  y.weeks.flatMap((w) => {
+                    const data = w.After_Sales_ActualDH.Transfer;
+                    return (
+                      <td key={w._id}>
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "After_Sales_ActualDH.Transfer",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
+              <tr className={c.Show_hidens}>
+                <td>Hiring</td>
+                {osdata.flatMap((y) =>
+                  y.weeks.flatMap((w) => {
+                    const data = w.After_Sales_ActualDH.Hiring;
+                    return (
+                      <td key={w._id}>
+                        <input
+                          placeholder={data || "-"}
+                          onChange={(e) =>
+                            handleChange(
+                              w.week_name,
+                              "After_Sales_ActualDH.Hiring",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
+            </React.Fragment>
+          )}
         </React.Fragment>
 
         <tr className={c.total}>
           <td>Gap</td>
           {Gap.map((g, i) => (
-            <td key={i}>{g}</td>
+            <td key={i} style={{ color: CheckTdVal(Gap, i) }}>{g}</td>
           ))}
         </tr>
-        
       </tbody>
     </>
   );

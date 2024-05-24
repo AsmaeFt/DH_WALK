@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import c from "./FinalAssembly.module.css";
-import { FaCaretDown } from "react-icons/fa";
+import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { toogle } from "../hooks/Average";
 import api from "../../services/api";
 import axios from "axios";
@@ -63,6 +63,7 @@ const Project = ({ data, sproject, family, updateData }) => {
 
       let familyTotal = 0;
       let totalSos = 0;
+      let totalF = 0;
 
       p.family.forEach((fam) => {
         if (fam != null) {
@@ -73,13 +74,14 @@ const Project = ({ data, sproject, family, updateData }) => {
             fam.Poly +
             fam.Back_Up +
             fam.Containment;
-          const totalF = HC_Crew * fam.crews + fam.SOS;
+          totalF = HC_Crew * fam.crews + fam.SOS;
           familyTotal += totalF;
           totalSos += fam.SOS;
           const totalContaintion = fam.crews * fam.Containment;
           containtion.push(fam.name, totalContaintion);
         }
       });
+
       SOS.push(totalSos);
       if (familyTotal !== null) {
         totalProject.push(familyTotal);
@@ -151,24 +153,43 @@ const Project = ({ data, sproject, family, updateData }) => {
   }, [inputOthChange]);
   console.log(Toogle);
 
+  const toggling = (val) => {
+    return Toogle[val] ? <FaCaretDown /> : <FaCaretRight />;
+  };
+
+  const CheckTdVal = (list, i) => {
+    if (i === 0) return "white";
+    if (list[i] === list[i - 1]) return "white";
+    return list[i] > list[i - 1] ? "red" : "green";
+  };
+
+  const CheckGap = (list, i) => {
+    if (list[i] > 0) return "red";
+    return "#0070C0";
+  };
+
   return (
     <>
       <tbody>
         <React.Fragment>
-          <tr>
+          <tr className={c.total_dh_required}>
             <td>
               <span style={{ color: "orangered" }}>{sproject}</span> DH Required
             </td>
             {DH_required.flatMap((dh, i) => (
-              <td key={i}>{dh || "-"}</td>
+              <td key={i} style={{ color: CheckTdVal(DH_required, i) }}>
+                {dh || "-"}
+              </td>
             ))}
           </tr>
-          <tr>
+          <tr className={c.total_}>
             <td>
               <span style={{ color: "orangered" }}>{sproject}</span> Project
             </td>
             {totalProject.flatMap((t, i) => (
-              <td key={i}>{t || "-"}</td>
+              <td key={i} style={{ color: CheckTdVal(DH_required, i) }}>
+                {t || "-"}
+              </td>
             ))}
           </tr>
         </React.Fragment>
@@ -176,10 +197,10 @@ const Project = ({ data, sproject, family, updateData }) => {
         <React.Fragment>
           {family.flatMap((f, i) => (
             <React.Fragment key={i}>
-              <tr className={c.total}>
+              <tr className={c.total_family}>
                 <td>
                   <span onClick={() => setToogle((prev) => toogle(prev, f))}>
-                    <FaCaretDown />
+                    {toggling(f)}
                   </span>
                   {f}
                 </td>
@@ -196,6 +217,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                         fam.Back_Up +
                         fam.Containment;
                       const totalF = HC_Crew * fam.crews + fam.SOS;
+
                       return (
                         <td key={`${f}-${projectIndex}-${projectDataIndex}`}>
                           {totalF || "-"}
@@ -209,7 +231,10 @@ const Project = ({ data, sproject, family, updateData }) => {
 
               {Toogle[f] && (
                 <React.Fragment>
-                  <tr style={{ backgroundColor: "grey" }}>
+                  <tr
+                    style={{ backgroundColor: "grey" }}
+                    className={c.Show_hidens}
+                  >
                     <td>Indirects %</td>
                     {data.flatMap((p, projectIndex) =>
                       p.projectData.flatMap((pr, projectDataIndex) => {
@@ -237,7 +262,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                       })
                     )}
                   </tr>
-                  <tr>
+                  <tr className={c.Show_hidens}>
                     <td> Crews </td>
                     {data.map((p, projectIndex) =>
                       p.projectData.map((pr, projectDataIndex) => {
@@ -265,7 +290,10 @@ const Project = ({ data, sproject, family, updateData }) => {
                       })
                     )}
                   </tr>
-                  <tr style={{ backgroundColor: "grey" }}>
+                  <tr
+                    style={{ backgroundColor: "grey" }}
+                    className={c.Show_hidens}
+                  >
                     <td>HC Crew</td>
                     {data.flatMap((p, projectIndex) =>
                       p.projectData.flatMap((pr, projectDataIndex) => {
@@ -290,7 +318,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                       })
                     )}
                   </tr>
-                  <tr>
+                  <tr className={c.Show_hidens}>
                     <td> ME Definition </td>
                     {data.map((p, projectIndex) =>
                       p.projectData.map((pr, projectDataIndex) => {
@@ -319,7 +347,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                       })
                     )}
                   </tr>
-                  <tr>
+                  <tr className={c.Show_hidens}>
                     <td> ME SUPPORT </td>
                     {data.map((p, projectIndex) =>
                       p.projectData.map((pr, projectDataIndex) => {
@@ -348,7 +376,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                       })
                     )}
                   </tr>
-                  <tr>
+                  <tr className={c.Show_hidens}>
                     <td> Rework </td>
                     {data.map((p, projectIndex) =>
                       p.projectData.map((pr, projectDataIndex) => {
@@ -377,7 +405,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                       })
                     )}
                   </tr>
-                  <tr>
+                  <tr className={c.Show_hidens}>
                     <td> Back_Up </td>
                     {data.map((p, projectIndex) =>
                       p.projectData.map((pr, projectDataIndex) => {
@@ -406,7 +434,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                       })
                     )}
                   </tr>
-                  <tr>
+                  <tr className={c.Show_hidens}>
                     <td> Poly </td>
                     {data.map((p, projectIndex) =>
                       p.projectData.map((pr, projectDataIndex) => {
@@ -435,7 +463,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                       })
                     )}
                   </tr>
-                  <tr>
+                  <tr className={c.Show_hidens}>
                     <td> Containment </td>
                     {data.map((p, projectIndex) =>
                       p.projectData.map((pr, projectDataIndex) => {
@@ -464,7 +492,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                       })
                     )}
                   </tr>
-                  <tr>
+                  <tr className={c.Show_hidens}>
                     <td> SOS </td>
                     {data.map((p, projectIndex) =>
                       p.projectData.map((pr, projectDataIndex) => {
@@ -500,10 +528,10 @@ const Project = ({ data, sproject, family, updateData }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr className={c.total}>
+          <tr className={c.total_}>
             <td>
               <span onClick={() => setToogle((prev) => toogle(prev, "OS"))}>
-                <FaCaretDown />
+                {toggling("OS")}
               </span>
               <span style={{ color: "orangered" }}>{sproject}</span> OS
             </td>
@@ -511,9 +539,9 @@ const Project = ({ data, sproject, family, updateData }) => {
               <td key={i}>{t}</td>
             ))}
           </tr>
-          {!Toogle["OS"] && (
+          {Toogle["OS"] && (
             <React.Fragment>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>Digitalization</td>
                 {data.map((p) =>
                   p.projectData.map((pr, i) => (
@@ -533,7 +561,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                   ))
                 )}
               </tr>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>Daily Kaizen</td>
                 {data.map((p) =>
                   p.projectData.map((pr, i) => (
@@ -553,7 +581,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                   ))
                 )}
               </tr>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>OS Auditing</td>
                 {data.map((p) =>
                   p.projectData.map((pr, i) => (
@@ -573,7 +601,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                   ))
                 )}
               </tr>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>OS Auditing & Data Reporting</td>
                 {data.map((p) =>
                   p.projectData.map((pr, i) => (
@@ -598,10 +626,10 @@ const Project = ({ data, sproject, family, updateData }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr className={c.total}>
+          <tr className={c.total_}>
             <td>
               <span onClick={() => setToogle((prev) => toogle(prev, "SLOP"))}>
-                <FaCaretDown />
+                {toggling("SLOP")}
               </span>
               <span style={{ color: "orangered" }}>{sproject}</span> SLOP{" "}
             </td>
@@ -609,9 +637,9 @@ const Project = ({ data, sproject, family, updateData }) => {
               <td key={i}>{t}</td>
             ))}
           </tr>
-          {!Toogle["SLOP"] && (
+          {Toogle["SLOP"] && (
             <React.Fragment>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>Pregnant women out of the plant</td>
                 {data.map((p) =>
                   p.projectData.map((pr, i) => (
@@ -634,7 +662,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                   ))
                 )}
               </tr>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>Maternity</td>
                 {data.map((p) =>
                   p.projectData.map((pr, i) => (
@@ -654,7 +682,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                   ))
                 )}
               </tr>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>Breastfeeding leave</td>
                 {data.map((p) =>
                   p.projectData.map((pr, i) => (
@@ -676,7 +704,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                   ))
                 )}
               </tr>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td>LTI: Long term weaknesses, LWD, </td>
                 {data.map((p) =>
                   p.projectData.map((pr, i) => (
@@ -698,7 +726,7 @@ const Project = ({ data, sproject, family, updateData }) => {
                   ))
                 )}
               </tr>
-              <tr>
+              <tr className={c.Show_hidens}>
                 <td> Physical incapacity & NMA </td>
                 {data.map((p) =>
                   p.projectData.map((pr, i) => (
@@ -725,10 +753,10 @@ const Project = ({ data, sproject, family, updateData }) => {
         </React.Fragment>
 
         <React.Fragment>
-          <tr className={c.total}>
+          <tr className={c.actualDh}>
             <td>
-            <span onClick={() => setToogle((prev) => toogle(prev, "ACDH"))}>
-                <FaCaretDown />
+              <span onClick={() => setToogle((prev) => toogle(prev, "ACDH"))}>
+                {toggling("ACDH")}
               </span>
               <span style={{ color: "orangered" }}>{sproject}</span> Actual DH
             </td>
@@ -737,82 +765,99 @@ const Project = ({ data, sproject, family, updateData }) => {
             ))}
           </tr>
 
-          {
-            !Toogle['ACDH'] &&(
+          {Toogle["ACDH"] && (
+            <React.Fragment>
+              <tr
+                style={{ backgroundColor: "#ffe99a" }}
+                className={c.Show_hidens}
+              >
+                <td>Attrition</td>
+                {data.map((p) =>
+                  p.projectData.map((pr, i) => {
+                    const color =
+                      pr.project_actual_DH.Attrition > 0 ? "red" : "";
+                    return (
+                      <td style={{ backgroundColor: color }} key={i}>
+                        <input
+                          placeholder={pr.project_actual_DH.Attrition}
+                          onChange={(e) =>
+                            handleOthers(
+                              sproject,
+                              p.week_name,
+                              "project_actual_DH.Attrition",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
 
-          <React.Fragment>
-            <tr>
-              <td>Attrition</td>
-              {data.map((p) =>
-                p.projectData.map((pr, i) => (
-                  <td key={i}>
-                    <input
-                      placeholder={pr.project_actual_DH.Attrition}
-                      onChange={(e) =>
-                        handleOthers(
-                          sproject,
-                          p.week_name,
-                          "project_actual_DH.Attrition",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                ))
-              )}
-            </tr>
+              <tr
+                style={{ backgroundColor: "#ede2b9" }}
+                className={c.Show_hidens}
+              >
+                <td>Transfer</td>
+                {data.map((p) =>
+                  p.projectData.map((pr, i) => {
+                    const color =
+                      pr.project_actual_DH.Transfer > 0 ? "red" : "";
+                    return (
+                      <td style={{ backgroundColor: color }} key={i}>
+                        <input
+                          placeholder={pr.project_actual_DH.Transfer}
+                          onChange={(e) =>
+                            handleOthers(
+                              sproject,
+                              p.week_name,
+                              "project_actual_DH.Transfer",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
+                  })
+                )}
+              </tr>
 
-            <tr>
-              <td>Transfer</td>
-              {data.map((p) =>
-                p.projectData.map((pr, i) => (
-                  <td key={i}>
-                    <input
-                      placeholder={pr.project_actual_DH.Transfer}
-                      onChange={(e) =>
-                        handleOthers(
-                          sproject,
-                          p.week_name,
-                          "project_actual_DH.Transfer",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                ))
-              )}
-            </tr>
-
-            <tr>
-              <td>Hiring</td>
-              {data.map((p) =>
-                p.projectData.map((pr, i) => (
-                  <td key={i}>
-                    <input
-                      placeholder={pr.project_actual_DH.Hiring}
-                      onChange={(e) =>
-                        handleOthers(
-                          sproject,
-                          p.week_name,
-                          "project_actual_DH.Hiring",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-                ))
-              )}
-            </tr>
-          </React.Fragment>
-            )
-          }
-
+              <tr
+                style={{ backgroundColor: "#fdfdca" }}
+                className={c.Show_hidens}
+              >
+                <td>Hiring</td>
+                {data.map((p) =>
+                  p.projectData.map((pr, i) => {
+                    const color = pr.project_actual_DH.Hiring>0? "#333399":"";
+                    
+                   return( <td style={{backgroundColor:color}} key={i}>
+                      <input
+                        placeholder={pr.project_actual_DH.Hiring}
+                        onChange={(e) =>
+                          handleOthers(
+                            sproject,
+                            p.week_name,
+                            "project_actual_DH.Hiring",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </td>)
+                  })
+                )}
+              </tr>
+            </React.Fragment>
+          )}
         </React.Fragment>
 
-        <tr className={c.total}>
+        <tr style={{ backgroundColor: "#a3a3a3" }}>
           <td>Gap </td>
           {Gap.flatMap((g, i) => (
-            <td key={i}>{g || "-"}</td>
+            <td key={i} style={{ color: CheckGap(Gap, i) }}>
+              {g || "-"}
+            </td>
           ))}
         </tr>
       </tbody>

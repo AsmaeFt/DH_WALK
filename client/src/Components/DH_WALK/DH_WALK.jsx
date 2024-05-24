@@ -6,6 +6,9 @@ import api from "../../services/api";
 import Loadings from "../UI/Loading";
 import { generateWeeks } from "../functions/utilis";
 import { Calculate_Average } from "../hooks/Average";
+import { FaCaretDown, FaCaretRight } from "react-icons/fa";
+import { toogle } from "../hooks/Average";
+import Legend from "../UI/Legend";
 
 const DH_WALK = () => {
   const [projectData, setProjectData] = useState([]);
@@ -15,6 +18,7 @@ const DH_WALK = () => {
   const [Cutting, setCutting] = useState([]);
   const [view, setView] = useState("table");
   const [loading, setloading] = useState(true);
+  const [Toogle, setToogle] = useState({});
 
   const fetchData = useCallback(async (endpoint, setter) => {
     try {
@@ -676,168 +680,305 @@ const DH_WALK = () => {
   const Plant_Hiring = Calculate_Average(Total_plant_hiring, weeks);
   const GAP_PLANT_Hiring = Calculate_Average(Gap_Plant, weeks);
 
+  const toggling = (val) => {
+    return Toogle[val] ? <FaCaretDown /> : <FaCaretRight />;
+  };
+
+  const CheckTdVal = (list, i) => {
+    if (i === 0) return "white";
+    if (list[i] === list[i - 1]) return "white";
+    return list[i] > list[i - 1] ? "red" : "green";
+  };
+
   const renderView = () => {
     switch (view) {
       case "table":
         return (
           <>
+            {/* Total Plant */}
+            <h3>Total Plant</h3>
             <div className={c.table}>
+             
               <table>
                 <TableHeader />
                 <tbody>
                   <React.Fragment>
-                    <tr className={c.total}>
-                      <td>FA Dh required </td>
+                    <tr className={c.total_dh_required}>
+                      <td>Total Plant Required</td>
+                      {Total_Plant_Required.map((v, i) => (
+                        <td
+                          key={i}
+                          style={{ color: CheckTdVal(Total_Plant_Required, i) }}
+                        >
+                          {v}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className={c.total_}>
+                      <td>Total Plant DH Actual</td>
+                      {plant_Actual_Dh.map((v, i) => (
+                        <td
+                          key={i}
+                          style={{ color: CheckTdVal(Total_Plant_Required, i) }}
+                        >
+                          {v}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Attrition</td>
+                      {Total_plant_atrition.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Transfert</td>
+                      {Total_plant_trans.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td>Hiring</td>
+                      {Total_plant_hiring.map((v, i) => (
+                        <td key={i}>{v}</td>
+                      ))}
+                    </tr>
+                    <tr className={c.total_}>
+                      <td> Total Plant Gap</td>
+                      {Gap_Plant.map((v, i) => (
+                        <td key={i} style={{ color: CheckTdVal(Gap_Plant, i) }}>
+                          {v}
+                        </td>
+                      ))}
+                    </tr>
+                  </React.Fragment>
+                </tbody>
+              </table>
+            </div>
+            {/* Total FA */}
+            <div className={c.table}>
+              <h3>Total FA</h3>
+              <table>
+                <TableHeader />
+                <tbody>
+                  <React.Fragment>
+                    <tr className={c.total_dh_required}>
+                      <td>
+                        <span
+                          onClick={() =>
+                            setToogle((prev) => toogle(prev, "FA"))
+                          }
+                        >
+                          {toggling("FA")}
+                        </span>
+                        FA Dh required
+                      </td>
                       {Total_AFM.map((t, i) => (
-                        <td key={i}>{Math.floor(t)}</td>
+                        <td key={i} style={{ color: CheckTdVal(Total_AFM, i) }}>
+                          {Math.floor(t)}
+                        </td>
                       ))}
                     </tr>
 
-                    <React.Fragment>
-                      {Object.entries(Total_Projects).map(([n, val], i) => (
-                        <tr key={i}>
-                          <td>{n}</td>
-                          {val.map((v, j) => (
-                            <td key={j}>{v}</td>
+                    {Toogle["FA"] && (
+                      <React.Fragment>
+                        {Object.entries(Total_Projects).map(([n, val], i) => (
+                          <tr key={i} className={c.Show_hidens}>
+                            <td>{n}</td>
+                            {val.map((v, j) => (
+                              <td key={j}>{v}</td>
+                            ))}
+                          </tr>
+                        ))}
+
+                        <tr className={c.Show_hidens}>
+                          <td>After Market</td>
+                          {Total_AFM_Required.map((a, i) => (
+                            <td key={i}>{a}</td>
                           ))}
                         </tr>
-                      ))}
 
-                      <tr>
-                        <td>After Market</td>
-                        {Total_AFM_Required.map((a, i) => (
-                          <td key={i}>{a}</td>
-                        ))}
-                      </tr>
-
-                      <tr>
-                        <td>MPC</td>
-                        {Logistic_DH_REQUIRED.map((l, i) => (
-                          <td key={i}>{l}</td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td>Quality Others </td>
-                        {Quality_Others.map((q, i) => (
-                          <td key={i}>{q}</td>
-                        ))}
-                      </tr>
-                    </React.Fragment>
+                        <tr className={c.Show_hidens}>
+                          <td>MPC</td>
+                          {Logistic_DH_REQUIRED.map((l, i) => (
+                            <td key={i}>{l}</td>
+                          ))}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>Quality Others </td>
+                          {Quality_Others.map((q, i) => (
+                            <td key={i}>{q}</td>
+                          ))}
+                        </tr>
+                      </React.Fragment>
+                    )}
 
                     <React.Fragment>
-                      <tr className={c.total}>
-                        <td>OS</td>
+                      <tr className={c.total_}>
+                        <td>
+                          <span
+                            onClick={() =>
+                              setToogle((prev) => toogle(prev, "OS"))
+                            }
+                          >
+                            {toggling("OS")}
+                          </span>
+                          Total OS
+                        </td>
                         {Total_OS.map((o, i) => (
                           <td key={i}>{o}</td>
                         ))}
                       </tr>
-                      <tr>
-                        <td>Digitalization</td>
-                        {Total_OS_Digitalisation.map((o, i) => (
-                          <td key={i}>{o}</td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td>Daily Kaizen</td>
-                        {Total_OS_Daily_Kaizen.map((k, i) => (
-                          <td key={i}>{k}</td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td>OS Data Reporting</td>
-                        {Total_OS_Data_Reporting.map((r, i) => (
-                          <td key={i}>{r}</td>
-                        ))}
-                      </tr>
+
+                      {Toogle["OS"] && (
+                        <React.Fragment>
+                          <tr className={c.Show_hidens}>
+                            <td>Digitalization</td>
+                            {Total_OS_Digitalisation.map((o, i) => (
+                              <td key={i}>{o}</td>
+                            ))}
+                          </tr>
+                          <tr className={c.Show_hidens}>
+                            <td>Daily Kaizen</td>
+                            {Total_OS_Daily_Kaizen.map((k, i) => (
+                              <td key={i}>{k}</td>
+                            ))}
+                          </tr>
+                          <tr className={c.Show_hidens}>
+                            <td>OS Data Reporting</td>
+                            {Total_OS_Data_Reporting.map((r, i) => (
+                              <td key={i}>{r}</td>
+                            ))}
+                          </tr>
+                        </React.Fragment>
+                      )}
+                    </React.Fragment>
+                    <tr className={c.total_}>
+                      <td>
+                        <span
+                          onClick={() =>
+                            setToogle((prev) => toogle(prev, "SPL"))
+                          }
+                        >
+                          {toggling("SPL")}
+                        </span>
+                        FA special List
+                      </td>
+                      {Total_Special_List.map((sp, i) => (
+                        <td key={i}>{sp}</td>
+                      ))}
+                    </tr>
+                    <React.Fragment>
+                      {Toogle["SPL"] && (
+                        <React.Fragment>
+                          <tr className={c.Show_hidens}>
+                            <td>Pregnant Women</td>
+                            {Final_pw.map((w, i) => (
+                              <td key={i}>{w}</td>
+                            ))}
+                          </tr>
+                          <tr className={c.Show_hidens}>
+                            <td>Maternity</td>
+                            {Final_ma.map((m, i) => (
+                              <td key={i}>{m}</td>
+                            ))}
+                          </tr>
+                          <tr className={c.Show_hidens}>
+                            <td>Breastfeeding leave</td>
+                            {Final_BF.map((m, i) => (
+                              <td key={i}>{m}</td>
+                            ))}
+                          </tr>
+                          <tr className={c.Show_hidens}>
+                            <td>LTI: Long term weaknesses, LWD,</td>
+                            {Final_li.map((m, i) => (
+                              <td key={i}>{m}</td>
+                            ))}
+                          </tr>
+                          <tr className={c.Show_hidens}>
+                            <td>Physical incapacity & NMA</td>
+                            {Final_py.map((m, i) => (
+                              <td key={i}>{m}</td>
+                            ))}
+                          </tr>
+                        </React.Fragment>
+                      )}
                     </React.Fragment>
 
                     <React.Fragment>
-                      <tr className={c.total}>
-                        <td>FA special List</td>
-                        {Total_Special_List.map((sp, i) => (
-                          <td key={i}>{sp}</td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td>Pregnant Women</td>
-                        {Final_pw.map((w, i) => (
-                          <td key={i}>{w}</td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td>Maternity</td>
-                        {Final_ma.map((m, i) => (
-                          <td key={i}>{m}</td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td>Breastfeeding leave</td>
-                        {Final_BF.map((m, i) => (
-                          <td key={i}>{m}</td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td>LTI: Long term weaknesses, LWD,</td>
-                        {Final_li.map((m, i) => (
-                          <td key={i}>{m}</td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td>Physical incapacity & NMA</td>
-                        {Final_py.map((m, i) => (
-                          <td key={i}>{m}</td>
-                        ))}
-                      </tr>
-                    </React.Fragment>
-
-                    <React.Fragment>
-                      <tr className={c.total}>
-                        <td>FA Actual DH</td>
+                      <tr className={c.actualDh}>
+                        <td>
+                          <span
+                            onClick={() =>
+                              setToogle((prev) => toogle(prev, "ACD"))
+                            }
+                          >
+                            {toggling("ACD")}
+                          </span>
+                          FA Actual DH
+                        </td>
                         {Total_Actual_DH.map((a, i) => (
                           <td key={i}>{Math.floor(a)}</td>
                         ))}
                       </tr>
-                      <tr>
-                        <td>Attrition</td>
-                        {Total_atrition.map((a, i) => (
-                          <td key={i}>{a}</td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td> Transfer</td>
-                        {Total_transfert.map((a, i) => (
-                          <td key={i}>{a}</td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td>Hiring</td>
-                        {Total_Hiring.map((a, i) => (
-                          <td key={i}>{a}</td>
-                        ))}
-                      </tr>
+
+                      {Toogle["ACD"] && (
+                        <React.Fragment>
+                          <tr className={c.Show_hidens}>
+                            <td>Attrition</td>
+                            {Total_atrition.map((a, i) => (
+                              <td key={i}>{a}</td>
+                            ))}
+                          </tr>
+                          <tr className={c.Show_hidens}>
+                            <td> Transfer</td>
+                            {Total_transfert.map((a, i) => (
+                              <td key={i}>{a}</td>
+                            ))}
+                          </tr>
+                          <tr className={c.Show_hidens}>
+                            <td>Hiring</td>
+                            {Total_Hiring.map((a, i) => (
+                              <td key={i}>{a}</td>
+                            ))}
+                          </tr>
+                        </React.Fragment>
+                      )}
                     </React.Fragment>
 
-                    <tr className={c.total}>
+                    <tr className={c.total_}>
                       <td>FA Gap</td>
                       {Gap.map((g, i) => (
-                        <td key={i}>{g}</td>
+                        <td key={i} style={{ color: CheckTdVal(Gap, i) }}>
+                          {g}
+                        </td>
                       ))}
                     </tr>
                   </React.Fragment>
+                </tbody>
+              </table>
+            </div>
 
+            {/* Cutting */}
+            <div className={c.table}>
+              <h3> Total Cutting</h3>
+              <table>
+                <TableHeader />
+                <tbody>
                   <React.Fragment>
-                    <h3>Cutting</h3>
-                  </React.Fragment>
-
-                  <React.Fragment>
-                    <tr className={c.total}>
+                    <tr className={c.total_dh_required}>
                       <td>Cutting DH Required</td>
                       {Cutt_LP_DHrequired.map((v, i) => (
-                        <td key={i}>{v}</td>
+                        <td
+                          key={i}
+                          style={{ color: CheckTdVal(Total_Plant_Required, i) }}
+                        >
+                          {v}
+                        </td>
                       ))}
                     </tr>
                     <React.Fragment>
-                      <tr className={c.total}>
+                      <tr className={c.total_}>
                         <td>Cutting Actual DH</td>
                         {Cutting_Actual_DH.map((v, i) => (
                           <td key={i}>{v}</td>
@@ -872,29 +1013,43 @@ const DH_WALK = () => {
                           })
                         )}
                       </tr>
-                      <tr className={c.total}>
+                      <tr className={c.total_}>
                         <td>Cutting Gap </td>
                         {Gap_Cut.map((v, i) => (
-                          <td key={i}>{v}</td>
+                          <td
+                            key={i}
+                            style={{
+                              color: CheckTdVal(Total_Plant_Required, i),
+                            }}
+                          >
+                            {v}
+                          </td>
                         ))}
                       </tr>
                     </React.Fragment>
                   </React.Fragment>
-
+                </tbody>
+              </table>
+            </div>
+            {/* LP  */}
+            <div className={c.table}>
+              <h3> Total LP</h3>
+              <table>
+                <TableHeader />
+                <tbody>
                   <React.Fragment>
-                    <div>
-                      <h3>LP</h3>
-                    </div>
-                  </React.Fragment>
-
-                  <React.Fragment>
-                    <tr className={c.total}>
+                    <tr className={c.total_dh_required}>
                       <td>LP DH required </td>
                       {LP_Dh_Required.map((v, i) => (
-                        <td key={i}>{v}</td>
+                        <td
+                          key={i}
+                          style={{ color: CheckTdVal(Total_Plant_Required, i) }}
+                        >
+                          {v}
+                        </td>
                       ))}
                     </tr>
-                    <tr className={c.total}>
+                    <tr className={c.total_}>
                       <td>LP DH actual</td>
                       {LP_Actual_DH.map((v, i) => (
                         <td key={i}>{v}</td>
@@ -928,54 +1083,15 @@ const DH_WALK = () => {
                         })
                       )}
                     </tr>
-                    <tr className={c.total}>
+                    <tr className={c.total_}>
                       <td>LP Gap</td>
                       {Gap_LP.map((g, i) => (
-                        <td key={i}>{g}</td>
-                      ))}
-                    </tr>
-                  </React.Fragment>
-
-                  <React.Fragment>
-                    <div>
-                      <h3> Plant GAP </h3>
-                    </div>
-                  </React.Fragment>
-                  <React.Fragment>
-                    <tr className={c.total}>
-                      <td>Total Plant Required</td>
-                      {Total_Plant_Required.map((v, i) => (
-                        <td key={i}>{v}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Total Plant DH Actual</td>
-                      {plant_Actual_Dh.map((v, i) => (
-                        <td key={i}>{v}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Attrition</td>
-                      {Total_plant_atrition.map((v, i) => (
-                        <td key={i}>{v}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Transfert</td>
-                      {Total_plant_trans.map((v, i) => (
-                        <td key={i}>{v}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Hiring</td>
-                      {Total_plant_hiring.map((v, i) => (
-                        <td key={i}>{v}</td>
-                      ))}
-                    </tr>
-                    <tr className={c.total}>
-                      <td> Total Plant Gap</td>
-                      {Gap_Plant.map((v, i) => (
-                        <td key={i}>{v}</td>
+                        <td
+                          key={i}
+                          style={{ color: CheckTdVal(Total_Plant_Required, i) }}
+                        >
+                          {g}
+                        </td>
                       ))}
                     </tr>
                   </React.Fragment>
@@ -988,6 +1104,7 @@ const DH_WALK = () => {
         return (
           <>
             <div className={c.table}>
+              <h3>Average Plant</h3>
               <table>
                 <thead>
                   <tr>
@@ -999,77 +1116,188 @@ const DH_WALK = () => {
                 </thead>
                 <tbody>
                   <React.Fragment>
-                    <tr className={c.total}>
-                      <td>FA DH Required</td>
-                      {Object.entries(average_FA_PerMonth).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
+                    <tr className={c.total_dh_required}>
+                      <td>Total Plant Required</td>
+                      {Object.entries(Plant_Required).map((v, i) => (
+                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                          {v[1]}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr className={c.actualDh}>
+                      <td>
+                        <span
+                          onClick={() =>
+                            setToogle((prev) => toogle(prev, "PADH"))
+                          }
+                        >
+                          {toggling("PADH")}
+                        </span>
+                        Total Plant DH Actual
+                      </td>
+                      {Object.entries(Plant_Actual).map((v, i) => (
+                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                          {v[1]}
+                        </td>
                       ))}
                     </tr>
 
-                    {projectAverages.map((p, i) => (
-                      <tr key={i}>
-                        <td>{p.n}</td>
-                        {Object.values(p.average).map((avg, i) => (
-                          <td key={i}>{avg}</td>
-                        ))}
-                      </tr>
+                    {Toogle["PADH"] && (
+                      <React.Fragment>
+                        <tr className={c.Show_hidens}>
+                          <td>Attrition</td>
+                          {Object.entries(Plant_Attrition).map((v, i) => (
+                            <td key={i}>{v[1]}</td>
+                          ))}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>Transfer</td>
+                          {Object.entries(Plant_Transfert).map((v, i) => (
+                            <td key={i}>{v[1]}</td>
+                          ))}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>Hiring</td>
+                          {Object.entries(Plant_Hiring).map((v, i) => (
+                            <td key={i}>{v[1]}</td>
+                          ))}
+                        </tr>
+                      </React.Fragment>
+                    )}
+                  </React.Fragment>
+
+                  <tr className={c.total_}>
+                    <td>Total Plant GAP </td>
+                    {Object.entries(GAP_PLANT_Hiring).map((v, i) => (
+                      <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        {v[1]}
+                      </td>
                     ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-                    <tr>
-                      <td>After Sales </td>
-                      {Object.entries(average_AFM_perMonth).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
+            <div className={c.table}>
+              <h3>Average FA</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Months</th>
+                    {Months.map((m, i) => (
+                      <td key={i}>{m}</td>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <React.Fragment>
+                    <tr className={c.total_dh_required}>
+                      <td>
+                        <span
+                          onClick={() =>
+                            setToogle((prev) => toogle(prev, "FA"))
+                          }
+                        >
+                          {toggling("FA")}
+                        </span>
+                        FA DH Required
+                      </td>
+                      {Object.entries(average_FA_PerMonth).map((v, i) => (
+                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                          {v[1]}
+                        </td>
                       ))}
                     </tr>
-                    <tr>
-                      <td>Quality Other DH</td>
-                      {Object.entries(average_Quality_perMonth).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>MPC DH</td>
-                      {Object.entries(average_Logistic_perMonth).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
+                    {Toogle["FA"] && (
+                      <React.Fragment>
+                        {projectAverages.map((p, i) => (
+                          <tr key={i} className={c.Show_hidens}>
+                            <td>{p.n}</td>
+                            {Object.values(p.average).map((avg, i) => (
+                              <td key={i}>{avg}</td>
+                            ))}
+                          </tr>
+                        ))}
+
+                        <tr className={c.Show_hidens}>
+                          <td>After Sales </td>
+                          {Object.entries(average_AFM_perMonth).map((v, i) => (
+                            <td key={i}>{v[1]}</td>
+                          ))}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>Quality Other DH</td>
+                          {Object.entries(average_Quality_perMonth).map(
+                            (v, i) => (
+                              <td key={i}>{v[1]}</td>
+                            )
+                          )}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>MPC DH</td>
+                          {Object.entries(average_Logistic_perMonth).map(
+                            (v, i) => (
+                              <td key={i}>{v[1]}</td>
+                            )
+                          )}
+                        </tr>
+                      </React.Fragment>
+                    )}
                   </React.Fragment>
 
                   <React.Fragment>
-                    <tr className={c.total}>
-                      <td>FA Actual DH</td>
+                    <tr className={c.total_}>
+                      <td>
+                        <span
+                          onClick={() =>
+                            setToogle((prev) => toogle(prev, "ACD"))
+                          }
+                        >
+                          {toggling("ACD")}
+                        </span>
+                        FA Actual DH
+                      </td>
                       {Object.entries(ActualDh_AVG).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
+                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                          {v[1]}
+                        </td>
                       ))}
                     </tr>
-                    <tr>
-                      <td>Attrition</td>
-                      {Object.entries(Attrition_AVG).map((x, i) => (
-                        <td key={i}>{x[1]}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Transfer </td>
-                      {Object.entries(Transfert_AVG).map((x, i) => (
-                        <td key={i}>{x[1]}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Hiring</td>
-                      {Object.entries(Hiring_AVG).map((x, i) => (
-                        <td key={i}>{x[1]}</td>
-                      ))}
-                    </tr>
+
+                    {Toogle["ACD"] && (
+                      <React.Fragment>
+                        <tr className={c.Show_hidens}>
+                          <td>Attrition</td>
+                          {Object.entries(Attrition_AVG).map((x, i) => (
+                            <td key={i}>{x[1]}</td>
+                          ))}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>Transfer </td>
+                          {Object.entries(Transfert_AVG).map((x, i) => (
+                            <td key={i}>{x[1]}</td>
+                          ))}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>Hiring</td>
+                          {Object.entries(Hiring_AVG).map((x, i) => (
+                            <td key={i}>{x[1]}</td>
+                          ))}
+                        </tr>
+                      </React.Fragment>
+                    )}
                   </React.Fragment>
 
                   <React.Fragment>
-                    <tr className={c.total}>
+                    <tr className={c.total_}>
                       <td>OS</td>
                       {Object.entries(OS_AVG).map((n, i) => (
-                        <td key={i}>{n[1]}</td>
+                        <td key={i} style={{ color: CheckTdVal(n, i) }}>
+                          {n[1]}
+                        </td>
                       ))}
                     </tr>
-                    <tr>
+                    <tr className={c.total_}>
                       <td>FA special List </td>
                       {Object.entries(Special_ListAVG).map((b, i) => (
                         <td key={i}>{b[1]}</td>
@@ -1078,58 +1306,92 @@ const DH_WALK = () => {
                   </React.Fragment>
 
                   <React.Fragment>
-                    <tr className={c.total}>
+                    <tr className={c.total_}>
                       <td>Gap</td>
                       {Object.entries(Gap_AVG).map((x, i) => (
-                        <td key={i}>{x[1]}</td>
+                        <td key={i} style={{ color: CheckTdVal(x, i) }}>
+                          {x[1]}
+                        </td>
                       ))}
                     </tr>
                   </React.Fragment>
-                  
                 </tbody>
               </table>
             </div>
 
             <div className={c.table}>
+              <h3>Average Cutting</h3>
               <table>
+                <thead>
+                  <tr>
+                    <th>Months</th>
+                    {Months.map((m, i) => (
+                      <td key={i}>{m}</td>
+                    ))}
+                  </tr>
+                </thead>
+
                 <tbody>
                   <React.Fragment>
-                    <tr className={c.total}>
+                    <tr className={c.total_dh_required}>
                       <td>Cutting DH Required</td>
                       {Object.entries(Plant_Cutting_DH).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
+                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                          {v[1]}
+                        </td>
                       ))}
                     </tr>
-                    <tr className={c.total}>
-                      <td>Cutting DH Actual</td>
+                    <tr className={c.actualDh}>
+                      <td>
+                        <span
+                          onClick={() =>
+                            setToogle((prev) => toogle(prev, "ACDP"))
+                          }
+                        >
+                          {toggling("ACDP")}
+                        </span>
+                        Cutting DH Actual
+                      </td>
                       {Object.entries(Plant_Cutting_Actual_DH).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
+                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                          {v[1]}
+                        </td>
                       ))}
                     </tr>
+                    {Toogle["ACDP"] && (
+                      <React.Fragment>
+                        <tr className={c.Show_hidens}>
+                          <td>Attrition</td>
+                          {Object.entries(Plant_Cutting_Attrition).map(
+                            (v, i) => (
+                              <td key={i}>{v[1]}</td>
+                            )
+                          )}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>Transfer</td>
+                          {Object.entries(Plant_Cutting_Transfert).map(
+                            (v, i) => (
+                              <td key={i}>{v[1]}</td>
+                            )
+                          )}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>Hiring</td>
+                          {Object.entries(Plant_Cutting_Hiring).map((v, i) => (
+                            <td key={i}>{v[1]}</td>
+                          ))}
+                        </tr>
+                      </React.Fragment>
+                    )}
 
-                    <tr>
-                      <td>Attrition</td>
-                      {Object.entries(Plant_Cutting_Attrition).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Transfer</td>
-                      {Object.entries(Plant_Cutting_Transfert).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Hiring</td>
-                      {Object.entries(Plant_Cutting_Hiring).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                    <tr className={c.total}>
+                    <tr className={c.total_}>
                       <td>Cutting Gap </td>
 
                       {Object.entries(GapCutting).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
+                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                          {v[1]}
+                        </td>
                       ))}
                     </tr>
                   </React.Fragment>
@@ -1138,94 +1400,68 @@ const DH_WALK = () => {
             </div>
 
             <div className={c.table}>
+              <h3>Average LP</h3>
               <table>
                 <tbody>
                   <React.Fragment>
-                    <tr className={c.total}>
+                    <tr className={c.total_dh_required}>
                       <td>LP DH Required</td>
                       {Object.entries(Plant_LP_DH).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
+                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                          {v[1]}
+                        </td>
                       ))}
                     </tr>
-                    <tr className={c.total}>
-                      <td>LP DH Actual</td>
+                    <tr className={c.actualDh}>
+                      <td>
+                        <span
+                          onClick={() =>
+                            setToogle((prev) => toogle(prev, "ACLP"))
+                          }
+                        >
+                          {toggling("ACLP")}
+                        </span>
+                        LP DH Actual
+                      </td>
                       {Object.entries(Plant_LP_ActualDH).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Attrition</td>
-                      {Object.entries(Plant_LP_Attrition).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Transfer</td>
-                      {Object.entries(Plant_LP_Transfert).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Hiring</td>
-                      {Object.entries(Plant_LP_Hiring).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
+                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                          {v[1]}
+                        </td>
                       ))}
                     </tr>
 
-                    <tr className={c.total}>
+                    {Toogle["ACLP"] &&(
+                      <React.Fragment>
+                        <tr className={c.Show_hidens}>
+                          <td>Attrition</td>
+                          {Object.entries(Plant_LP_Attrition).map((v, i) => (
+                            <td key={i}>{v[1]}</td>
+                          ))}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>Transfer</td>
+                          {Object.entries(Plant_LP_Transfert).map((v, i) => (
+                            <td key={i}>{v[1]}</td>
+                          ))}
+                        </tr>
+                        <tr className={c.Show_hidens}>
+                          <td>Hiring</td>
+                          {Object.entries(Plant_LP_Hiring).map((v, i) => (
+                            <td key={i}>{v[1]}</td>
+                          ))}
+                        </tr>
+                      </React.Fragment>
+                    )}
+
+                    <tr className={c.total_}>
                       <td>Gap LP </td>
                       {Object.entries(GapLP).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
+                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                          {v[1]}
+                        </td>
                       ))}
                     </tr>
                   </React.Fragment>
-                </tbody>
-              </table>
-            </div>
-
-            <div className={c.table}>
-              <table>
-                <tbody>
-                  <React.Fragment>
-                    <tr className={c.total}>
-                      <td>Total Plant Required</td>
-                      {Object.entries(Plant_Required).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                    <tr className={c.total}>
-                      <td>Total Plant DH Actual</td>
-                      {Object.entries(Plant_Actual).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-
-                    <tr>
-                      <td>Attrition</td>
-                      {Object.entries(Plant_Attrition).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Transfer</td>
-                      {Object.entries(Plant_Transfert).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td>Hiring</td>
-                      {Object.entries(Plant_Hiring).map((v, i) => (
-                        <td key={i}>{v[1]}</td>
-                      ))}
-                    </tr>
-                  </React.Fragment>
-                  <tr className={c.total}>
-                    <td>Total Plant GAP </td>
-
-                    {Object.entries(GAP_PLANT_Hiring).map((v, i) => (
-                      <td key={i}>{v[1]}</td>
-                    ))}
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -1254,6 +1490,7 @@ const DH_WALK = () => {
           Summary DH Walk
         </h2>
       </div>
+      <Legend />
 
       {loading ? <Loadings /> : renderView()}
     </>

@@ -1,12 +1,12 @@
 import c from "./FinalAssembly.module.css";
 import api from "../../services/api";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TableHeader from "../UI/TableHeader";
 import Project from "./Project";
 import OS_afm from "./OS_afm";
 import axios from "axios";
 import Loading from "../UI/Loading";
-import AddData from "../ImportData/FinalAssembly";
+import Legend from "../UI/Legend";
 
 const FinalAssembly = () => {
   const [pr, setpr] = useState([]);
@@ -78,7 +78,7 @@ const FinalAssembly = () => {
     <>
       <div className={c.header}>
         <h2>Final Assembly </h2>
-        <span> Add Data {" > "} </span>
+       {/*  <span> Add Data {" > "} </span> */}
       </div>
 
       <div className={c.projects}>
@@ -103,7 +103,9 @@ const FinalAssembly = () => {
           OS - AFM
         </label>
       </div>
-
+      <React.Fragment>
+        <Legend/>
+      </React.Fragment>
       {loading ? (
         <div className={c.loading}>
           <Loading />

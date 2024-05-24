@@ -1,13 +1,12 @@
-
-.header{
+.header {
   display: flex;
   justify-content: space-between;
 }
-.Summary{
+.Summary {
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
-.Summary:hover{
+.Summary:hover {
   color: orangered;
 }
 .projects {
@@ -69,6 +68,8 @@
   position: sticky;
   top: 0;
   left: 0;
+  min-width: 180px;
+  width: 180px;
 }
 
 .table table thead tr {
@@ -102,10 +103,14 @@ td {
 }
 .table table tbody tr {
   transition: 0.3s ease-in-out;
-  border-bottom: 1px solid rgba(77, 77, 77, 0.329);
+  border: 1px solid black;
 }
 .table table tbody tr:hover {
-  background-color: rgb(51, 51, 51);
+  background-color: #1a1a1a;
+}
+.table table tr td {
+  font-weight: 600;
+  min-width: 1rem;
 }
 
 .table table tr td input {
@@ -115,9 +120,6 @@ td {
 }
 .table table input::placeholder {
   color: white;
-}
-.total {
-  background-color: orangered;
 }
 
 ::-webkit-scrollbar {
@@ -135,6 +137,7 @@ td {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
 .loading {
   width: 100%;
   display: flex;
@@ -142,3 +145,37 @@ td {
   align-items: center;
 }
 
+.table table td span svg {
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.table table td span :hover {
+  color: orangered;
+  transform: translateY(2px);
+}
+.total_dh_required {
+  background-color: black;
+}
+.total_ {
+  background-color: #3f3f3f;
+}
+.total_family {
+  background: #0e3137;
+}
+.actualDh {
+  background-color: #b53303;
+}
+.Show_hidens {
+  animation: fadeUphidens 0.5s ease-in-out;
+}
+@keyframes fadeUphidens {
+  0% {
+    opacity: 0;
+    transform: translateX(-90px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
