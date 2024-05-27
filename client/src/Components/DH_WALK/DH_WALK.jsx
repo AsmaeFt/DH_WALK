@@ -59,6 +59,14 @@ const DH_WALK = () => {
   let Total_pro_Transfet = [];
   let Total_pro_Hiring = [];
 
+  let DH_Split_MEdefinition = [];
+  let DH_Split_MEsupport = [];
+  let DH_Split_Rework = [];
+  let DH_Split_Poly = [];
+  let DH_Split_BackUp = [];
+  let DH_Split_Containment = [];
+  let DH_Split_SOS = [];
+
   projectData.map((y) => {
     let Total_lasHc = 0;
     y.weeks.map((w) => {
@@ -79,6 +87,13 @@ const DH_WALK = () => {
       let Attrition = 0;
       let Transfer = 0;
       let Hiring = 0;
+      let splitMeDefinition = 0;
+      let splitMesupport = 0;
+      let splitRework = 0;
+      let spliPoly = 0;
+      let splitBackup = 0;
+      let splitContainment = 0;
+      let splitSOS = 0;
 
       w.projectData.map((p) => {
         const TotalOS =
@@ -107,6 +122,7 @@ const DH_WALK = () => {
         SPL = PR + Mat + BF + LI + PY;
 
         let familyTotal = 0;
+
         p.family.forEach((fam) => {
           if (fam != null) {
             const HC_Crew =
@@ -119,6 +135,14 @@ const DH_WALK = () => {
             const totalF = HC_Crew * fam.crews + fam.SOS;
             familyTotal += totalF;
             sos += fam.SOS;
+            /* SPLIT */
+            splitMeDefinition += fam.ME_DEFINITION * fam.crews;
+            splitMesupport += fam.ME_SUPPORT * fam.crews;
+            splitRework += fam.Rework * fam.crews;
+            spliPoly += fam.Poly * fam.crews;
+            splitBackup += fam.Back_Up * fam.crews;
+            splitContainment += fam.Containment * fam.crews;
+            splitSOS += fam.SOS * fam.crews;
           }
         });
 
@@ -140,6 +164,15 @@ const DH_WALK = () => {
           Total_lasHc += p.project_actual_DH.last_HC;
         }
       });
+
+      DH_Split_MEdefinition.push(splitMeDefinition);
+      DH_Split_MEsupport.push(splitMesupport);
+      DH_Split_Rework.push(splitRework);
+      DH_Split_Poly.push(spliPoly);
+      DH_Split_BackUp.push(splitBackup);
+      DH_Split_Containment.push(splitContainment);
+      DH_Split_SOS.push(splitSOS);
+
       Total_SOS.push(sos);
       Total_of_all_Projects.push(Math.floor(Total_Of_Total));
       Total_OS_Digitalisation.push(OS_Digitalisation);
@@ -683,6 +716,29 @@ const DH_WALK = () => {
   const Plant_Hiring = Calculate_Average(Total_plant_hiring, weeks);
   const GAP_PLANT_Hiring = Calculate_Average(Gap_Plant, weeks);
 
+  //SPLIT
+  /* 
+   let DH_Split_MEdefinition = [];
+  let DH_Split_MEsupport = [];
+  let DH_Split_Rework = [];
+  let DH_Split_Poly = [];
+  let DH_Split_BackUp = [];
+  let DH_Split_Containment = [];
+  let DH_Split_SOS = [];
+  */
+  let Persentage = [];
+  for (let i = 0; i < DH_Split_MEdefinition.length; i++) {
+    const total =
+      (DH_Split_MEsupport[i] +
+        DH_Split_Rework[i] +
+        DH_Split_Poly[i] +
+        DH_Split_BackUp[i] +
+        DH_Split_Containment[i] +
+        DH_Split_SOS[i]) /
+      DH_Split_MEdefinition[i];
+      Persentage.push(Math.floor(total))
+  }
+
   const toggling = (val) => {
     return Toogle[val] ? <FaCaretDown /> : <FaCaretRight />;
   };
@@ -1173,6 +1229,73 @@ const DH_WALK = () => {
                 </tbody>
               </table>
             </div>
+            {/* DH SPLIT */}
+            <Title title={"DH WALK SPLIT"} />
+            <div className={c.table}>
+              <table>
+                <TableHeader />
+                <tbody>
+                  <tr>
+                    <td>ME Definition</td>
+                    {DH_Split_MEdefinition.map((me, i) => (
+                      <td key={i}>{me}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>ME Support</td>
+                    {DH_Split_MEsupport.map((me, i) => (
+                      <td key={i}>{me}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>Rework</td>
+                    {DH_Split_Rework.map((me, i) => (
+                      <td key={i}>{me}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>Poly</td>
+                    {DH_Split_Poly.map((me, i) => (
+                      <td key={i}>{me}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>Back_Up</td>
+                    {DH_Split_BackUp.map((me, i) => (
+                      <td key={i}>{me}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>Containment</td>
+                    {DH_Split_Containment.map((me, i) => (
+                      <td key={i}>{me}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>SOS</td>
+                    {DH_Split_SOS.map((me, i) => (
+                      <td key={i}>{me}</td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <Title title={"DH WALK SPLIT %"} />
+            <div className={c.table}>
+              <table>
+                <TableHeader />
+                <tbody>
+                  <tr>
+                    <td>ME %</td>
+                    {
+                      Persentage.map((x,i)=>(
+                        <td key={i}>{x}%</td>
+                      ))
+                    }
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </>
         );
       case "summary":
@@ -1232,36 +1355,31 @@ const DH_WALK = () => {
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Transfer</td>
-                          {Object.entries(Plant_Transfert).map((v, i) => 
-                          {
+                          {Object.entries(Plant_Transfert).map((v, i) => {
                             const color = v[1] > 0 ? "red" : "";
                             return (
                               <td key={i} style={{ backgroundColor: color }}>
                                 {v[1]}
                               </td>
                             );
-                          }
-                          )}
+                          })}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Hiring</td>
-                          {Object.entries(Plant_Hiring).map((v, i) => 
-                         {
-                          const color = v[1] > 0 ? "#333399" : "";
-                          return (
-                            <td key={i} style={{ backgroundColor: color }}>
-                              {v[1]}
-                            </td>
-                          );
-                        }
-                          
-                          )}
+                          {Object.entries(Plant_Hiring).map((v, i) => {
+                            const color = v[1] > 0 ? "#333399" : "";
+                            return (
+                              <td key={i} style={{ backgroundColor: color }}>
+                                {v[1]}
+                              </td>
+                            );
+                          })}
                         </tr>
                       </React.Fragment>
                     )}
                   </React.Fragment>
 
-                  <tr style={{backgroundColor:'#a3a3a3'}}>
+                  <tr style={{ backgroundColor: "#a3a3a3" }}>
                     <td>Total Plant GAP </td>
                     {Object.entries(GAP_PLANT_Hiring).map((v, i) => (
                       <td key={i} style={{ color: CheckGap(v, i) }}>
@@ -1416,7 +1534,7 @@ const DH_WALK = () => {
                   </React.Fragment>
 
                   <React.Fragment>
-                    <tr style={{backgroundColor:'#a3a3a3'}}>
+                    <tr style={{ backgroundColor: "#a3a3a3" }}>
                       <td>Gap</td>
                       {Object.entries(Gap_AVG).map((x, i) => (
                         <td key={i} style={{ color: CheckGap(x, i) }}>
@@ -1499,18 +1617,18 @@ const DH_WALK = () => {
                         <tr className={c.Show_hidens}>
                           <td>Hiring</td>
                           {Object.entries(Plant_Cutting_Hiring).map((v, i) => {
-                              const color = v[1] > 0 ? "#333399" : "";
-                              return (
-                                <td key={i} style={{ backgroundColor: color }}>
-                                  {v[1]}
-                                </td>
-                              );
-                            })}
+                            const color = v[1] > 0 ? "#333399" : "";
+                            return (
+                              <td key={i} style={{ backgroundColor: color }}>
+                                {v[1]}
+                              </td>
+                            );
+                          })}
                         </tr>
                       </React.Fragment>
                     )}
 
-                    <tr style={{backgroundColor:'#a3a3a3'}}>
+                    <tr style={{ backgroundColor: "#a3a3a3" }}>
                       <td>Cutting Gap </td>
 
                       {Object.entries(GapCutting).map((v, i) => (
@@ -1560,40 +1678,40 @@ const DH_WALK = () => {
                         <tr className={c.Show_hidens}>
                           <td>Attrition</td>
                           {Object.entries(Plant_LP_Attrition).map((v, i) => {
-                              const color = v[1] > 0 ? "red" : "";
-                              return (
-                                <td key={i} style={{ backgroundColor: color }}>
-                                  {v[1]}
-                                </td>
-                              );
-                            })}
+                            const color = v[1] > 0 ? "red" : "";
+                            return (
+                              <td key={i} style={{ backgroundColor: color }}>
+                                {v[1]}
+                              </td>
+                            );
+                          })}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Transfer</td>
                           {Object.entries(Plant_LP_Transfert).map((v, i) => {
-                              const color = v[1] > 0 ? "red" : "";
-                              return (
-                                <td key={i} style={{ backgroundColor: color }}>
-                                  {v[1]}
-                                </td>
-                              );
-                            })}
+                            const color = v[1] > 0 ? "red" : "";
+                            return (
+                              <td key={i} style={{ backgroundColor: color }}>
+                                {v[1]}
+                              </td>
+                            );
+                          })}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Hiring</td>
                           {Object.entries(Plant_LP_Hiring).map((v, i) => {
-                              const color = v[1] > 0 ? "#333399" : "";
-                              return (
-                                <td key={i} style={{ backgroundColor: color }}>
-                                  {v[1]}
-                                </td>
-                              );
-                            })}
+                            const color = v[1] > 0 ? "#333399" : "";
+                            return (
+                              <td key={i} style={{ backgroundColor: color }}>
+                                {v[1]}
+                              </td>
+                            );
+                          })}
                         </tr>
                       </React.Fragment>
                     )}
 
-                    <tr style={{backgroundColor:'#a3a3a3'}}>
+                    <tr style={{ backgroundColor: "#a3a3a3" }}>
                       <td>Gap LP </td>
                       {Object.entries(GapLP).map((v, i) => (
                         <td key={i} style={{ color: CheckGap(v, i) }}>
