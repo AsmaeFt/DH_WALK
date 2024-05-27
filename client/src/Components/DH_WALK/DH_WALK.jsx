@@ -9,6 +9,8 @@ import { Calculate_Average } from "../hooks/Average";
 import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { toogle } from "../hooks/Average";
 import Legend from "../UI/Legend";
+import { CheckGap } from "../functions/utilis";
+import Title from "../UI/Title";
 
 const DH_WALK = () => {
   const [projectData, setProjectData] = useState([]);
@@ -19,6 +21,7 @@ const DH_WALK = () => {
   const [view, setView] = useState("table");
   const [loading, setloading] = useState(true);
   const [Toogle, setToogle] = useState({});
+  const [clicked, setclicked] = useState("Dh_Walk");
 
   const fetchData = useCallback(async (endpoint, setter) => {
     try {
@@ -696,9 +699,10 @@ const DH_WALK = () => {
         return (
           <>
             {/* Total Plant */}
-            <h3>Total Plant</h3>
+
+            <Title title={"Total Plant"} />
+
             <div className={c.table}>
-             
               <table>
                 <TableHeader />
                 <tbody>
@@ -714,8 +718,8 @@ const DH_WALK = () => {
                         </td>
                       ))}
                     </tr>
-                    <tr className={c.total_}>
-                      <td>Total Plant DH Actual</td>
+                    <tr className={c.actualDh}>
+                      <td>Total Plant Actual DH </td>
                       {plant_Actual_Dh.map((v, i) => (
                         <td
                           key={i}
@@ -727,26 +731,41 @@ const DH_WALK = () => {
                     </tr>
                     <tr>
                       <td>Attrition</td>
-                      {Total_plant_atrition.map((v, i) => (
-                        <td key={i}>{v}</td>
-                      ))}
+                      {Total_plant_atrition.map((v, i) => {
+                        const color = v > 0 ? "red" : "";
+                        return (
+                          <td key={i} style={{ backgroundColor: color }}>
+                            {v}
+                          </td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td>Transfert</td>
-                      {Total_plant_trans.map((v, i) => (
-                        <td key={i}>{v}</td>
-                      ))}
+                      {Total_plant_trans.map((v, i) => {
+                        const color = v > 0 ? "red" : "";
+                        return (
+                          <td key={i} style={{ backgroundColor: color }}>
+                            {v}
+                          </td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td>Hiring</td>
-                      {Total_plant_hiring.map((v, i) => (
-                        <td key={i}>{v}</td>
-                      ))}
+                      {Total_plant_hiring.map((v, i) => {
+                        const color = v > 0 ? "#333399" : "";
+                        return (
+                          <td key={i} style={{ backgroundColor: color }}>
+                            {v}
+                          </td>
+                        );
+                      })}
                     </tr>
-                    <tr className={c.total_}>
+                    <tr style={{ backgroundColor: "#a3a3a3" }}>
                       <td> Total Plant Gap</td>
                       {Gap_Plant.map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(Gap_Plant, i) }}>
+                        <td key={i} style={{ color: CheckGap(Gap_Plant, i) }}>
                           {v}
                         </td>
                       ))}
@@ -755,9 +774,10 @@ const DH_WALK = () => {
                 </tbody>
               </table>
             </div>
+
             {/* Total FA */}
+            <Title title={"Total FA"} />
             <div className={c.table}>
-              <h3>Total FA</h3>
               <table>
                 <TableHeader />
                 <tbody>
@@ -853,6 +873,7 @@ const DH_WALK = () => {
                         </React.Fragment>
                       )}
                     </React.Fragment>
+
                     <tr className={c.total_}>
                       <td>
                         <span
@@ -926,30 +947,45 @@ const DH_WALK = () => {
                         <React.Fragment>
                           <tr className={c.Show_hidens}>
                             <td>Attrition</td>
-                            {Total_atrition.map((a, i) => (
-                              <td key={i}>{a}</td>
-                            ))}
+                            {Total_atrition.map((a, i) => {
+                              const color = a > 0 ? "red" : "";
+                              return (
+                                <td key={i} style={{ backgroundColor: color }}>
+                                  {a}
+                                </td>
+                              );
+                            })}
                           </tr>
                           <tr className={c.Show_hidens}>
                             <td> Transfer</td>
-                            {Total_transfert.map((a, i) => (
-                              <td key={i}>{a}</td>
-                            ))}
+                            {Total_transfert.map((a, i) => {
+                              const color = a > 0 ? "red" : "";
+                              return (
+                                <td key={i} style={{ backgroundColor: color }}>
+                                  {a}
+                                </td>
+                              );
+                            })}
                           </tr>
                           <tr className={c.Show_hidens}>
                             <td>Hiring</td>
-                            {Total_Hiring.map((a, i) => (
-                              <td key={i}>{a}</td>
-                            ))}
+                            {Total_Hiring.map((a, i) => {
+                              const color = a > 0 ? "#333399" : "";
+                              return (
+                                <td key={i} style={{ backgroundColor: color }}>
+                                  {a}
+                                </td>
+                              );
+                            })}
                           </tr>
                         </React.Fragment>
                       )}
                     </React.Fragment>
 
-                    <tr className={c.total_}>
+                    <tr style={{ backgroundColor: "#a3a3a3" }}>
                       <td>FA Gap</td>
                       {Gap.map((g, i) => (
-                        <td key={i} style={{ color: CheckTdVal(Gap, i) }}>
+                        <td key={i} style={{ color: CheckGap(Gap, i) }}>
                           {g}
                         </td>
                       ))}
@@ -960,8 +996,8 @@ const DH_WALK = () => {
             </div>
 
             {/* Cutting */}
+            <Title title={"Total Cutting"} />
             <div className={c.table}>
-              <h3> Total Cutting</h3>
               <table>
                 <TableHeader />
                 <tbody>
@@ -978,7 +1014,7 @@ const DH_WALK = () => {
                       ))}
                     </tr>
                     <React.Fragment>
-                      <tr className={c.total_}>
+                      <tr className={c.actualDh}>
                         <td>Cutting Actual DH</td>
                         {Cutting_Actual_DH.map((v, i) => (
                           <td key={i}>{v}</td>
@@ -990,7 +1026,15 @@ const DH_WALK = () => {
                         {Cutting.map((y) =>
                           y.weeks.map((w) => {
                             const data = w.Cutting_Actual_DH.Attrition;
-                            return <td key={w._id}>{data}</td>;
+                            const color = data > 0 ? "red" : "";
+                            return (
+                              <td
+                                key={w._id}
+                                style={{ backgroundColor: color }}
+                              >
+                                {data}
+                              </td>
+                            );
                           })
                         )}
                       </tr>
@@ -1000,7 +1044,15 @@ const DH_WALK = () => {
                         {Cutting.map((y) =>
                           y.weeks.map((w) => {
                             const data = w.Cutting_Actual_DH.Transfer;
-                            return <td key={w._id}>{data}</td>;
+                            const color = data > 0 ? "red" : "";
+                            return (
+                              <td
+                                key={w._id}
+                                style={{ backgroundColor: color }}
+                              >
+                                {data}
+                              </td>
+                            );
                           })
                         )}
                       </tr>
@@ -1009,17 +1061,25 @@ const DH_WALK = () => {
                         {Cutting.map((y) =>
                           y.weeks.map((w) => {
                             const data = w.Cutting_Actual_DH.Hiring;
-                            return <td key={w._id}>{data}</td>;
+                            const color = data > 0 ? "#333399" : "";
+                            return (
+                              <td
+                                key={w._id}
+                                style={{ backgroundColor: color }}
+                              >
+                                {data}
+                              </td>
+                            );
                           })
                         )}
                       </tr>
-                      <tr className={c.total_}>
+                      <tr style={{ backgroundColor: "#a3a3a3" }}>
                         <td>Cutting Gap </td>
                         {Gap_Cut.map((v, i) => (
                           <td
                             key={i}
                             style={{
-                              color: CheckTdVal(Total_Plant_Required, i),
+                              color: CheckGap(Total_Plant_Required, i),
                             }}
                           >
                             {v}
@@ -1032,8 +1092,8 @@ const DH_WALK = () => {
               </table>
             </div>
             {/* LP  */}
+            <Title title={"Total LP"} />
             <div className={c.table}>
-              <h3> Total LP</h3>
               <table>
                 <TableHeader />
                 <tbody>
@@ -1049,7 +1109,7 @@ const DH_WALK = () => {
                         </td>
                       ))}
                     </tr>
-                    <tr className={c.total_}>
+                    <tr className={c.actualDh}>
                       <td>LP DH actual</td>
                       {LP_Actual_DH.map((v, i) => (
                         <td key={i}>{v}</td>
@@ -1061,7 +1121,12 @@ const DH_WALK = () => {
                       {Cutting.map((y) =>
                         y.weeks.map((w) => {
                           const data = w.LP_ActualDH.Attrition;
-                          return <td key={w._id}>{data}</td>;
+                          const color = data > 0 ? "red" : "";
+                          return (
+                            <td key={w._id} style={{ backgroundColor: color }}>
+                              {data}
+                            </td>
+                          );
                         })
                       )}
                     </tr>
@@ -1070,7 +1135,12 @@ const DH_WALK = () => {
                       {Cutting.map((y) =>
                         y.weeks.map((w) => {
                           const data = w.LP_ActualDH.Transfer;
-                          return <td key={w._id}>{data}</td>;
+                          const color = data > 0 ? "red" : "";
+                          return (
+                            <td key={w._id} style={{ backgroundColor: color }}>
+                              {data}
+                            </td>
+                          );
                         })
                       )}
                     </tr>
@@ -1079,16 +1149,21 @@ const DH_WALK = () => {
                       {Cutting.map((y) =>
                         y.weeks.map((w) => {
                           const data = w.LP_ActualDH.Hiring;
-                          return <td key={w._id}>{data}</td>;
+                          const color = data > 0 ? "#333399" : "";
+                          return (
+                            <td key={w._id} style={{ backgroundColor: color }}>
+                              {data}
+                            </td>
+                          );
                         })
                       )}
                     </tr>
-                    <tr className={c.total_}>
+                    <tr style={{ backgroundColor: "#a3a3a3" }}>
                       <td>LP Gap</td>
                       {Gap_LP.map((g, i) => (
                         <td
                           key={i}
-                          style={{ color: CheckTdVal(Total_Plant_Required, i) }}
+                          style={{ color: CheckGap(Total_Plant_Required, i) }}
                         >
                           {g}
                         </td>
@@ -1104,7 +1179,7 @@ const DH_WALK = () => {
         return (
           <>
             <div className={c.table}>
-              <h3>Average Plant</h3>
+              <Title title={"Average Plant"} />
               <table>
                 <thead>
                   <tr>
@@ -1146,30 +1221,50 @@ const DH_WALK = () => {
                       <React.Fragment>
                         <tr className={c.Show_hidens}>
                           <td>Attrition</td>
-                          {Object.entries(Plant_Attrition).map((v, i) => (
-                            <td key={i}>{v[1]}</td>
-                          ))}
+                          {Object.entries(Plant_Attrition).map((v, i) => {
+                            const color = v[1] > 0 ? "red" : "";
+                            return (
+                              <td key={i} style={{ backgroundColor: color }}>
+                                {v[1]}
+                              </td>
+                            );
+                          })}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Transfer</td>
-                          {Object.entries(Plant_Transfert).map((v, i) => (
-                            <td key={i}>{v[1]}</td>
-                          ))}
+                          {Object.entries(Plant_Transfert).map((v, i) => 
+                          {
+                            const color = v[1] > 0 ? "red" : "";
+                            return (
+                              <td key={i} style={{ backgroundColor: color }}>
+                                {v[1]}
+                              </td>
+                            );
+                          }
+                          )}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Hiring</td>
-                          {Object.entries(Plant_Hiring).map((v, i) => (
-                            <td key={i}>{v[1]}</td>
-                          ))}
+                          {Object.entries(Plant_Hiring).map((v, i) => 
+                         {
+                          const color = v[1] > 0 ? "#333399" : "";
+                          return (
+                            <td key={i} style={{ backgroundColor: color }}>
+                              {v[1]}
+                            </td>
+                          );
+                        }
+                          
+                          )}
                         </tr>
                       </React.Fragment>
                     )}
                   </React.Fragment>
 
-                  <tr className={c.total_}>
+                  <tr style={{backgroundColor:'#a3a3a3'}}>
                     <td>Total Plant GAP </td>
                     {Object.entries(GAP_PLANT_Hiring).map((v, i) => (
-                      <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                      <td key={i} style={{ color: CheckGap(v, i) }}>
                         {v[1]}
                       </td>
                     ))}
@@ -1179,7 +1274,7 @@ const DH_WALK = () => {
             </div>
 
             <div className={c.table}>
-              <h3>Average FA</h3>
+              <Title title={"Average FA"} />
               <table>
                 <thead>
                   <tr>
@@ -1268,21 +1363,36 @@ const DH_WALK = () => {
                       <React.Fragment>
                         <tr className={c.Show_hidens}>
                           <td>Attrition</td>
-                          {Object.entries(Attrition_AVG).map((x, i) => (
-                            <td key={i}>{x[1]}</td>
-                          ))}
+                          {Object.entries(Attrition_AVG).map((x, i) => {
+                            const color = x[1] > 0 ? "red" : "";
+                            return (
+                              <td key={i} style={{ backgroundColor: color }}>
+                                {x[1]}
+                              </td>
+                            );
+                          })}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Transfer </td>
-                          {Object.entries(Transfert_AVG).map((x, i) => (
-                            <td key={i}>{x[1]}</td>
-                          ))}
+                          {Object.entries(Transfert_AVG).map((x, i) => {
+                            const color = x[1] > 0 ? "red" : "";
+                            return (
+                              <td key={i} style={{ backgroundColor: color }}>
+                                {x[1]}
+                              </td>
+                            );
+                          })}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Hiring</td>
-                          {Object.entries(Hiring_AVG).map((x, i) => (
-                            <td key={i}>{x[1]}</td>
-                          ))}
+                          {Object.entries(Hiring_AVG).map((x, i) => {
+                            const color = x[1] > 0 ? "#333399" : "";
+                            return (
+                              <td key={i} style={{ backgroundColor: color }}>
+                                {x[1]}
+                              </td>
+                            );
+                          })}
                         </tr>
                       </React.Fragment>
                     )}
@@ -1306,10 +1416,10 @@ const DH_WALK = () => {
                   </React.Fragment>
 
                   <React.Fragment>
-                    <tr className={c.total_}>
+                    <tr style={{backgroundColor:'#a3a3a3'}}>
                       <td>Gap</td>
                       {Object.entries(Gap_AVG).map((x, i) => (
-                        <td key={i} style={{ color: CheckTdVal(x, i) }}>
+                        <td key={i} style={{ color: CheckGap(x, i) }}>
                           {x[1]}
                         </td>
                       ))}
@@ -1320,7 +1430,7 @@ const DH_WALK = () => {
             </div>
 
             <div className={c.table}>
-              <h3>Average Cutting</h3>
+              <Title title={"Average Cutting"} />
               <table>
                 <thead>
                   <tr>
@@ -1363,33 +1473,48 @@ const DH_WALK = () => {
                         <tr className={c.Show_hidens}>
                           <td>Attrition</td>
                           {Object.entries(Plant_Cutting_Attrition).map(
-                            (v, i) => (
-                              <td key={i}>{v[1]}</td>
-                            )
+                            (v, i) => {
+                              const color = v[1] > 0 ? "red" : "";
+                              return (
+                                <td key={i} style={{ backgroundColor: color }}>
+                                  {v[1]}
+                                </td>
+                              );
+                            }
                           )}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Transfer</td>
                           {Object.entries(Plant_Cutting_Transfert).map(
-                            (v, i) => (
-                              <td key={i}>{v[1]}</td>
-                            )
+                            (v, i) => {
+                              const color = v[1] > 0 ? "red" : "";
+                              return (
+                                <td key={i} style={{ backgroundColor: color }}>
+                                  {v[1]}
+                                </td>
+                              );
+                            }
                           )}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Hiring</td>
-                          {Object.entries(Plant_Cutting_Hiring).map((v, i) => (
-                            <td key={i}>{v[1]}</td>
-                          ))}
+                          {Object.entries(Plant_Cutting_Hiring).map((v, i) => {
+                              const color = v[1] > 0 ? "#333399" : "";
+                              return (
+                                <td key={i} style={{ backgroundColor: color }}>
+                                  {v[1]}
+                                </td>
+                              );
+                            })}
                         </tr>
                       </React.Fragment>
                     )}
 
-                    <tr className={c.total_}>
+                    <tr style={{backgroundColor:'#a3a3a3'}}>
                       <td>Cutting Gap </td>
 
                       {Object.entries(GapCutting).map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        <td key={i} style={{ color: CheckGap(v, i) }}>
                           {v[1]}
                         </td>
                       ))}
@@ -1400,7 +1525,7 @@ const DH_WALK = () => {
             </div>
 
             <div className={c.table}>
-              <h3>Average LP</h3>
+              <Title title={"Average LP"} />
               <table>
                 <tbody>
                   <React.Fragment>
@@ -1430,33 +1555,48 @@ const DH_WALK = () => {
                       ))}
                     </tr>
 
-                    {Toogle["ACLP"] &&(
+                    {Toogle["ACLP"] && (
                       <React.Fragment>
                         <tr className={c.Show_hidens}>
                           <td>Attrition</td>
-                          {Object.entries(Plant_LP_Attrition).map((v, i) => (
-                            <td key={i}>{v[1]}</td>
-                          ))}
+                          {Object.entries(Plant_LP_Attrition).map((v, i) => {
+                              const color = v[1] > 0 ? "red" : "";
+                              return (
+                                <td key={i} style={{ backgroundColor: color }}>
+                                  {v[1]}
+                                </td>
+                              );
+                            })}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Transfer</td>
-                          {Object.entries(Plant_LP_Transfert).map((v, i) => (
-                            <td key={i}>{v[1]}</td>
-                          ))}
+                          {Object.entries(Plant_LP_Transfert).map((v, i) => {
+                              const color = v[1] > 0 ? "red" : "";
+                              return (
+                                <td key={i} style={{ backgroundColor: color }}>
+                                  {v[1]}
+                                </td>
+                              );
+                            })}
                         </tr>
                         <tr className={c.Show_hidens}>
                           <td>Hiring</td>
-                          {Object.entries(Plant_LP_Hiring).map((v, i) => (
-                            <td key={i}>{v[1]}</td>
-                          ))}
+                          {Object.entries(Plant_LP_Hiring).map((v, i) => {
+                              const color = v[1] > 0 ? "#333399" : "";
+                              return (
+                                <td key={i} style={{ backgroundColor: color }}>
+                                  {v[1]}
+                                </td>
+                              );
+                            })}
                         </tr>
                       </React.Fragment>
                     )}
 
-                    <tr className={c.total_}>
+                    <tr style={{backgroundColor:'#a3a3a3'}}>
                       <td>Gap LP </td>
                       {Object.entries(GapLP).map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        <td key={i} style={{ color: CheckGap(v, i) }}>
                           {v[1]}
                         </td>
                       ))}
@@ -1476,16 +1616,20 @@ const DH_WALK = () => {
         <h2
           onClick={() => {
             setView("table");
+            setclicked("Dh_Walk");
           }}
           className={c.Summary}
+          style={{ color: clicked === "Dh_Walk" ? "white" : "grey" }}
         >
           DH_WALK {new Date().getFullYear()}
         </h2>
         <h2
           onClick={() => {
             setView("summary");
+            setclicked("Summary");
           }}
           className={c.Summary}
+          style={{ color: clicked === "Summary" ? "white" : "grey" }}
         >
           Summary DH Walk
         </h2>

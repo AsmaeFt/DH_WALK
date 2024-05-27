@@ -6,6 +6,7 @@ import { toogle } from "../hooks/Average";
 import axios from "axios";
 import api from "../../services/api";
 import Legend from "../UI/Legend";
+import { CheckGap } from "../functions/utilis";
 
 const Quality = () => {
   const [projectData, setProjectData] = useState([]);
@@ -153,7 +154,7 @@ const Quality = () => {
   }, [inputOthChange]);
 
   const toggling = (val) => {
-    return Toogle[val] ? <FaCaretDown /> : <FaCaretRight />;
+    return !Toogle[val] ? <FaCaretDown /> : <FaCaretRight />;
   };
 
   const CheckTdVal = (list, i) => {
@@ -167,7 +168,7 @@ const Quality = () => {
       <div className={c.header}>
         <h2>Quality </h2>
       </div>
-      <Legend/>
+      <Legend />
       <div className={c.table}>
         <table>
           <TableHeader />
@@ -200,7 +201,7 @@ const Quality = () => {
                   <td key={i}>{t}</td>
                 ))}
               </tr>
-              {Toogle["QDH"] && (
+              {!Toogle["QDH"] && (
                 <React.Fragment>
                   {Object.entries(containtion).map(([name, value], i) => (
                     <tr key={i} className={c.Show_hidens}>
@@ -230,7 +231,7 @@ const Quality = () => {
                   </td>
                 ))}
               </tr>
-              {Toogle["ODH"] && (
+              {!Toogle["ODH"] && (
                 <React.Fragment>
                   <tr className={c.Show_hidens}>
                     <td>Supper Control</td>
@@ -412,7 +413,7 @@ const Quality = () => {
                   <td key={i}>{t}</td>
                 ))}
               </tr>
-              {Toogle["SPL"] && (
+              {!Toogle["SPL"] && (
                 <React.Fragment>
                   <tr className={c.Show_hidens}>
                     <td>Pregnant women of the plant</td>
@@ -545,24 +546,30 @@ const Quality = () => {
             <React.Fragment>
               <tr className={c.actualDh}>
                 <td>
-                <span onClick={() => setToogle((prev) => toogle(prev, "ACD"))}>
+                  <span
+                    onClick={() => setToogle((prev) => toogle(prev, "ACD"))}
+                  >
                     {toggling("ACD")}
                   </span>
-                  Quality Actual DH</td>
+                  Quality Actual DH
+                </td>
                 {Total_Actual_Dh.map((t, i) => (
                   <td key={i}>{t}</td>
                 ))}
               </tr>
-              {Toogle["ACD"] && (
+              {!Toogle["ACD"] && (
                 <React.Fragment>
-                  <tr className={c.Show_hidens}>
+                   <tr
+                    style={{ backgroundColor: "#ffe99a" }}
+                    className={c.Show_hidens}
+                  >
                     <td>Attrition</td>
                     {Quality.map((y) =>
                       y.weeks.map((w) => {
                         const data = w.Quality_Actual_DH.Attrition;
-
+                        const color = data > 0 ? "red" : "";
                         return (
-                          <td key={w._id}>
+                          <td key={w._id} style={{ backgroundColor: color }}>
                             <input
                               placeholder={data || "-"}
                               onChange={(e) =>
@@ -578,14 +585,17 @@ const Quality = () => {
                       })
                     )}
                   </tr>
-                  <tr className={c.Show_hidens}>
+                  <tr
+                    style={{ backgroundColor: "#ede2b9" }}
+                    className={c.Show_hidens}
+                  >
                     <td>Transfer</td>
                     {Quality.map((y) =>
                       y.weeks.map((w) => {
                         const data = w.Quality_Actual_DH.Transfer;
-
+                        const color = data > 0 ? "red" : "";
                         return (
-                          <td key={w._id}>
+                          <td key={w._id} style={{ backgroundColor: color }}>
                             <input
                               placeholder={data || "-"}
                               onChange={(e) =>
@@ -601,14 +611,17 @@ const Quality = () => {
                       })
                     )}
                   </tr>
-                  <tr className={c.Show_hidens}>
+                  <tr
+                    style={{ backgroundColor: "#fdfdca" }}
+                    className={c.Show_hidens}
+                  >
                     <td>Hiring</td>
                     {Quality.map((y) =>
                       y.weeks.map((w) => {
                         const data = w.Quality_Actual_DH.Hiring;
-
+                        const color = data > 0 ? "#333399" : "";
                         return (
-                          <td key={w._id}>
+                          <td key={w._id} style={{ backgroundColor: color }}>
                             <input
                               placeholder={data || "-"}
                               onChange={(e) =>
@@ -628,10 +641,12 @@ const Quality = () => {
               )}
             </React.Fragment>
 
-            <tr >
+            <tr style={{ backgroundColor: "#a3a3a3" }}>
               <td>Gap</td>
               {Gap.map((g, i) => (
-                <td key={i} style={{ color: CheckTdVal(Gap, i) }}>{g}</td>
+                <td key={i} style={{ color: CheckGap(Gap, i) }}>
+                  {g ||"-"}
+                </td>
               ))}
             </tr>
           </tbody>

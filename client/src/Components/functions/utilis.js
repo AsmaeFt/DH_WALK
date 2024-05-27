@@ -9,22 +9,6 @@ export const getWeek = (date) => {
   return Math.ceil((daysFromFirstDay + date.getDay() + 1) / 7);
 };
 
-// export const generateWeeks = () => {
-//   const currentYear = new Date().getFullYear();
-//   const startDate = new Date(`${currentYear}-01-01`); // Start from January 1st
-//   const weeksInYear = getISOWeeks(currentYear); // Get the number of ISO weeks in the year
-//   const weeks = [];
-//   for (let i = 0; i < weeksInYear; i++) {
-//     const currentDate = new Date(startDate.getTime());
-//     currentDate.setDate(startDate.getDate() + i * 7); // Move to the next week
-//     const month = currentDate.toLocaleString("default", { month: "short" }); // Get short month name
-//     const firstWeekDate = `${currentDate.getDate()}/${currentDate.getMonth() + 1}`;
-//     const lastWeekDate = ; // Format date as 'day/month'
-//     const week = `W${String(i + 1).padStart(2, "0")}`; // Format week number with leading zero
-//     weeks.push({ month, firstWeekDate, lastWeekDate, week });
-//   }
-//   return weeks;
-// };
 
 export const generateWeeks = () => {
   const currentYear = new Date().getFullYear();
@@ -85,3 +69,9 @@ export const GetWeeks =(date)=>{
   const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
   return `${date.getFullYear()}-W${Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)}`;
 }
+
+
+export const CheckGap = (list, i) => {
+  if (list[i] > 0) return "red";
+  return "#0070C0";
+};

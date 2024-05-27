@@ -6,6 +6,7 @@ import axios from "axios";
 import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { toogle } from "../hooks/Average";
 import Legend from "../UI/Legend";
+import { CheckGap } from "../functions/utilis";
 const Logistic = () => {
   const [data, setdata] = useState([]);
   const [inputs, setinputs] = useState({});
@@ -104,7 +105,7 @@ const Logistic = () => {
   }, [inputOthChange]);
 
   const toggling = (val) => {
-    return Toogle[val] ? <FaCaretDown /> : <FaCaretRight />;
+    return !Toogle[val] ? <FaCaretDown /> : <FaCaretRight />;
   };
 
   const CheckTdVal = (list, i) => {
@@ -146,7 +147,7 @@ const Logistic = () => {
                   <td key={i}>{t}</td>
                 ))}
               </tr>
-              {Toogle["DH"] && (
+              {!Toogle["DH"] && (
                 <React.Fragment>
                   <tr className={c.Show_hidens}>
                     <td>OPS</td>
@@ -192,7 +193,7 @@ const Logistic = () => {
                       })
                     )}
                   </tr>
-                  <tr  className={c.Show_hidens}>
+                  <tr className={c.Show_hidens}>
                     <td>Sequencing</td>
                     {data.map((y) =>
                       y.weeks.map((w) => {
@@ -236,7 +237,7 @@ const Logistic = () => {
                       })
                     )}
                   </tr>
-                  <tr  className={c.Show_hidens}>
+                  <tr className={c.Show_hidens}>
                     <td> RM DR</td>
                     {data.map((y) =>
                       y.weeks.map((w) => {
@@ -280,14 +281,14 @@ const Logistic = () => {
                       })
                     )}
                   </tr>
-                  <tr  className={c.Show_hidens}>
+                  <tr className={c.Show_hidens}>
                     <td> FG DR</td>
                     {data.map((y) =>
                       y.weeks.map((w) => {
                         const data = w.Logistic_DH.FG_DR;
-                        const color =  w.Logistic_DH.FG_DR?"red":""
+                        
                         return (
-                          <td style={{backgroundColor:color}} key={w._id}>
+                          <td key={w._id}>
                             <input
                               placeholder={data}
                               onChange={(e) =>
@@ -321,7 +322,7 @@ const Logistic = () => {
                   <td key={i}>{s}</td>
                 ))}
               </tr>
-              {Toogle["SPL"] && (
+              {!Toogle["SPL"] && (
                 <React.Fragment>
                   <tr className={c.Show_hidens}>
                     <td>Pregnant women of the plant</td>
@@ -451,15 +452,19 @@ const Logistic = () => {
                   <td key={i}>{a || "-"}</td>
                 ))}
               </tr>
-              {Toogle["AC"] && (
+              {!Toogle["AC"] && (
                 <React.Fragment>
-                  <tr className={c.Show_hidens}>
+                  <tr
+                    style={{ backgroundColor: "#ffe99a" }}
+                    className={c.Show_hidens}
+                  >
                     <td>Attrition</td>
                     {data.map((y) =>
                       y.weeks.map((w) => {
                         const data = w.Logistic_actual_Dh.Attrition;
+                        const color = data > 0 ? "red" : "";
                         return (
-                          <td key={w._id}>
+                          <td key={w._id} style={{ backgroundColor: color }}>
                             <input
                               placeholder={data}
                               onChange={(e) =>
@@ -475,13 +480,17 @@ const Logistic = () => {
                       })
                     )}
                   </tr>
-                  <tr className={c.Show_hidens}>
+                  <tr
+                    style={{ backgroundColor: "#ede2b9" }}
+                    className={c.Show_hidens}
+                  >
                     <td>Transfer</td>
                     {data.map((y) =>
                       y.weeks.map((w) => {
                         const data = w.Logistic_actual_Dh.Transfer;
+                        const color = data > 0 ? "red" : "";
                         return (
-                          <td key={w._id}>
+                          <td key={w._id} style={{ backgroundColor: color }}>
                             <input
                               placeholder={data}
                               onChange={(e) =>
@@ -497,13 +506,17 @@ const Logistic = () => {
                       })
                     )}
                   </tr>
-                  <tr className={c.Show_hidens}>
+                  <tr
+                    style={{ backgroundColor: "#fdfdca" }}
+                    className={c.Show_hidens}
+                  >
                     <td>Hiring</td>
                     {data.map((y) =>
                       y.weeks.map((w) => {
                         const data = w.Logistic_actual_Dh.Hiring;
+                        const color = data > 0 ? "#333399" : "";
                         return (
-                          <td key={w._id}>
+                          <td key={w._id} style={{ backgroundColor: color }}>
                             <input
                               placeholder={data}
                               onChange={(e) =>
@@ -523,10 +536,10 @@ const Logistic = () => {
               )}
             </React.Fragment>
 
-            <tr className={c.total}>
+            <tr style={{ backgroundColor: "#a3a3a3" }}>
               <td>Gap</td>
               {Gap.map((g, i) => (
-                <td key={i}>{g}</td>
+                <td key={i} style={{ color: CheckGap(Gap, i) }}>{g}</td>
               ))}
             </tr>
           </tbody>

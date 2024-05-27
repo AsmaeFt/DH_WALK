@@ -4,8 +4,7 @@ import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { toogle } from "../hooks/Average";
 import api from "../../services/api";
 import axios from "axios";
-// import { generateWeeks } from "../functions/utilis";
-/* import Loading from "../UI/Loading"; */
+import { CheckGap } from "../functions/utilis";
 
 const Project = ({ data, sproject, family, updateData }) => {
   const [inputs, setinputs] = useState({});
@@ -161,11 +160,6 @@ const Project = ({ data, sproject, family, updateData }) => {
     if (i === 0) return "white";
     if (list[i] === list[i - 1]) return "white";
     return list[i] > list[i - 1] ? "red" : "green";
-  };
-
-  const CheckGap = (list, i) => {
-    if (list[i] > 0) return "red";
-    return "#0070C0";
   };
 
   return (
@@ -767,6 +761,7 @@ const Project = ({ data, sproject, family, updateData }) => {
 
           {Toogle["ACDH"] && (
             <React.Fragment>
+
               <tr
                 style={{ backgroundColor: "#ffe99a" }}
                 className={c.Show_hidens}
@@ -830,21 +825,24 @@ const Project = ({ data, sproject, family, updateData }) => {
                 <td>Hiring</td>
                 {data.map((p) =>
                   p.projectData.map((pr, i) => {
-                    const color = pr.project_actual_DH.Hiring>0? "#333399":"";
-                    
-                   return( <td style={{backgroundColor:color}} key={i}>
-                      <input
-                        placeholder={pr.project_actual_DH.Hiring}
-                        onChange={(e) =>
-                          handleOthers(
-                            sproject,
-                            p.week_name,
-                            "project_actual_DH.Hiring",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </td>)
+                    const color =
+                      pr.project_actual_DH.Hiring > 0 ? "#333399" : "";
+
+                    return (
+                      <td style={{ backgroundColor: color }} key={i}>
+                        <input
+                          placeholder={pr.project_actual_DH.Hiring}
+                          onChange={(e) =>
+                            handleOthers(
+                              sproject,
+                              p.week_name,
+                              "project_actual_DH.Hiring",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    );
                   })
                 )}
               </tr>

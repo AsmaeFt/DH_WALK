@@ -5,6 +5,7 @@ import { toogle } from "../hooks/Average";
 import api from "../../services/api";
 import axios from "axios";
 import { FaCaretDown, FaCaretRight } from "react-icons/fa";
+import { CheckGap } from "../functions/utilis";
 
 const OS_afm = ({ project }) => {
   const [projectData, setProjectData] = useState([]);
@@ -203,7 +204,7 @@ const OS_afm = ({ project }) => {
           {Toogle["AFS"] && (
             <React.Fragment>
               {project.flatMap((pr, i) => (
-                <tr key={i} className={c.Show_hidens} >
+                <tr key={i} className={c.Show_hidens}>
                   <td>{pr}</td>
                   {osdata.flatMap((y) =>
                     y.weeks.flatMap((w) => {
@@ -238,7 +239,7 @@ const OS_afm = ({ project }) => {
         <React.Fragment>
           <tr className={c.total_}>
             <td>
-            <span onClick={() => setToogle((prev) => toogle(prev, "SPL"))}>
+              <span onClick={() => setToogle((prev) => toogle(prev, "SPL"))}>
                 {toggling("SPL")}
               </span>
               AS Special list out of the plant
@@ -368,7 +369,7 @@ const OS_afm = ({ project }) => {
         <React.Fragment>
           <tr className={c.actualDh}>
             <td>
-            <span onClick={() => setToogle((prev) => toogle(prev, "ACDH"))}>
+              <span onClick={() => setToogle((prev) => toogle(prev, "ACDH"))}>
                 {toggling("ACDH")}
               </span>
               After Sales Actual DH
@@ -379,13 +380,17 @@ const OS_afm = ({ project }) => {
           </tr>
           {Toogle["ACDH"] && (
             <React.Fragment>
-              <tr className={c.Show_hidens}>
+              <tr
+                style={{ backgroundColor: "#ffe99a" }}
+                className={c.Show_hidens}
+              >
                 <td>Attrition</td>
                 {osdata.flatMap((y) =>
                   y.weeks.flatMap((w) => {
                     const data = w.After_Sales_ActualDH.Attrition;
+                    const color = data > 0 ? "red" : "";
                     return (
-                      <td key={w._id}>
+                      <td key={w._id}  style={{ backgroundColor: color }}>
                         <input
                           placeholder={data || "-"}
                           onChange={(e) =>
@@ -401,13 +406,17 @@ const OS_afm = ({ project }) => {
                   })
                 )}
               </tr>
-              <tr className={c.Show_hidens}>
+              <tr
+                style={{ backgroundColor: "#ede2b9" }}
+                className={c.Show_hidens}
+              >
                 <td>Transfer</td>
                 {osdata.flatMap((y) =>
                   y.weeks.flatMap((w) => {
                     const data = w.After_Sales_ActualDH.Transfer;
+                    const color = data > 0 ? "red" : "";
                     return (
-                      <td key={w._id}>
+                      <td key={w._id}  style={{ backgroundColor: color }}>
                         <input
                           placeholder={data || "-"}
                           onChange={(e) =>
@@ -423,13 +432,17 @@ const OS_afm = ({ project }) => {
                   })
                 )}
               </tr>
-              <tr className={c.Show_hidens}>
+              <tr
+                style={{ backgroundColor: "#fdfdca" }}
+                className={c.Show_hidens}
+              >
                 <td>Hiring</td>
                 {osdata.flatMap((y) =>
                   y.weeks.flatMap((w) => {
                     const data = w.After_Sales_ActualDH.Hiring;
+                    const color = data > 0 ? "#333399" : "";
                     return (
-                      <td key={w._id}>
+                      <td key={w._id}  style={{ backgroundColor: color }}> 
                         <input
                           placeholder={data || "-"}
                           onChange={(e) =>
@@ -452,7 +465,9 @@ const OS_afm = ({ project }) => {
         <tr className={c.total}>
           <td>Gap</td>
           {Gap.map((g, i) => (
-            <td key={i} style={{ color: CheckTdVal(Gap, i) }}>{g}</td>
+            <td key={i} style={{ color: CheckGap(Gap, i) }}>
+              {g}
+            </td>
           ))}
         </tr>
       </tbody>

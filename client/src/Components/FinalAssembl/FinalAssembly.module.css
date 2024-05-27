@@ -35,7 +35,6 @@
   transform: scale(1.04);
 }
 .table {
-  margin-top: 1rem;
   max-height: 50rem;
   overflow: auto;
   box-shadow: 2px 1px 4px #1a1a1a;
@@ -164,7 +163,7 @@ td {
   background: #0e3137;
 }
 .actualDh {
-  background-color: #b53303;
+  background-color: #b5330371;
 }
 .Show_hidens {
   animation: fadeUphidens 0.5s ease-in-out;

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import c from "./Dhwalk.module.css";
-
+import Chart from "../Components/chart";
 import Card from "../Components/UI/Card";
 import Overlay from "../Components/UI/Overlay";
 const Dhwalk = () => {
@@ -55,9 +55,9 @@ const Dhwalk = () => {
               navigate={() => navigate("/Dh_walk")}
             />
           </div>
-
         </div>
       </div>
+      
     </>
   );
 };

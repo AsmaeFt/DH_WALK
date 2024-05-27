@@ -11,7 +11,7 @@ const Legend = () => {
             <label>Total DH Required </label> <span style={{backgroundColor:'black'}}></span>
             <label> Total  </label> <span style={{backgroundColor:'#3f3f3f'}}></span>
             <label> Total Family  </label> <span style={{backgroundColor:'#0e3137'}}></span>
-            <label> Actual DH  </label> <span style={{backgroundColor:'#b53303'}}></span>
+            <label> Actual DH  </label> <span style={{backgroundColor:'#b5330371'}}></span>
         </div>
         </fieldset>
       
