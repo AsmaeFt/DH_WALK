@@ -3,10 +3,17 @@ import c from "../FinalAssembl/FinalAssembly.module.css";
 import TableHeader from "../UI/TableHeader";
 import api from "../../services/api";
 import axios from "axios";
+import Legend from "../UI/Legend";
+import Title from "../UI/Title";
+import { toogle } from "../hooks/Average";
+import { FaCaretDown, FaCaretRight } from "react-icons/fa";
+import { CheckGap } from "../functions/utilis";
+
 
 const Cutting = () => {
   const [data, setdata] = useState([]);
   const [inputs, setinputs] = useState({});
+  const [Toogle, setToogle] = useState({});
 
   const FetchData = useCallback(async () => {
     try {
@@ -156,24 +163,29 @@ const Cutting = () => {
     });
   });
 
-  //Cuutt_Lp_ActualDh - Cutt_LP_DHrequired
+  const toggling = (val) => {
+    return Toogle[val] ? <FaCaretDown /> : <FaCaretRight />;
+  };
+
+  const CheckTdVal = (list, i) => {
+    if (i === 0) return "white";
+    if (list[i] === list[i - 1]) return "white";
+    return list[i] > list[i - 1] ? "red" : "green";
+  };
+
   return (
     <>
       <div className={c.header}>
-        <h2> Cutting </h2>
+        <h2>  </h2>
       </div>
-
+      <Title title={"Cutting"} />
+      <Legend />
+      <Title title={"Total Plant"} />
       <div className={c.table}>
         <table>
           <TableHeader />
           <tbody>
-            <tr
-              style={{
-                backgroundColor: "white",
-                color: "red",
-                fontWeight: "600",
-              }}
-            >
+            <tr className={c.actualDh}>
               <td>Cutt & LP Actual DH</td>
               {Cuutt_Lp_ActualDh.map((v, i) => (
                 <td key={i}>{v}</td>
@@ -181,476 +193,570 @@ const Cutting = () => {
             </tr>
             <tr>
               <td>Attrition</td>
-              {Plnat_Attrition.map((v, i) => (
-                <td key={i}>{v}</td>
-              ))}
+              {Plnat_Attrition.map((v, i) => {
+                const color = v > 0 ? "red" : "";
+                return (
+                  <td key={i} style={{ backgroundColor: color }}>
+                    {v}
+                  </td>
+                );
+              })}
             </tr>
             <tr>
               <td>Transfer</td>
-              {Plnat_Transfert.map((v, i) => (
-                <td key={i}>{v}</td>
-              ))}
+              {Plnat_Transfert.map((v, i) => {
+                const color = v > 0 ? "red" : "";
+                return (
+                  <td key={i} style={{ backgroundColor: color }}>
+                    {v}
+                  </td>
+                );
+              })}
             </tr>
             <tr>
               <td>Hiring</td>
-              {Plnat_Hiring.map((v, i) => (
-                <td key={i}>{v}</td>
-              ))}
+              {Plnat_Hiring.map((v, i) => {
+                const color = v > 0 ? "#fdfdca" : "";
+                return (
+                  <td key={i} style={{ backgroundColor: color }}>
+                    {v}
+                  </td>
+                );
+              })}
             </tr>
-            <tr style={{backgroundColor:'#0e3137' , color:'yellow'}}>
+
+            <tr style={{ backgroundColor: "#c5c5c5" }}>
               <td>Total Plant GAP </td>
-              {
-                Gap_Plant.map((g,i)=>(
-                    <td key={i}>{g}</td>
-                ))
-              }
-            </tr>
-
-            <React.Fragment>
-              <tr
-                style={{
-                  backgroundColor: "white",
-                  color: "red",
-                  fontWeight: "600",
-                }}
-              >
-                <td>Cutt & LP Required </td>
-                {Cutt_LP_DHrequired.map((v, i) => (
-                  <td key={i}>{v}</td>
-                ))}
-              </tr>
-            </React.Fragment>
-
-            <React.Fragment>
-              <tr className={c.total}>
-                <td>Cutting DH Required</td>
-                {Cutting_DH_Required.map((v, i) => (
-                  <td key={i}>{v}</td>
-                ))}
-              </tr>
-            </React.Fragment>
-
-            <React.Fragment>
-              <tr>
-                <td>Machines FTs Projection</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_DH_Required.Machines_FT_s_Projection;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Polyvalents</td>
-                {Polyvalents.map((v, i) => (
-                  <td key={i}>{v}</td>
-                ))}
-              </tr>
-              <tr>
-                <td>Contention</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_DH_Required.Contention;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Absenteeism</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_DH_Required.Absenteeism;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Training</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_DH_Required.Training;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Big Brother</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_DH_Required.Big_Brother;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Long Term Illness</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_DH_Required.Long_Term_Illness;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Attrition Backup</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_DH_Required.Attrition_Backup;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>SOS</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_DH_Required.SOS;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>D/C (Pre set up + Reception + delivery)</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data =
-                      w.Cutting_DH_Required.D_C_Pre_set_up_Reception_delivery;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Rework + pagode + Scrap + stock taken</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data =
-                      w.Cutting_DH_Required.Rework_pagode_Scrap_stock_aken;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-            </React.Fragment>
-
-            <React.Fragment>
-              
-              <tr className={c.total}>
-                <td>Cutting Actual DH</td>
-                {Cutting_Actual_DH.map((v, i) => (
-                  <td key={i}>{v}</td>
-                ))}
-              </tr>
-
-              <tr>
-                <td>Attrition</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_Actual_DH.Attrition;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-
-              <tr>
-                <td>Transfer</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_Actual_DH.Transfer;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Hiring</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.Cutting_Actual_DH.Hiring;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-            </React.Fragment>
-            <tr className={c.total}>
-              <td> Gap </td>
-              {Gap.map((v, i) => (
-                <td key={i}>{v}</td>
+              {Gap_Plant.map((g, i) => (
+                <td key={i} style={{ color: CheckGap(Gap_Plant, i) }}>
+                  {g}
+                </td>
               ))}
             </tr>
           </tbody>
         </table>
       </div>
+      <Title title={"Total Cutting"} />
 
       <div className={c.table}>
         <table>
+          <TableHeader />
           <tbody>
             <React.Fragment>
-              <tr className={c.total}>
-                <td>LP DH Required</td>
+              <tr className={c.total_dh_required}>
+                <td>Cutt & LP Required </td>
+                {Cutt_LP_DHrequired.map((v, i) => (
+                  <td
+                    key={i}
+                    style={{ color: CheckTdVal(Cutt_LP_DHrequired, i) }}
+                  >
+                    {v}
+                  </td>
+                ))}
+              </tr>
+              <tr className={c.total_dh_required}>
+                <td>
+                  <span onClick={() => setToogle((prev) => toogle(prev, "DH"))}>
+                    {toggling("DH")}
+                  </span>
+                  Cutting DH Required
+                </td>
+                {Cutting_DH_Required.map((v, i) => (
+                  <td
+                    key={i}
+                    style={{ color: CheckTdVal(Cutting_DH_Required, i) }}
+                  >
+                    {v}
+                  </td>
+                ))}
+              </tr>
+            </React.Fragment>
+            {Toogle["DH"] && (
+              <React.Fragment>
+                <tr className={c.Show_hidens}>
+                  <td>Machines FTs Projection</td>
+                  {data.map((y) =>
+                    y.weeks.map((w) => {
+                      const data =
+                        w.Cutting_DH_Required.Machines_FT_s_Projection;
+                      return (
+                        <td key={w._id}>
+                          <input placeholder={data} />
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+                <tr className={c.Show_hidens}>
+                  <td>Polyvalents</td>
+                  {Polyvalents.map((v, i) => (
+                    <td key={i}>{v}</td>
+                  ))}
+                </tr>
+                <tr className={c.Show_hidens}>
+                  <td>Contention</td>
+                  {data.map((y) =>
+                    y.weeks.map((w) => {
+                      const data = w.Cutting_DH_Required.Contention;
+                      return (
+                        <td key={w._id}>
+                          <input placeholder={data} />
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+                <tr className={c.Show_hidens}>
+                  <td>Absenteeism</td>
+                  {data.map((y) =>
+                    y.weeks.map((w) => {
+                      const data = w.Cutting_DH_Required.Absenteeism;
+                      return (
+                        <td key={w._id}>
+                          <input placeholder={data} />
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+                <tr className={c.Show_hidens}>
+                  <td>Training</td>
+                  {data.map((y) =>
+                    y.weeks.map((w) => {
+                      const data = w.Cutting_DH_Required.Training;
+                      return (
+                        <td key={w._id}>
+                          <input placeholder={data} />
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+                <tr className={c.Show_hidens}>
+                  <td>Big Brother</td>
+                  {data.map((y) =>
+                    y.weeks.map((w) => {
+                      const data = w.Cutting_DH_Required.Big_Brother;
+                      return (
+                        <td key={w._id}>
+                          <input placeholder={data} />
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+                <tr className={c.Show_hidens}>
+                  <td>Long Term Illness</td>
+                  {data.map((y) =>
+                    y.weeks.map((w) => {
+                      const data = w.Cutting_DH_Required.Long_Term_Illness;
+                      return (
+                        <td key={w._id}>
+                          <input placeholder={data} />
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+                <tr className={c.Show_hidens}>
+                  <td>Attrition Backup</td>
+                  {data.map((y) =>
+                    y.weeks.map((w) => {
+                      const data = w.Cutting_DH_Required.Attrition_Backup;
+                      return (
+                        <td key={w._id}>
+                          <input placeholder={data} />
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+                <tr className={c.Show_hidens}>
+                  <td>SOS</td>
+                  {data.map((y) =>
+                    y.weeks.map((w) => {
+                      const data = w.Cutting_DH_Required.SOS;
+                      return (
+                        <td key={w._id}>
+                          <input placeholder={data} />
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+                <tr className={c.Show_hidens}>
+                  <td>D/C (Pre set up + Reception + delivery)</td>
+                  {data.map((y) =>
+                    y.weeks.map((w) => {
+                      const data =
+                        w.Cutting_DH_Required.D_C_Pre_set_up_Reception_delivery;
+                      return (
+                        <td key={w._id}>
+                          <input placeholder={data} />
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+                <tr className={c.Show_hidens}>
+                  <td>Rework + pagode + Scrap + stock taken</td>
+                  {data.map((y) =>
+                    y.weeks.map((w) => {
+                      const data =
+                        w.Cutting_DH_Required.Rework_pagode_Scrap_stock_aken;
+                      return (
+                        <td key={w._id}>
+                          <input placeholder={data} />
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+              </React.Fragment>
+            )}
+
+            <React.Fragment>
+              <tr className={c.actualDh}>
+                <td>
+                  <span
+                    onClick={() => setToogle((prev) => toogle(prev, "ACD"))}
+                  >
+                    {toggling("ACD")}
+                  </span>
+                  Cutting Actual DH
+                </td>
+                {Cutting_Actual_DH.map((v, i) => (
+                  <td key={i}>{v}</td>
+                ))}
+              </tr>
+              {Toogle["ACD"] && (
+                <React.Fragment>
+                  <tr
+                    style={{ backgroundColor: "#ffe99a" }}
+                    className={c.Show_hidens}
+                  >
+                    <td>Attrition</td>
+                    {data.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Cutting_Actual_DH.Attrition;
+                        return (
+                          <td key={w._id}>
+                            <input placeholder={data} />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+
+                  <tr
+                    style={{ backgroundColor: "#ede2b9" }}
+                    className={c.Show_hidens}
+                  >
+                    <td>Transfer</td>
+                    {data.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Cutting_Actual_DH.Transfer;
+                        return (
+                          <td key={w._id}>
+                            <input placeholder={data} />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr
+                    style={{ backgroundColor: "#fdfdca" }}
+                    className={c.Show_hidens}
+                  >
+                    <td>Hiring</td>
+                    {data.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.Cutting_Actual_DH.Hiring;
+                        const color = data > 0 ? "#333399" : "";
+
+                        return (
+                          <td key={w._id} style={{ backgroundColor: color }}>
+                            <input placeholder={data} />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                </React.Fragment>
+              )}
+            </React.Fragment>
+
+            <tr style={{ backgroundColor: "#c5c5c5" }}>
+              <td> Gap </td>
+              {Gap.map((v, i) => (
+                <td key={i} style={{ color: CheckGap(Gap, i) }}>
+                  {v}
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <Title title={"Total LP"} />
+      <div className={c.table}>
+        <table>
+          <TableHeader />
+          <tbody>
+            <React.Fragment>
+              <tr className={c.total_dh_required}>
+                <td>
+                  <span
+                    onClick={() => setToogle((prev) => toogle(prev, "LPDH"))}
+                  >
+                    {toggling("LPDH")}
+                  </span>
+                  LP DH Required
+                </td>
                 {LP_Dh_Required.map((v, i) => (
                   <td key={i}>{v}</td>
                 ))}
               </tr>
-              <tr>
-                <td>LP HD</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.LP_HD;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Polyvalents</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.Polyvalents;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Contention</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.Contention;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Absenteeism</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.Absenteeism;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Long Term Illness</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.Long_Term_Illness;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Training</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.Training;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Attrition Backup</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.Attrition_Backup;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>SOS</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.SOS;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Prototypes</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.Prototypes;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>DR</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.DR;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>LP Support (Internal DR + Die centre)</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data =
-                      w.LP_DH_Required.LP_Support_Internal_DR_Die_centre;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Rework</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_DH_Required.Rework;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
+              {Toogle["LPDH"] && (
+                 <React.Fragment>
+                   <tr className={c.Show_hidens}>
+                   <td>LP HD</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.LP_HD;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                  <tr className={c.Show_hidens}>
+                   <td>Polyvalents</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.Polyvalents;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                  <tr className={c.Show_hidens}>
+                   <td>Contention</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.Contention;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                   <tr className={c.Show_hidens}>
+                   <td>Absenteeism</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.Absenteeism;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                   <tr className={c.Show_hidens}>
+                   <td>Long Term Illness</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.Long_Term_Illness;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                  <tr className={c.Show_hidens}>
+                   <td>Training</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.Training;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                   <tr className={c.Show_hidens}>
+                   <td>Attrition Backup</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.Attrition_Backup;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                   <tr className={c.Show_hidens}>
+                   <td>SOS</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.SOS;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                   <tr className={c.Show_hidens}>
+                   <td>Prototypes</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.Prototypes;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                   <tr className={c.Show_hidens}>
+                   <td>DR</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.DR;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                  <tr className={c.Show_hidens}>
+                   <td>LP Support (Internal DR + Die centre)</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data =
+                         w.LP_DH_Required.LP_Support_Internal_DR_Die_centre;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+                   <tr className={c.Show_hidens}>
+                   <td>Rework</td>
+                   {data.map((y) =>
+                     y.weeks.map((w) => {
+                       const data = w.LP_DH_Required.Rework;
+                       return (
+                         <td key={w._id}>
+                           <input placeholder={data} />
+                         </td>
+                       );
+                     })
+                   )}
+                 </tr>
+               </React.Fragment>
+              )}
+
+             
+
             </React.Fragment>
 
             <React.Fragment>
-              <tr className={c.total}>
-                <td>LP DH Actual</td>
+              <tr className={c.actualDh}>
+                <td>
+                  <span
+                    onClick={() => setToogle((prev) => toogle(prev, "LPACD"))}
+                  >
+                    {toggling("LPACD")}
+                  </span>
+                  LP DH Actual
+                </td>
                 {LP_Actual_DH.map((v, i) => (
                   <td key={i}>{v}</td>
                 ))}
               </tr>
-              <tr>
-                <td>Attrition</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_ActualDH.Attrition;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Transfer</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_ActualDH.Transfer;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
-              <tr>
-                <td>Hiring</td>
-                {data.map((y) =>
-                  y.weeks.map((w) => {
-                    const data = w.LP_ActualDH.Hiring;
-                    return (
-                      <td key={w._id}>
-                        <input placeholder={data} />
-                      </td>
-                    );
-                  })
-                )}
-              </tr>
+
+              {Toogle["LPACD"] && (
+                <React.Fragment>
+                  <tr
+                    style={{ backgroundColor: "#ffe99a" }}
+                    className={c.Show_hidens}
+                  >
+                    <td>Attrition</td>
+                    {data.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.LP_ActualDH.Attrition;
+                        return (
+                          <td key={w._id}>
+                            <input placeholder={data} />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr
+                    style={{ backgroundColor: "#ede2b9" }}
+                    className={c.Show_hidens}
+                  >
+                    <td>Transfer</td>
+                    {data.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.LP_ActualDH.Transfer;
+                        return (
+                          <td key={w._id}>
+                            <input placeholder={data} />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                  <tr
+                    style={{ backgroundColor: "#fdfdca" }}
+                    className={c.Show_hidens}
+                  >
+                    <td>Hiring</td>
+                    {data.map((y) =>
+                      y.weeks.map((w) => {
+                        const data = w.LP_ActualDH.Hiring;
+                        return (
+                          <td key={w._id}>
+                            <input placeholder={data} />
+                          </td>
+                        );
+                      })
+                    )}
+                  </tr>
+                </React.Fragment>
+              )}
             </React.Fragment>
-            <tr className={c.total}>
+
+            <tr style={{ backgroundColor: "#c5c5c5" }}>
               <td>Gap</td>
               {GapLP.map((g, i) => (
-                <td key={i}>{g || "-"}</td>
+                <td key={i} style={{ color: CheckGap(GapLP, i) }}>
+                  {g || "-"}
+                </td>
               ))}
             </tr>
           </tbody>

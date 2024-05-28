@@ -462,7 +462,7 @@ const OS_afm = ({ project }) => {
           )}
         </React.Fragment>
 
-        <tr className={c.total}>
+        <tr style={{ backgroundColor: "#c5c5c5" }}>
           <td>Gap</td>
           {Gap.map((g, i) => (
             <td key={i} style={{ color: CheckGap(Gap, i) }}>

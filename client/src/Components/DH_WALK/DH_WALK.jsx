@@ -716,6 +716,7 @@ const DH_WALK = () => {
   const Plant_Hiring = Calculate_Average(Total_plant_hiring, weeks);
   const GAP_PLANT_Hiring = Calculate_Average(Gap_Plant, weeks);
 
+  console.log(Plant_Required);
   //SPLIT
   /* 
    let DH_Split_MEdefinition = [];
@@ -726,7 +727,7 @@ const DH_WALK = () => {
   let DH_Split_Containment = [];
   let DH_Split_SOS = [];
   */
-  let Persentage = [];
+  let PersentageME = [];
   for (let i = 0; i < DH_Split_MEdefinition.length; i++) {
     const total =
       (DH_Split_MEsupport[i] +
@@ -736,7 +737,39 @@ const DH_WALK = () => {
         DH_Split_Containment[i] +
         DH_Split_SOS[i]) /
       DH_Split_MEdefinition[i];
-      Persentage.push(Math.floor(total))
+    PersentageME.push(Math.floor(total));
+  }
+
+  let persentageMES = [];
+  for (let i = 0; i < DH_Split_MEdefinition.length; i++) {
+    const total = DH_Split_MEsupport[i] / DH_Split_MEdefinition[i];
+    persentageMES.push(Math.floor(total));
+  }
+
+  let persentageRework = [];
+  for (let i = 0; i < DH_Split_MEdefinition.length; i++) {
+    const total = DH_Split_Rework[i] / DH_Split_MEdefinition[i];
+    persentageRework.push(Math.floor(total));
+  }
+  let persentagePoly = [];
+  for (let i = 0; i < DH_Split_MEdefinition.length; i++) {
+    const total = DH_Split_Poly[i] / DH_Split_MEdefinition[i];
+    persentagePoly.push(Math.floor(total));
+  }
+  let persentageBackUp = [];
+  for (let i = 0; i < DH_Split_MEdefinition.length; i++) {
+    const total = DH_Split_BackUp[i] / DH_Split_MEdefinition[i];
+    persentageBackUp.push(Math.floor(total));
+  }
+  let persentageContention = [];
+  for (let i = 0; i < DH_Split_MEdefinition.length; i++) {
+    const total = DH_Split_Containment[i] / DH_Split_MEdefinition[i];
+    persentageContention.push(Math.floor(total));
+  }
+  let persentageOS = [];
+  for (let i = 0; i < DH_Split_MEdefinition.length; i++) {
+    const total = DH_Split_SOS[i] / DH_Split_MEdefinition[i];
+    persentageOS.push(Math.floor(total));
   }
 
   const toggling = (val) => {
@@ -818,7 +851,7 @@ const DH_WALK = () => {
                         );
                       })}
                     </tr>
-                    <tr style={{ backgroundColor: "#a3a3a3" }}>
+                    <tr style={{ backgroundColor: "#c5c5c5" }}>
                       <td> Total Plant Gap</td>
                       {Gap_Plant.map((v, i) => (
                         <td key={i} style={{ color: CheckGap(Gap_Plant, i) }}>
@@ -1038,7 +1071,7 @@ const DH_WALK = () => {
                       )}
                     </React.Fragment>
 
-                    <tr style={{ backgroundColor: "#a3a3a3" }}>
+                    <tr style={{ backgroundColor: "#c5c5c5" }}>
                       <td>FA Gap</td>
                       {Gap.map((g, i) => (
                         <td key={i} style={{ color: CheckGap(Gap, i) }}>
@@ -1129,7 +1162,7 @@ const DH_WALK = () => {
                           })
                         )}
                       </tr>
-                      <tr style={{ backgroundColor: "#a3a3a3" }}>
+                      <tr style={{ backgroundColor: "#c5c5c5" }}>
                         <td>Cutting Gap </td>
                         {Gap_Cut.map((v, i) => (
                           <td
@@ -1214,7 +1247,7 @@ const DH_WALK = () => {
                         })
                       )}
                     </tr>
-                    <tr style={{ backgroundColor: "#a3a3a3" }}>
+                    <tr style={{ backgroundColor: "#c5c5c5" }}>
                       <td>LP Gap</td>
                       {Gap_LP.map((g, i) => (
                         <td
@@ -1232,7 +1265,7 @@ const DH_WALK = () => {
             {/* DH SPLIT */}
             <Title title={"DH WALK SPLIT"} />
             <div className={c.table}>
-              <table>
+              <table style={{ backgroundColor: "#4d4d4d" }}>
                 <TableHeader />
                 <tbody>
                   <tr>
@@ -1282,16 +1315,50 @@ const DH_WALK = () => {
             </div>
             <Title title={"DH WALK SPLIT %"} />
             <div className={c.table}>
-              <table>
+              <table style={{ backgroundColor: "#4d4d4d" }}>
                 <TableHeader />
                 <tbody>
                   <tr>
                     <td>ME %</td>
-                    {
-                      Persentage.map((x,i)=>(
-                        <td key={i}>{x}%</td>
-                      ))
-                    }
+                    {PersentageME.map((x, i) => (
+                      <td key={i}>{x}%</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>ME Support %</td>
+                    {persentageMES.map((x, i) => (
+                      <td key={i}>{x}%</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>Rework %</td>
+                    {persentageRework.map((x, i) => (
+                      <td key={i}>{x}%</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>Poly %</td>
+                    {persentagePoly.map((x, i) => (
+                      <td key={i}>{x}%</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>Back Up %</td>
+                    {persentageBackUp.map((x, i) => (
+                      <td key={i}>{x}%</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>Contaiment %</td>
+                    {persentageContention.map((x, i) => (
+                      <td key={i}>{x}%</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td>OS %</td>
+                    {persentageOS.map((x, i) => (
+                      <td key={i}>{x}%</td>
+                    ))}
                   </tr>
                 </tbody>
               </table>
@@ -1317,7 +1384,12 @@ const DH_WALK = () => {
                     <tr className={c.total_dh_required}>
                       <td>Total Plant Required</td>
                       {Object.entries(Plant_Required).map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        <td
+                          key={i}
+                          style={{
+                            color: CheckTdVal(Object.values(Plant_Required), i),
+                          }}
+                        >
                           {v[1]}
                         </td>
                       ))}
@@ -1334,7 +1406,12 @@ const DH_WALK = () => {
                         Total Plant DH Actual
                       </td>
                       {Object.entries(Plant_Actual).map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        <td
+                          key={i}
+                          style={{
+                            color: CheckTdVal(Object.values(Plant_Actual), i),
+                          }}
+                        >
                           {v[1]}
                         </td>
                       ))}
@@ -1379,10 +1456,15 @@ const DH_WALK = () => {
                     )}
                   </React.Fragment>
 
-                  <tr style={{ backgroundColor: "#a3a3a3" }}>
+                  <tr style={{ backgroundColor: "#c5c5c5" }}>
                     <td>Total Plant GAP </td>
                     {Object.entries(GAP_PLANT_Hiring).map((v, i) => (
-                      <td key={i} style={{ color: CheckGap(v, i) }}>
+                      <td
+                        key={i}
+                        style={{
+                          color: CheckGap(Object.values(GAP_PLANT_Hiring), i),
+                        }}
+                      >
                         {v[1]}
                       </td>
                     ))}
@@ -1416,7 +1498,15 @@ const DH_WALK = () => {
                         FA DH Required
                       </td>
                       {Object.entries(average_FA_PerMonth).map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        <td
+                          key={i}
+                          style={{
+                            color: CheckTdVal(
+                              Object.values(average_FA_PerMonth),
+                              i
+                            ),
+                          }}
+                        >
                           {v[1]}
                         </td>
                       ))}
@@ -1471,7 +1561,12 @@ const DH_WALK = () => {
                         FA Actual DH
                       </td>
                       {Object.entries(ActualDh_AVG).map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        <td
+                          key={i}
+                          style={{
+                            color: CheckTdVal(Object.values(ActualDh_AVG), i),
+                          }}
+                        >
                           {v[1]}
                         </td>
                       ))}
@@ -1520,7 +1615,12 @@ const DH_WALK = () => {
                     <tr className={c.total_}>
                       <td>OS</td>
                       {Object.entries(OS_AVG).map((n, i) => (
-                        <td key={i} style={{ color: CheckTdVal(n, i) }}>
+                        <td
+                          key={i}
+                          style={{
+                            color: CheckTdVal(Object.values(OS_AVG), i),
+                          }}
+                        >
                           {n[1]}
                         </td>
                       ))}
@@ -1534,10 +1634,13 @@ const DH_WALK = () => {
                   </React.Fragment>
 
                   <React.Fragment>
-                    <tr style={{ backgroundColor: "#a3a3a3" }}>
+                    <tr style={{ backgroundColor: "#c5c5c5" }}>
                       <td>Gap</td>
                       {Object.entries(Gap_AVG).map((x, i) => (
-                        <td key={i} style={{ color: CheckGap(x, i) }}>
+                        <td
+                          key={i}
+                          style={{ color: CheckGap(Object.values(Gap_AVG), i) }}
+                        >
                           {x[1]}
                         </td>
                       ))}
@@ -1564,7 +1667,15 @@ const DH_WALK = () => {
                     <tr className={c.total_dh_required}>
                       <td>Cutting DH Required</td>
                       {Object.entries(Plant_Cutting_DH).map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        <td
+                          key={i}
+                          style={{
+                            color: CheckTdVal(
+                              Object.values(Plant_Cutting_DH),
+                              i
+                            ),
+                          }}
+                        >
                           {v[1]}
                         </td>
                       ))}
@@ -1581,7 +1692,15 @@ const DH_WALK = () => {
                         Cutting DH Actual
                       </td>
                       {Object.entries(Plant_Cutting_Actual_DH).map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        <td
+                          key={i}
+                          style={{
+                            color: CheckTdVal(
+                              Object.values(Plant_Cutting_Actual_DH),
+                              i
+                            ),
+                          }}
+                        >
                           {v[1]}
                         </td>
                       ))}
@@ -1628,11 +1747,16 @@ const DH_WALK = () => {
                       </React.Fragment>
                     )}
 
-                    <tr style={{ backgroundColor: "#a3a3a3" }}>
+                    <tr style={{ backgroundColor: "#c5c5c5" }}>
                       <td>Cutting Gap </td>
 
                       {Object.entries(GapCutting).map((v, i) => (
-                        <td key={i} style={{ color: CheckGap(v, i) }}>
+                        <td
+                          key={i}
+                          style={{
+                            color: CheckGap(Object.values(GapCutting), i),
+                          }}
+                        >
                           {v[1]}
                         </td>
                       ))}
@@ -1650,7 +1774,12 @@ const DH_WALK = () => {
                     <tr className={c.total_dh_required}>
                       <td>LP DH Required</td>
                       {Object.entries(Plant_LP_DH).map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        <td
+                          key={i}
+                          style={{
+                            color: CheckTdVal(Object.values(Plant_LP_DH), i),
+                          }}
+                        >
                           {v[1]}
                         </td>
                       ))}
@@ -1667,7 +1796,15 @@ const DH_WALK = () => {
                         LP DH Actual
                       </td>
                       {Object.entries(Plant_LP_ActualDH).map((v, i) => (
-                        <td key={i} style={{ color: CheckTdVal(v, i) }}>
+                        <td
+                          key={i}
+                          style={{
+                            color: CheckTdVal(
+                              Object.values(Plant_LP_ActualDH),
+                              i
+                            ),
+                          }}
+                        >
                           {v[1]}
                         </td>
                       ))}
@@ -1711,10 +1848,13 @@ const DH_WALK = () => {
                       </React.Fragment>
                     )}
 
-                    <tr style={{ backgroundColor: "#a3a3a3" }}>
+                    <tr style={{ backgroundColor: "#c5c5c5" }}>
                       <td>Gap LP </td>
                       {Object.entries(GapLP).map((v, i) => (
-                        <td key={i} style={{ color: CheckGap(v, i) }}>
+                        <td
+                          key={i}
+                          style={{ color: CheckGap(Object.values(GapLP), i) }}
+                        >
                           {v[1]}
                         </td>
                       ))}

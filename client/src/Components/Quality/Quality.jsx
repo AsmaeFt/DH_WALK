@@ -7,6 +7,7 @@ import axios from "axios";
 import api from "../../services/api";
 import Legend from "../UI/Legend";
 import { CheckGap } from "../functions/utilis";
+import Title from "../UI/Title";
 
 const Quality = () => {
   const [projectData, setProjectData] = useState([]);
@@ -166,8 +167,9 @@ const Quality = () => {
   return (
     <>
       <div className={c.header}>
-        <h2>Quality </h2>
+        <h2> </h2>
       </div>
+      <Title title={" Quality"} />
       <Legend />
       <div className={c.table}>
         <table>
@@ -641,7 +643,7 @@ const Quality = () => {
               )}
             </React.Fragment>
 
-            <tr style={{ backgroundColor: "#a3a3a3" }}>
+            <tr style={{ backgroundColor: "#c5c5c5" }}>
               <td>Gap</td>
               {Gap.map((g, i) => (
                 <td key={i} style={{ color: CheckGap(Gap, i) }}>

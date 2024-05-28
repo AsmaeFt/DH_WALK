@@ -850,7 +850,7 @@ const Project = ({ data, sproject, family, updateData }) => {
           )}
         </React.Fragment>
 
-        <tr style={{ backgroundColor: "#a3a3a3" }}>
+        <tr style={{ backgroundColor: "#c5c5c5" }}>
           <td>Gap </td>
           {Gap.flatMap((g, i) => (
             <td key={i} style={{ color: CheckGap(Gap, i) }}>
