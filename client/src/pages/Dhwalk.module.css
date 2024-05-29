@@ -9,6 +9,7 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    margin: 1rem 0;
   }
   .dot{
     font-size: 5rem;
@@ -91,4 +92,24 @@
   }
   .fade-up:nth-child(5){
     animation: fadeUp 1.5s ease-in-out;
+  }
+
+  .values {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    animation: fadeVal 1.5s ease-in-out;
+  }
+  @keyframes fadeVal {
+    0%{
+      opacity: 0;
+    }
+    100%{
+      opacity: 1;
+    }
+  }
+  .values img{
+    width: 3rem;
   }

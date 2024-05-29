@@ -1,8 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import c from "./Dhwalk.module.css";
-import Chart from "../Components/chart";
 import Card from "../Components/UI/Card";
 import Overlay from "../Components/UI/Overlay";
+import icon1 from "../Components/assets/icon1.png"
+import icon2 from "../Components/assets/icon2.png"
+import icon3 from "../Components/assets/icon3.png"
+import icon4 from "../Components/assets/icon4.png"
+import icon5 from "../Components/assets/icon5.png"
+import icon6 from "../Components/assets/icon6.png"
+
 const Dhwalk = () => {
   const navigate = useNavigate();
   return (
@@ -56,8 +62,20 @@ const Dhwalk = () => {
             />
           </div>
         </div>
+        
+        <div className={c.values}>
+          <img src={icon1} />
+          <img src={icon2} />
+          <img src={icon3} />
+          <img src={icon4} />
+          <img src={icon5} />
+          <img src={icon6} />
+       
       </div>
       
+      </div>
+
+     
     </>
   );
 };
