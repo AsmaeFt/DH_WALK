@@ -595,13 +595,11 @@ const DH_WALK = () => {
   });
 
   //calculate Gap
-
   let Gap = [];
   for (let i = 0; i < Total_Actual_DH.length; i++) {
     let gap = Total_Actual_DH[i] - Total_AFM[i];
     Gap.push(Math.floor(gap));
   }
-
   //calculate total plant
 
   let Total_Plant_Required = [];

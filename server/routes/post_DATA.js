@@ -1,15 +1,12 @@
 const express = require("express");
 
 const project = require("../controller/project");
-
 const dhwalk = require("../controller/dhwalk");
 const oS_AfterM = require("../controller/afm");
 const quality = require("../controller/qualiy");
 const logistic = require("../controller/logistic");
 const Cutting = require("../controller/Cutting");
-
 const Final_Assembly = require("../controller/final_assembly");
-
 const route = express.Router();
 
 route.post("/Add_FA_DATA", Final_Assembly.Add_Data);
