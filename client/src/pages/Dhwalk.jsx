@@ -70,9 +70,7 @@ const Dhwalk = () => {
           <img src={icon4} />
           <img src={icon5} />
           <img src={icon6} />
-       
       </div>
-      
       </div>
 
      
