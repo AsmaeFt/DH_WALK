@@ -7,6 +7,7 @@ import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { toogle } from "../hooks/Average";
 import Legend from "../UI/Legend";
 import { CheckGap } from "../functions/utilis";
+import Title from "../UI/Title";
 const Logistic = () => {
   const [data, setdata] = useState([]);
   const [inputs, setinputs] = useState({});
@@ -117,8 +118,9 @@ const Logistic = () => {
   return (
     <>
       <div className={c.header}>
-        <h2>Logistic </h2>
+        <h2> </h2>
       </div>
+      <Title title={" Logistic"} />
       <Legend />
       <div className={c.table}>
         <table>
@@ -536,7 +538,7 @@ const Logistic = () => {
               )}
             </React.Fragment>
 
-            <tr style={{ backgroundColor: "#a3a3a3" }}>
+            <tr style={{ backgroundColor: "#c5c5c5" }}>
               <td>Gap</td>
               {Gap.map((g, i) => (
                 <td key={i} style={{ color: CheckGap(Gap, i) }}>{g}</td>

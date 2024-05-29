@@ -7,6 +7,7 @@ import OS_afm from "./OS_afm";
 import axios from "axios";
 import Loading from "../UI/Loading";
 import Legend from "../UI/Legend";
+import Title from "../UI/Title";
 
 const FinalAssembly = () => {
   const [pr, setpr] = useState([]);
@@ -76,10 +77,9 @@ const FinalAssembly = () => {
 
   return (
     <>
-      <div className={c.header}>
-        <h2>Final Assembly </h2>
-       {/*  <span> Add Data {" > "} </span> */}
-      </div>
+    
+
+      <Title title={"Final Assembly"} />
 
       <div className={c.projects}>
         {pr.flatMap((p, i) => (
