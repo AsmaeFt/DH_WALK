@@ -9,6 +9,7 @@ import MPC from "./Components/Logistic/Logistic";
 import Cutting from "./Components/Cutting/Cutting";
 import DH_WALK from "./Components/DH_WALK/DH_WALK";
 import Add_Data from "./Components/ImportData/FinalAssembly"
+import Login from "./Components/auth/Login"
 
 import "./App.css";
 
@@ -19,7 +20,8 @@ function App() {
       <div className="app-container">
         <div className="content">
           <Routes>
-            <Route path="/" element={<Dhwalk />} />
+            <Route path="/" element={<Login />} />
+
             <Route path="/FAM" element={<FinalAssembly />} />
             <Route path="/Quality" element={<Quality />} />
             <Route path="/Logistic" element={<MPC />} />

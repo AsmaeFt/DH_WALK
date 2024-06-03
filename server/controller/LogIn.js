@@ -9,9 +9,9 @@ const BCRYPT_SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS, 10);
 
 exports.Register = async (req, res, next) => {
   try {
-    const { username, fullname, email, password, role } = req.body;
+    const { username, fullname, password, role } = req.body;
 
-    const userExist = await User.findOne({ email });
+    const userExist = await User.findOne({ username });
     if (userExist) {
       return next(createError(400, "User already exists"));
     }
@@ -49,7 +49,7 @@ exports.Register = async (req, res, next) => {
 
 exports.LogIn = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, password } = req.body;
 
     const user = await User.findOne({ username });
     if (!user) return next(createError(400, "User not found"));

@@ -7,7 +7,10 @@ const quality = require("../controller/qualiy");
 const logistic = require("../controller/logistic");
 const Cutting = require("../controller/Cutting");
 const Final_Assembly = require("../controller/final_assembly");
+const Login = require("../controller/LogIn");
 const route = express.Router();
+
+route.post("/Login",Login.LogIn);
 
 route.post("/Add_FA_DATA", Final_Assembly.Add_Data);
 route.post("/Modify_FA_DATA", Final_Assembly.Modify);
