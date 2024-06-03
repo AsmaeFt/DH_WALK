@@ -21,7 +21,7 @@ function App() {
         <div className="content">
           <Routes>
             <Route path="/" element={<Login />} />
-
+            <Route path="/Dhwalk" element={<Dhwalk />} />
             <Route path="/FAM" element={<FinalAssembly />} />
             <Route path="/Quality" element={<Quality />} />
             <Route path="/Logistic" element={<MPC />} />
