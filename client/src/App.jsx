@@ -26,11 +26,10 @@ function App() {
             <Route path="/Quality" element={<Quality />} />
             <Route path="/Logistic" element={<MPC />} />
             <Route path="/Cutting" element={<Cutting />} />
-            <Route path="/DH_WALK" element={<DH_WALK />} />
-            
+            <Route path="/DH_WALK" element={<DH_WALK />} />     
             <Route path="/Loading" element={<Loading />} />
             <Route path="/Add_Data" element={<Add_Data />} />
-                  <Route path="*" element={<p>Nothing to show here ! </p>} />
+             <Route path="*" element={<p>Nothing to show here ! </p>} />
           </Routes>
         </div>
       </div>
